@@ -11,13 +11,13 @@ export {
 export { findSeasonYearForTurnId } from './turn/utils';
 
 export {
-    selectGermanyIPC,
-    saveGermanyIpc,
+    selectGermanyIpp,
+    saveGermanyIpp,
     germanyIpcReducer,
 } from './country/germanyIpcSlice';
 
 export {
-    selectSovietIPC,
-    saveSovietIpc,
+    selectSovietIpp,
+    saveSovietIpp,
     sovietIpcReducer,
 } from './country/sovietIpcSlice';

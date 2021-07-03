@@ -15,16 +15,16 @@ import {
     useAppSelector,
     selectTurnIds,
     findSeasonYearForTurnId,
-    selectGermanyIPC,
-    selectSovietIPC,
+    selectGermanyIpp,
+    selectSovietIpp,
 } from "../state";
 
 
 export const CountryTable = () => {
     const turnIds = useAppSelector(selectTurnIds);
 
-    const germanyIpc = useAppSelector(selectGermanyIPC);
-    const sovietIpc = useAppSelector(selectSovietIPC);
+    const germanyIpp = useAppSelector(selectGermanyIpp);
+    const sovietIpp = useAppSelector(selectSovietIpp);
 
     return (
         <TableContainer component={Paper}>
@@ -49,8 +49,8 @@ export const CountryTable = () => {
                     {turnIds.map((turnId) => (
                         <TableRow key={turnId}>
                             <TableCell>{findSeasonYearForTurnId(turnId)}</TableCell>
-                            <TableCell align="left">{germanyIpc[turnId]?.ipc}</TableCell>
-                            <TableCell align="left">{sovietIpc[turnId]?.ipc}</TableCell>
+                            <TableCell align="left">{germanyIpp[turnId]?.ipp}</TableCell>
+                            <TableCell align="left">{sovietIpp[turnId]?.ipp}</TableCell>
                             <TableCell align="left">{2}</TableCell>
                             <TableCell align="left">{16}</TableCell>
                             <TableCell align="left">{11}</TableCell>

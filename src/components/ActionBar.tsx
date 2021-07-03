@@ -20,8 +20,8 @@ import {
     selectCurrentTurnId,
     findSeasonYearForTurnId,
     selectCurrentCountry,
-    saveGermanyIpc,
-    saveSovietIpc,
+    saveGermanyIpp,
+    saveSovietIpp,
 } from "../state";
 
 
@@ -47,8 +47,8 @@ export const ActionBar = () => {
                     <div className={classes.grow} />
                     <IconButton edge="end" color="inherit" onClick={() => dispatch(prevCountry())}><ArrowBack/></IconButton>
                     <IconButton edge="end" color="inherit" onClick={() => dispatch(nextCountry())}><ArrowForward/></IconButton>
-                    <IconButton edge="end" color="inherit" onClick={() => dispatch(saveGermanyIpc({turn_id: 1, ipc: 22 }))}><ExposureNeg1/></IconButton>
-                    <IconButton edge="end" color="inherit" onClick={() => dispatch(saveSovietIpc({turn_id: 1, ipc: 6 }))}><ExposurePlus1/></IconButton>
+                    <IconButton edge="end" color="inherit" onClick={() => dispatch(saveGermanyIpp({turn_id: 1, ipp: 22 }))}><ExposureNeg1/></IconButton>
+                    <IconButton edge="end" color="inherit" onClick={() => dispatch(saveSovietIpp({turn_id: 1, ipp: 6 }))}><ExposurePlus1/></IconButton>
                 </Toolbar>
             </AppBar>
             <Toolbar/>

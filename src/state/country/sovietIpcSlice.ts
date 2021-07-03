@@ -1,16 +1,16 @@
-import { countryIpcSlice, IpcState } from "./countryIpcSlice";
+import { countryIppSlice, IppState } from "./countryIppSlice";
 import { RootState } from "../store";
 
-const initialSovietState: IpcState = {
-    0: { ipc: 8 },
+const initialSovietState: IppState = {
+    0: { ipp: 8 },
 };
 
-const sovietIpcSlice = countryIpcSlice({
+const sovietIppSlice = countryIppSlice({
     name: 'soviet',
     initialState: initialSovietState,
     reducers: {},
 });
 
-export const selectSovietIPC = (state: RootState) => state.soviets;
-export const { save: saveSovietIpc } = sovietIpcSlice.actions;
-export const sovietIpcReducer = sovietIpcSlice.reducer;
+export const selectSovietIpp = (state: RootState) => state.soviets;
+export const { save: saveSovietIpp } = sovietIppSlice.actions;
+export const sovietIpcReducer = sovietIppSlice.reducer;

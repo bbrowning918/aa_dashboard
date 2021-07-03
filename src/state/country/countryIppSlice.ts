@@ -1,19 +1,19 @@
 import { createSlice, PayloadAction, SliceCaseReducers, ValidateSliceCaseReducers } from "@reduxjs/toolkit";
 
-export type IpcItem = {
-    ipc: number,
+export type IppItem = {
+    ipp: number,
 }
 
-export type IpcState = {
-    [turn_id: number]: IpcItem
+export type IppState = {
+    [turn_id: number]: IppItem
 }
 
-export type IpcAction = {
+export type IppAction = {
     turn_id: number,
-    ipc: number,
+    ipp: number,
 }
 
-export const countryIpcSlice = <IpcState, Reducers extends SliceCaseReducers<IpcState>>({
+export const countryIppSlice = <IpcState, Reducers extends SliceCaseReducers<IpcState>>({
     name = '',
     initialState,
     reducers,
@@ -26,9 +26,9 @@ export const countryIpcSlice = <IpcState, Reducers extends SliceCaseReducers<Ipc
         name,
         initialState,
         reducers: {
-            save: (state: IpcState, action: PayloadAction<IpcAction>) => {
-                const {turn_id, ipc} = action.payload;
-                Object.assign(state, {[turn_id]: {ipc: ipc}})
+            save: (state: IpcState, action: PayloadAction<IppAction>) => {
+                const {turn_id, ipp} = action.payload;
+                Object.assign(state, {[turn_id]: {ipp: ipp}})
             },
             ...reducers,
         }
