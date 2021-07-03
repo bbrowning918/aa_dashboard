@@ -11,8 +11,3 @@ export enum Countries {
     USA = "USA",
     NATIONALIST_CHINA = "NATIONALIST_CHINA",
 }
-
-export enum Seasons {
-    WINTER = "WINTER",
-    SUMMER = "SUMMER",
-}

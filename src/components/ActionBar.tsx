@@ -8,6 +8,8 @@ import {
 import {
     ArrowForward,
     ArrowBack,
+    ExposureNeg1,
+    ExposurePlus1,
 } from "@material-ui/icons";
 
 import {
@@ -15,9 +17,11 @@ import {
     useAppSelector,
     nextCountry,
     prevCountry,
+    selectCurrentTurnId,
+    findSeasonYearForTurnId,
     selectCurrentCountry,
-    selectCurrentSeason,
-    selectCurrentYear,
+    saveGermanyIpc,
+    saveSovietIpc,
 } from "../state";
 
 
@@ -31,8 +35,7 @@ export const ActionBar = () => {
     const dispatch = useAppDispatch();
 
     const currentCountry = useAppSelector(selectCurrentCountry);
-    const currentSeason = useAppSelector(selectCurrentSeason);
-    const currentYear = useAppSelector(selectCurrentYear);
+    const currentTurnId = useAppSelector(selectCurrentTurnId);
 
     const classes = useStyles();
 
@@ -40,10 +43,12 @@ export const ActionBar = () => {
         <>
             <AppBar position="fixed">
                 <Toolbar variant="dense">
-                    Axis & Allies Dashboard - {currentCountry} / {currentSeason} {currentYear}
+                    Axis & Allies Dashboard - {currentCountry} / {findSeasonYearForTurnId(currentTurnId)}
                     <div className={classes.grow} />
                     <IconButton edge="end" color="inherit" onClick={() => dispatch(prevCountry())}><ArrowBack/></IconButton>
                     <IconButton edge="end" color="inherit" onClick={() => dispatch(nextCountry())}><ArrowForward/></IconButton>
+                    <IconButton edge="end" color="inherit" onClick={() => dispatch(saveGermanyIpc({turn_id: 1, ipc: 22 }))}><ExposureNeg1/></IconButton>
+                    <IconButton edge="end" color="inherit" onClick={() => dispatch(saveSovietIpc({turn_id: 1, ipc: 6 }))}><ExposurePlus1/></IconButton>
                 </Toolbar>
             </AppBar>
             <Toolbar/>

@@ -11,47 +11,20 @@ import {
 
 import { Countries } from "../state/constants";
 
+import {
+    useAppSelector,
+    selectTurnIds,
+    findSeasonYearForTurnId,
+    selectGermanyIPC,
+    selectSovietIPC,
+} from "../state";
+
 
 export const CountryTable = () => {
-    const createRow = (turn: string, germany: number, soviet: number, comChina: number, japan: number, ukWest: number, ukEast: number, anzac: number, france: number, italy: number, usa: number, natChina: number) => {
-        return {
-            turn,
-            germany,
-            soviet,
-            comChina,
-            japan,
-            ukWest,
-            ukEast,
-            anzac,
-            france,
-            italy,
-            usa,
-            natChina
-        }
-    };
+    const turnIds = useAppSelector(selectTurnIds);
 
-    const rows = [
-        createRow("Summer '36", 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow("Winter '37", 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jul 1937', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jan 1938', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jul 1938', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jan 1939', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jul 1939', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jan 1940', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jul 1940', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jan 1941', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jul 1941', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jan 1942', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jul 1942', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jan 1943', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jul 1943', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jan 1944', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jul 1944', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jan 1945', 20, 8,2,16,11,5,3,5, 7,6,6),
-        createRow('Jul 1945', 20, 8,2,16,11,5,3,5, 7,6,6),
-        {turn: 'test', germany: 1, soviet: undefined, comChina: undefined, japan: undefined, ukWest: undefined, ukEast: 2, anzac: undefined, france: 0, italy: 3, usa: 120, natChina: undefined}
-    ];
+    const germanyIpc = useAppSelector(selectGermanyIPC);
+    const sovietIpc = useAppSelector(selectSovietIPC);
 
     return (
         <TableContainer component={Paper}>
@@ -73,22 +46,20 @@ export const CountryTable = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
-                        <TableRow key={row.turn}>
-                            <TableCell component="th" scope="row">
-                                {row.turn}
-                            </TableCell>
-                            <TableCell align="left">{row.germany}</TableCell>
-                            <TableCell align="left">{row.soviet}</TableCell>
-                            <TableCell align="left">{row.comChina}</TableCell>
-                            <TableCell align="left">{row.japan}</TableCell>
-                            <TableCell align="left">{row.ukWest}</TableCell>
-                            <TableCell align="left">{row.ukEast}</TableCell>
-                            <TableCell align="left">{row.anzac}</TableCell>
-                            <TableCell align="left">{row.france}</TableCell>
-                            <TableCell align="left">{row.italy}</TableCell>
-                            <TableCell align="left">{row.usa}</TableCell>
-                            <TableCell align="left">{row.natChina}</TableCell>
+                    {turnIds.map((turnId) => (
+                        <TableRow key={turnId}>
+                            <TableCell>{findSeasonYearForTurnId(turnId)}</TableCell>
+                            <TableCell align="left">{germanyIpc[turnId]?.ipc}</TableCell>
+                            <TableCell align="left">{sovietIpc[turnId]?.ipc}</TableCell>
+                            <TableCell align="left">{2}</TableCell>
+                            <TableCell align="left">{16}</TableCell>
+                            <TableCell align="left">{11}</TableCell>
+                            <TableCell align="left">{5}</TableCell>
+                            <TableCell align="left">{3}</TableCell>
+                            <TableCell align="left">{5}</TableCell>
+                            <TableCell align="left">{7}</TableCell>
+                            <TableCell align="left">{6}</TableCell>
+                            <TableCell align="left">{6}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

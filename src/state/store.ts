@@ -2,10 +2,14 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 
 import { turnReducer } from './turn/slice';
+import { germanyIpcReducer } from "./country/germanyIpcSlice";
+import { sovietIpcReducer } from "./country/sovietIpcSlice";
 
 export const store = configureStore({
   reducer: {
     turn: turnReducer,
+    germany: germanyIpcReducer,
+    soviets: sovietIpcReducer,
   },
   middleware: [logger]
 });
