@@ -3,11 +3,13 @@ import logger from 'redux-logger';
 
 import { turnReducer } from './turn/slice';
 import { ippReducer } from "./ipp/slice";
+import { uiReducer } from './ui/slice';
 
 export const store = configureStore({
   reducer: {
     turn: turnReducer,
     ipp: ippReducer,
+    ui: uiReducer,
   },
   middleware: [logger]
 });

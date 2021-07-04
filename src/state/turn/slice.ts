@@ -51,14 +51,8 @@ const slice = createSlice({
     name: 'turn',
     initialState,
     reducers: {
-        nextPower: (state: TurnState, action: PayloadAction<{ spent: number, income: number }>) => {
-            const {spent, income} = action.payload;
+        nextPower: (state: TurnState) => {
             const currentIndex = ORDER.findIndex((country) => country === state.currentPower)
-
-            const start = state[state.currentPower][state.currentId].start;
-            state[state.currentPower][state.currentId].spent = spent;
-            state[state.currentPower][state.currentId].income = income
-            state[state.currentPower][state.currentId + 1] = {start: start - spent + income};
 
             if (currentIndex + 1 === ORDER.length) {
                 state.currentId += 1;
@@ -68,7 +62,7 @@ const slice = createSlice({
                 state.currentPower = ORDER[currentIndex + 1];
             }
         },
-        prevPower: (state) => {
+        prevPower: (state: TurnState) => {
             const currentIndex = ORDER.findIndex((country) => country === state.currentPower)
             if (currentIndex === 0) {
                 if (state.currentId !== initialState.currentId) {
@@ -78,6 +72,14 @@ const slice = createSlice({
             } else {
                 state.currentPower = ORDER[currentIndex - 1];
             }
+        },
+        saveCurrent: (state: TurnState, action: PayloadAction<{ spent: number, income: number }>) => {
+            const {spent, income} = action.payload;
+
+            const start = state[state.currentPower][state.currentId].start;
+            state[state.currentPower][state.currentId].spent = spent;
+            state[state.currentPower][state.currentId].income = income
+            state[state.currentPower][state.currentId + 1] = {start: start - spent + income};
         },
     },
 });
@@ -89,5 +91,5 @@ export const selectCurrentTurnId = (state: RootState) => state.turn.currentId;
 export const selectCurrentTurn = (state: RootState) => state.turn[state.turn.currentPower][state.turn.currentId]
 export const selectCurrentPower = (state: RootState) => state.turn.currentPower;
 
-export const {nextPower, prevPower} = slice.actions;
+export const {nextPower, prevPower, saveCurrent} = slice.actions;
 export const turnReducer = slice.reducer;

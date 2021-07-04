@@ -5,14 +5,17 @@ import { App } from './App';
 import { store } from './state/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
+import { ErrorBoundary } from './ErrorBoundary';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <ErrorBoundary>
+            <Provider store={store}>
+                <App/>
+            </Provider>
+        </ErrorBoundary>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

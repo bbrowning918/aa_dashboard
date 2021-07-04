@@ -1,9 +1,21 @@
 import React from 'react';
-import { makeStyles, Button, Dialog, TextField } from "@material-ui/core";
+import { FormikErrors, useFormik } from 'formik';
+import { makeStyles, Button, Dialog, TextField, Typography } from "@material-ui/core";
 
-type TurnDialogProps = {
-    open: boolean,
-    setOpen: (open:boolean) => void,
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import {
+    selectCurrentTurn,
+    saveCurrent,
+    nextPower,
+    selectCurrentPower,
+    selectCurrentTurnId
+} from "../state/turn/slice";
+import { findSeasonYearForTurnId } from '../state/turn/utils';
+import { selectTurnDialogVisibility, toggleTurnDialog } from '../state/ui/slice';
+
+type TurnFormProps = {
+    spent: number,
+    income: number,
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -23,38 +35,108 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const TurnDialog = ({ open, setOpen }: TurnDialogProps) => {
+export const TurnDialog = () => {
     const classes = useStyles();
+
+    const dispatch = useAppDispatch();
+
+    const visible = useAppSelector(selectTurnDialogVisibility);
+    const currentPower = useAppSelector(selectCurrentPower);
+    const currentTurnId = useAppSelector(selectCurrentTurnId);
+    const currentTurn = useAppSelector(selectCurrentTurn);
+
+    const initialValues: TurnFormProps = {
+        spent: currentTurn.spent ?? 0,
+        income: currentTurn.income ?? 0,
+    };
+
+    const formik = useFormik<TurnFormProps>({
+        initialValues: initialValues,
+        enableReinitialize: true,
+        validate: (values: TurnFormProps) => {
+            let errors: FormikErrors<TurnFormProps> = {};
+
+            if (values.spent < 0) {
+                errors.spent = 'It does not work that way';
+            }
+            if (values.spent > currentTurn.start) {
+                errors.spent = 'Trying to spend more than IPP';
+            }
+            if (values.income < 0) {
+                errors.income = 'It does not work that way';
+            }
+
+            return errors
+        },
+        onSubmit: (values: TurnFormProps, {resetForm}) => {
+            dispatch(saveCurrent({spent: values.spent, income: values.income}));
+            dispatch(nextPower());
+            dispatch(toggleTurnDialog());
+            resetForm();
+        },
+    });
 
     return (
         <Dialog
             disableBackdropClick
             disableEscapeKeyDown
-            open={open}
-            onClose={() => setOpen(false)}
+            open={visible}
+            onClose={() => dispatch(toggleTurnDialog())}
         >
-           <form className={classes.form}>
-               <TextField
-                   label="IPP"
-                   variant="outlined"
-                   defaultValue={123}
-                   disabled
-               />
-               <TextField
-                   label="Total Spent"
-                   variant="outlined"
-                   required
-               />
-               <TextField
-                   label="Income"
-                   variant="outlined"
-                   required
-               />
+            <form className={classes.form} onSubmit={formik.handleSubmit}>
+                <Typography variant="h6">
+                    {currentPower}
+                </Typography>
+                <Typography variant="subtitle1">
+                    {findSeasonYearForTurnId(currentTurnId)}
+                </Typography>
+                <TextField
+                    id="ipp"
+                    name="ipp"
+                    type="number"
+                    label="IPP"
+                    variant="outlined"
+                    defaultValue={currentTurn.start ?? 0}
+                    disabled
+                />
+                <TextField
+                    id="spent"
+                    name="spent"
+                    type="number"
+                    label="Spent"
+                    variant="outlined"
+                    value={formik.values.spent}
+                    onChange={formik.handleChange}
+                    error={Boolean(formik.errors.spent)}
+                    helperText={formik.errors.spent}
+                />
+                <TextField
+                    id="income"
+                    name="income"
+                    type="number"
+                    label="Income"
+                    variant="outlined"
+                    value={formik.values.income}
+                    onChange={formik.handleChange}
+                    error={Boolean(formik.errors.income)}
+                    helperText={formik.errors.income}
+                />
                 <div>
-                    <Button variant="contained" onClick={() => setOpen(false)}>CANCEL</Button>
-                    <Button variant="contained" color="primary">SAVE</Button>
+                    <Button
+                        variant="contained"
+                        onClick={() => dispatch(toggleTurnDialog())}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                    >
+                        Save
+                    </Button>
                 </div>
-           </form>
+            </form>
         </Dialog>
     );
 }
