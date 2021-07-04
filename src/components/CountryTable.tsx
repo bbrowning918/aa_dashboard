@@ -12,7 +12,7 @@ import {
     selectTurnIds,
     selectCurrentPower,
     selectCurrentTurnId
-} from "../redux/turnSlice";
+} from "../redux/slices/turnSlice";
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
 
 const useStyles = makeStyles((theme) => ({

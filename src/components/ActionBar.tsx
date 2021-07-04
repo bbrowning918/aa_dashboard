@@ -9,9 +9,9 @@ import {
     prevPower,
     selectCurrentTurnId,
     selectCurrentPower,
-} from "../redux/turnSlice";
+} from "../redux/slices/turnSlice";
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
-import { toggleTurnDialog } from '../redux/uiSlice';
+import { toggleTurnDialog } from '../redux/slices/uiSlice';
 
 const useStyles = makeStyles(() => ({
     grow: {

@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { RootState } from './store';
-import { Powers, ORDER } from './constants';
-import { Power } from './types';
+import { RootState } from '../store';
+import { Powers, ORDER } from '../constants';
+import { Power } from '../types';
 
 type Turn = { start: number, spent?: number, income?: number };
 
