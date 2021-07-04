@@ -11,7 +11,7 @@ export const store = configureStore({
     ipp: ippReducer,
     ui: uiReducer,
   },
-  middleware: [logger]
+  middleware: process.env.NODE_ENV === 'development' ? [logger] : []
 });
 
 export type AppDispatch = typeof store.dispatch;
