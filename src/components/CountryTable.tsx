@@ -1,5 +1,6 @@
 import React from 'react';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@material-ui/core";
+import clsx from 'clsx';
+import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@material-ui/core";
 
 import { useAppSelector } from '../state/hooks';
 
@@ -7,11 +8,21 @@ import { Powers } from "../state/constants";
 
 import {
     selectTurnsForPower,
-    selectTurnIds
+    selectTurnIds, selectCurrentPower, selectCurrentTurnId
 } from "../state/turn/slice";
 import { findSeasonYearForTurnId } from "../state/turn/utils";
+import { Power } from "../state/types";
+
+const useStyles = makeStyles((theme) => ({
+    current: {
+        background: theme.palette.primary.main,
+        color: theme.palette.common.white,
+    }
+}));
 
 export const CountryTable = () => {
+    const classes = useStyles();
+
     const turnIds = useAppSelector(selectTurnIds);
 
     const germanTurns = useAppSelector(state => selectTurnsForPower(state, Powers.GERMANY));
@@ -25,6 +36,13 @@ export const CountryTable = () => {
     const italyTurns = useAppSelector(state => selectTurnsForPower(state, Powers.ITALY));
     const usaTurns = useAppSelector(state => selectTurnsForPower(state, Powers.USA));
     const nattyChinaTurns = useAppSelector(state => selectTurnsForPower(state, Powers.NATIONALIST_CHINA));
+
+    const currentPower = useAppSelector(selectCurrentPower);
+    const currentTurnId = useAppSelector(selectCurrentTurnId);
+
+    const isTurn = (power: Power, turnId: number) => {
+        return power === currentPower && turnId === currentTurnId;
+    }
 
     return (
         <TableContainer component={Paper}>
@@ -49,17 +67,17 @@ export const CountryTable = () => {
                     {turnIds.map((turnId) => (
                         <TableRow key={turnId}>
                             <TableCell>{findSeasonYearForTurnId(turnId)}</TableCell>
-                            <TableCell align="left">{germanTurns[turnId]?.start}</TableCell>
-                            <TableCell align="left">{sovietTurns[turnId]?.start}</TableCell>
-                            <TableCell align="left">{commieChinaTurns[turnId]?.start}</TableCell>
-                            <TableCell align="left">{japanTurns[turnId]?.start}</TableCell>
-                            <TableCell align="left">{ukWestTurns[turnId]?.start}</TableCell>
-                            <TableCell align="left">{ukEastTurns[turnId]?.start}</TableCell>
-                            <TableCell align="left">{anzacTurns[turnId]?.start}</TableCell>
-                            <TableCell align="left">{franceTurns[turnId]?.start}</TableCell>
-                            <TableCell align="left">{italyTurns[turnId]?.start}</TableCell>
-                            <TableCell align="left">{usaTurns[turnId]?.start}</TableCell>
-                            <TableCell align="left">{nattyChinaTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.GERMANY, turnId) && classes.current)}>{germanTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.SOVIET_UNION, turnId) && classes.current)}>{sovietTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.COMMUNIST_CHINA, turnId) && classes.current)}>{commieChinaTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.JAPAN, turnId) && classes.current)}>{japanTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.UK_WEST, turnId) && classes.current)}>{ukWestTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.UK_EAST, turnId) && classes.current)}>{ukEastTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.ANZAC, turnId) && classes.current)}>{anzacTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.FRANCE, turnId) && classes.current)}>{franceTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.ITALY, turnId) && classes.current)}>{italyTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.USA, turnId) && classes.current)}>{usaTurns[turnId]?.start}</TableCell>
+                            <TableCell align="left" className={clsx(isTurn(Powers.NATIONALIST_CHINA, turnId) && classes.current)}>{nattyChinaTurns[turnId]?.start}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

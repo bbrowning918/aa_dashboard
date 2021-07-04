@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, makeStyles, Toolbar, IconButton } from "@material-ui/core";
+import { makeStyles, AppBar, Toolbar, IconButton } from "@material-ui/core";
 import { ArrowForward, ArrowBack } from "@material-ui/icons";
 
 import { useAppDispatch, useAppSelector } from '../state/hooks';
