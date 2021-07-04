@@ -2,16 +2,18 @@ import React from 'react';
 import clsx from 'clsx';
 import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@material-ui/core";
 
-import { useAppSelector } from '../state/hooks';
+import { useAppSelector } from '../hooks';
 
-import { Powers } from "../state/constants";
-import { Power } from "../state/types";
+import { Powers } from "../redux/constants";
+import { Power } from "../redux/types";
 
 import {
     selectTurnsForPower,
-    selectTurnIds, selectCurrentPower, selectCurrentTurnId
-} from "../state/turn/slice";
-import { findSeasonYearForTurnId } from "../state/turn/utils";
+    selectTurnIds,
+    selectCurrentPower,
+    selectCurrentTurnId
+} from "../redux/turnSlice";
+import { findSeasonYearForTurnId } from "../utils/turnUtils";
 
 const useStyles = makeStyles((theme) => ({
     current: {
@@ -64,7 +66,7 @@ export const CountryTable = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {turnIds.map((turnId) => (
+                    {turnIds.map((turnId: number) => (
                         <TableRow key={turnId}>
                             <TableCell>{findSeasonYearForTurnId(turnId)}</TableCell>
                             <TableCell align="left" className={clsx(isTurn(Powers.GERMANY, turnId) && classes.current)}>{germanTurns[turnId]?.start}</TableCell>

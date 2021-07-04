@@ -1,11 +1,22 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from './store';
 
-import { Powers } from "../constants";
+import { Powers,  } from './constants';
+import { Power } from './types';
 
-import { Power } from "../types";
-import { IppState } from "./types";
-
+type IppState = {
+    [Powers.GERMANY]: number,
+    [Powers.SOVIET_UNION]: number,
+    [Powers.COMMUNIST_CHINA]: number,
+    [Powers.JAPAN]: number,
+    [Powers.UK_WEST]: number,
+    [Powers.UK_EAST]: number,
+    [Powers.ANZAC]: number,
+    [Powers.FRANCE]: number,
+    [Powers.ITALY]: number,
+    [Powers.USA]: number,
+    [Powers.NATIONALIST_CHINA]: number,
+}
 
 const initialState: IppState = {
     [Powers.GERMANY]: 20,
@@ -21,7 +32,7 @@ const initialState: IppState = {
     [Powers.NATIONALIST_CHINA]: 6,
 }
 
-const slice = createSlice({
+const ippSlice = createSlice({
     name: 'ipp',
     initialState,
     reducers: {
@@ -40,5 +51,5 @@ const slice = createSlice({
 
 export const selectIppForPower = (state: RootState, power: Power) => state.ipp[power];
 
-export const {transfer, increase, decrease} = slice.actions;
-export const ippReducer = slice.reducer;
+export const {transfer, increase, decrease} = ippSlice.actions;
+export const ippReducer = ippSlice.reducer;

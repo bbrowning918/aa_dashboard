@@ -1,13 +1,16 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-import { RootState } from "../store";
-import { UiState } from './types';
+import { RootState } from './store';
+
+type UiState = {
+    turnDialogVisibility: boolean
+}
 
 const initialState: UiState = {
     turnDialogVisibility: false,
 };
 
-const slice = createSlice({
+const uiSlice = createSlice({
     name: 'ui',
     initialState,
     reducers: {
@@ -19,5 +22,5 @@ const slice = createSlice({
 
 export const selectTurnDialogVisibility = (state: RootState) => state.ui.turnDialogVisibility;
 
-export const { toggleTurnDialog } = slice.actions;
-export const uiReducer = slice.reducer;
+export const { toggleTurnDialog } = uiSlice.actions;
+export const uiReducer = uiSlice.reducer;

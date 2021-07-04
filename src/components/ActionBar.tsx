@@ -2,16 +2,16 @@ import React from 'react';
 import { makeStyles, AppBar, Toolbar, IconButton, Button, Typography } from "@material-ui/core";
 import { ArrowForward, ArrowBack } from "@material-ui/icons";
 
-import { useAppDispatch, useAppSelector } from '../state/hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 
 import {
     nextPower,
     prevPower,
     selectCurrentTurnId,
     selectCurrentPower,
-} from "../state/turn/slice";
-import { findSeasonYearForTurnId } from "../state/turn/utils";
-import { toggleTurnDialog } from '../state/ui/slice';
+} from "../redux/turnSlice";
+import { findSeasonYearForTurnId } from "../utils/turnUtils";
+import { toggleTurnDialog } from '../redux/uiSlice';
 
 const useStyles = makeStyles(() => ({
     grow: {

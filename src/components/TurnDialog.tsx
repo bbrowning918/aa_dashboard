@@ -2,16 +2,16 @@ import React from 'react';
 import { FormikErrors, useFormik } from 'formik';
 import { makeStyles, Button, Dialog, TextField, Typography } from "@material-ui/core";
 
-import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import {
     selectCurrentTurn,
     saveCurrent,
     nextPower,
     selectCurrentPower,
     selectCurrentTurnId
-} from "../state/turn/slice";
-import { findSeasonYearForTurnId } from '../state/turn/utils';
-import { selectTurnDialogVisibility, toggleTurnDialog } from '../state/ui/slice';
+} from "../redux/turnSlice";
+import { findSeasonYearForTurnId } from '../utils/turnUtils';
+import { selectTurnDialogVisibility, toggleTurnDialog } from '../redux/uiSlice';
 
 type TurnFormProps = {
     spent: number,

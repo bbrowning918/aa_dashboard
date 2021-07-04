@@ -1,9 +1,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 
-import { turnReducer } from './turn/slice';
-import { ippReducer } from "./ipp/slice";
-import { uiReducer } from './ui/slice';
+import { turnReducer } from './turnSlice';
+import { ippReducer } from "./ippSlice";
+import { uiReducer } from './uiSlice';
 
 export const store = configureStore({
   reducer: {
