@@ -22,5 +22,5 @@ const uiSlice = createSlice({
 
 export const selectTurnDialogVisibility = (state: RootState) => state.ui.turnDialogVisibility;
 
-export const { toggleTurnDialog } = uiSlice.actions;
+export const {toggleTurnDialog} = uiSlice.actions;
 export const uiReducer = uiSlice.reducer;

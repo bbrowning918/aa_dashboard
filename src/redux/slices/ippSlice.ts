@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
-import { Powers,  } from '../constants';
+import { Powers } from '../constants';
 import { Power } from '../types';
 
 type IppState = {
