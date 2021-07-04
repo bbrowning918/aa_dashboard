@@ -1,11 +1,11 @@
 import React from 'react';
 import clsx from 'clsx';
-import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@material-ui/core";
+import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 
 import { useAppSelector } from '../hooks';
 
-import { Powers } from "../redux/constants";
-import { Power } from "../redux/types";
+import { Powers } from '../redux/constants';
+import { Power } from '../redux/types';
 
 import {
     selectTurnsForPower,

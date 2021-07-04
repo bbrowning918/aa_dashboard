@@ -1,15 +1,15 @@
 import React from 'react';
 import { FormikErrors, useFormik } from 'formik';
-import { makeStyles, Button, Dialog, TextField, Typography } from "@material-ui/core";
+import { makeStyles, Button, Dialog, TextField, Typography } from '@material-ui/core';
 
-import { useAppDispatch, useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from '../hooks';
 import {
     selectCurrentTurn,
     saveCurrent,
     nextPower,
     selectCurrentPower,
     selectCurrentTurnId
-} from "../redux/slices/turnSlice";
+} from '../redux/slices/turnSlice';
 import { findSeasonYearForTurnId } from '../utils/turnUtils';
 import { selectTurnDialogVisibility, toggleTurnDialog } from '../redux/slices/uiSlice';
 

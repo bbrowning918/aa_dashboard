@@ -1,6 +1,6 @@
 import React from 'react';
-import { makeStyles, AppBar, Toolbar, IconButton, Button, Typography } from "@material-ui/core";
-import { ArrowForward, ArrowBack } from "@material-ui/icons";
+import { makeStyles, AppBar, Toolbar, IconButton, Button, Typography } from '@material-ui/core';
+import { ArrowForward, ArrowBack } from '@material-ui/icons';
 
 import { useAppDispatch, useAppSelector } from '../hooks';
 
@@ -9,8 +9,8 @@ import {
     prevPower,
     selectCurrentTurnId,
     selectCurrentPower,
-} from "../redux/slices/turnSlice";
-import { findSeasonYearForTurnId } from "../utils/turnUtils";
+} from '../redux/slices/turnSlice';
+import { findSeasonYearForTurnId } from '../utils/turnUtils';
 import { toggleTurnDialog } from '../redux/slices/uiSlice';
 
 const useStyles = makeStyles(() => ({

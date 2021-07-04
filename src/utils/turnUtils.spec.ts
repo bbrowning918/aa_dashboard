@@ -1,4 +1,4 @@
-import { Seasons, START_SEASON, START_YEAR } from "../redux/constants";
+import { Seasons, START_SEASON, START_YEAR } from '../redux/constants';
 import * as utils from './turnUtils';
 
 describe('switchSeason tests', () => {

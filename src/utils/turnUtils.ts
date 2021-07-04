@@ -1,6 +1,6 @@
-import { Season } from "../redux/types";
+import { Season } from '../redux/types';
 
-import { Seasons, START_SEASON, START_YEAR } from "../redux/constants";
+import { Seasons, START_SEASON, START_YEAR } from '../redux/constants';
 
 export const switchSeason = (season: Season): Season => {
     return season !== Seasons[Seasons.WINTER] ? Seasons.WINTER : Seasons.SUMMER;
