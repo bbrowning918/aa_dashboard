@@ -1,4 +1,4 @@
-import { Countries } from "../constants";
+import { Powers } from "../constants";
 
 export enum Seasons {
     WINTER = "WINTER",
@@ -9,15 +9,15 @@ export const START_SEASON = Seasons.SUMMER;
 export const START_YEAR = 1936;
 
 export const ORDER = [
-    Countries.GERMANY,
-    Countries.SOVIET_UNION,
-    Countries.COMMUNIST_CHINA,
-    Countries.JAPAN,
-    Countries.UK_WEST,
-    Countries.UK_EAST,
-    Countries.ANZAC,
-    Countries.FRANCE,
-    Countries.ITALY,
-    Countries.USA,
-    Countries.NATIONALIST_CHINA,
+    Powers.GERMANY,
+    Powers.SOVIET_UNION,
+    Powers.COMMUNIST_CHINA,
+    Powers.JAPAN,
+    Powers.UK_WEST,
+    Powers.UK_EAST,
+    Powers.ANZAC,
+    Powers.FRANCE,
+    Powers.ITALY,
+    Powers.USA,
+    Powers.NATIONALIST_CHINA,
 ];

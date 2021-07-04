@@ -1,29 +1,17 @@
 import React from 'react';
-import {
-    AppBar,
-    makeStyles,
-    Toolbar,
-    IconButton
-} from "@material-ui/core";
-import {
-    ArrowForward,
-    ArrowBack,
-    ExposureNeg1,
-    ExposurePlus1,
-} from "@material-ui/icons";
+import { AppBar, makeStyles, Toolbar, IconButton } from "@material-ui/core";
+import { ArrowForward, ArrowBack } from "@material-ui/icons";
+
+import { useAppDispatch, useAppSelector } from '../state/hooks';
 
 import {
-    useAppDispatch,
-    useAppSelector,
-    nextCountry,
-    prevCountry,
+    nextPower,
+    prevPower,
     selectCurrentTurnId,
-    findSeasonYearForTurnId,
-    selectCurrentCountry,
-    saveGermanyIpp,
-    saveSovietIpp,
-} from "../state";
-
+    selectCurrentPower,
+    selectCurrentTurn,
+} from "../state/turn/slice";
+import { findSeasonYearForTurnId } from "../state/turn/utils";
 
 const useStyles = makeStyles(() => ({
     grow: {
@@ -34,21 +22,23 @@ const useStyles = makeStyles(() => ({
 export const ActionBar = () => {
     const dispatch = useAppDispatch();
 
-    const currentCountry = useAppSelector(selectCurrentCountry);
+    const currentPower = useAppSelector(selectCurrentPower);
     const currentTurnId = useAppSelector(selectCurrentTurnId);
+    const currentTurn = useAppSelector(selectCurrentTurn);
 
     const classes = useStyles();
+
+    const random = (min: number, max: number) => Math.floor(Math.random() * (max - min) + min);
 
     return (
         <>
             <AppBar position="fixed">
                 <Toolbar variant="dense">
-                    Axis & Allies Dashboard - {currentCountry} / {findSeasonYearForTurnId(currentTurnId)}
+                    Axis & Allies Dashboard
                     <div className={classes.grow} />
-                    <IconButton edge="end" color="inherit" onClick={() => dispatch(prevCountry())}><ArrowBack/></IconButton>
-                    <IconButton edge="end" color="inherit" onClick={() => dispatch(nextCountry())}><ArrowForward/></IconButton>
-                    <IconButton edge="end" color="inherit" onClick={() => dispatch(saveGermanyIpp({turn_id: 1, ipp: 22 }))}><ExposureNeg1/></IconButton>
-                    <IconButton edge="end" color="inherit" onClick={() => dispatch(saveSovietIpp({turn_id: 1, ipp: 6 }))}><ExposurePlus1/></IconButton>
+                    {currentPower} / {findSeasonYearForTurnId(currentTurnId)}
+                    <IconButton edge="end" color="inherit" onClick={() => dispatch(prevPower())}><ArrowBack/></IconButton>
+                    <IconButton edge="end" color="inherit" onClick={() => dispatch(nextPower({spent: currentTurn.spent ?? random(0, currentTurn.start), income: currentTurn.income ?? random(5, currentTurn.start + 5)}))}><ArrowForward/></IconButton>
                 </Toolbar>
             </AppBar>
             <Toolbar/>

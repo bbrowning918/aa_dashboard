@@ -1,4 +1,4 @@
-export enum Countries {
+export enum Powers {
     GERMANY = "GERMANY",
     SOVIET_UNION = "SOVIET_UNION",
     COMMUNIST_CHINA = "COMMUNIST_CHINA",
