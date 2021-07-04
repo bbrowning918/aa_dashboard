@@ -5,13 +5,13 @@ import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHe
 import { useAppSelector } from '../state/hooks';
 
 import { Powers } from "../state/constants";
+import { Power } from "../state/types";
 
 import {
     selectTurnsForPower,
     selectTurnIds, selectCurrentPower, selectCurrentTurnId
 } from "../state/turn/slice";
 import { findSeasonYearForTurnId } from "../state/turn/utils";
-import { Power } from "../state/types";
 
 const useStyles = makeStyles((theme) => ({
     current: {
