@@ -9,9 +9,9 @@ import {
     nextPower,
     selectCurrentPower,
     selectCurrentTurnId
-} from '../redux/slices/turnSlice';
+} from '../redux/game/turnSlice';
 import { findSeasonYearForTurnId } from '../utils/turnUtils';
-import { selectTurnDialogVisibility, toggleTurnDialog } from '../redux/slices/uiSlice';
+import { selectTurnDialogVisibility, toggleTurnDialog } from '../redux/ui/uiSlice';
 
 type TurnFormProps = {
     spent: number,

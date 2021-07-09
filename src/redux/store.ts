@@ -1,17 +1,17 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import { configureStore, combineReducers, ThunkAction, Action } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 
-import { turnReducer } from './slices/turnSlice';
-import { ippReducer } from './slices/ippSlice';
-import { uiReducer } from './slices/uiSlice';
+import { gameReducer } from './game';
+import { uiReducer } from './ui';
+
+const rootReducer = combineReducers({
+  game: gameReducer,
+  ui: uiReducer,
+});
 
 export const store = configureStore({
-  reducer: {
-    turn: turnReducer,
-    ipp: ippReducer,
-    ui: uiReducer,
-  },
-  middleware: process.env.NODE_ENV === 'development' ? [logger] : []
+  reducer: rootReducer,
+  middleware: [logger],
 });
 
 export type AppDispatch = typeof store.dispatch;

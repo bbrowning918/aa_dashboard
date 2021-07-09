@@ -49,7 +49,7 @@ const ippSlice = createSlice({
     },
 });
 
-export const selectIppForPower = (state: RootState, power: Power) => state.ipp[power];
+export const selectIppForPower = (state: RootState, power: Power) => state.game.ipp[power];
 
 export const {transfer, increase, decrease} = ippSlice.actions;
 export const ippReducer = ippSlice.reducer;

@@ -6,6 +6,23 @@ import { Power } from '../types';
 
 type Turn = { start: number, spent?: number, income?: number };
 
+// is this any better?
+// type Turn = {
+//     start: number, // or calc live from something like carryOver + income - spent (from previous turn)...?
+//     spent: KEY_TO_BUYS_STATE,
+//     income: KEY_TO_IPP_STATE
+// };
+// type TurnState = {
+//     turns: {
+//         1: {
+//             [Powers.GERMANY]: Turn,
+//             // etc
+//         },
+//     },
+//     currentTurn: number,
+//     currentPower: Power,
+// }
+
 type TurnState = {
     [Powers.GERMANY]: { [turnId: number]: Turn },
     [Powers.SOVIET_UNION]: { [turnId: number]: Turn },
@@ -77,12 +94,12 @@ const turnSlice = createSlice({
     },
 });
 
-export const selectTurnIds = (state: RootState) => state.turn.ids;
-export const selectTurnsForPower = (state: RootState, power: Power) => state.turn[power];
+export const selectTurnIds = (state: RootState) => state.game.turn.ids;
+export const selectTurnsForPower = (state: RootState, power: Power) => state.game.turn[power];
 
-export const selectCurrentTurnId = (state: RootState) => state.turn.currentId;
-export const selectCurrentTurn = (state: RootState) => state.turn[state.turn.currentPower][state.turn.currentId]
-export const selectCurrentPower = (state: RootState) => state.turn.currentPower;
+export const selectCurrentTurnId = (state: RootState) => state.game.turn.currentId;
+export const selectCurrentTurn = (state: RootState) => state.game.turn[state.game.turn.currentPower][state.game.turn.currentId]
+export const selectCurrentPower = (state: RootState) => state.game.turn.currentPower;
 
 export const {nextPower, prevPower, saveCurrent} = turnSlice.actions;
 export const turnReducer = turnSlice.reducer;
