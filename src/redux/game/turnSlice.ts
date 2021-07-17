@@ -6,23 +6,6 @@ import { Power } from '../types';
 
 type Turn = { start: number, spent?: number, income?: number };
 
-// is this any better?
-// type Turn = {
-//     start: number, // or calc live from something like carryOver + income - spent (from previous turn)...?
-//     spent: KEY_TO_BUYS_STATE,
-//     income: KEY_TO_IPP_STATE
-// };
-// type TurnState = {
-//     turns: {
-//         1: {
-//             [Powers.GERMANY]: Turn,
-//             // etc
-//         },
-//     },
-//     currentTurn: number,
-//     currentPower: Power,
-// }
-
 type TurnState = {
     [Powers.GERMANY]: { [turnId: number]: Turn },
     [Powers.SOVIET_UNION]: { [turnId: number]: Turn },
@@ -61,25 +44,25 @@ const turnSlice = createSlice({
     name: 'turn',
     initialState,
     reducers: {
-        nextPower: (state: TurnState) => {
-            const currentIndex = ORDER.findIndex((country) => country === state.currentPower)
-
-            if (currentIndex + 1 === ORDER.length) {
+        nextTurn: (state: TurnState) => {
+            const countPowersSubmitted = ORDER.reduce((count: number, power: Power) => {
+                return state[power][state.currentId + 1] !== undefined ? count + 1 : count;
+            }, 0);
+            if (countPowersSubmitted === ORDER.length) {
                 state.currentId += 1;
                 state.currentPower = ORDER[0];
-                state.ids = Array.from(new Set([...state.ids, state.currentId + 1]));
-            } else {
+            }
+        },
+        nextPower: (state: TurnState) => {
+            const currentIndex = ORDER.findIndex((country) => country === state.currentPower)
+            if (currentIndex + 1 < ORDER.length) {
                 state.currentPower = ORDER[currentIndex + 1];
+                state.ids = Array.from(new Set([...state.ids, state.currentId + 1]));
             }
         },
         prevPower: (state: TurnState) => {
             const currentIndex = ORDER.findIndex((country) => country === state.currentPower)
-            if (currentIndex === 0) {
-                if (state.currentId !== initialState.currentId) {
-                    state.currentId -= 1;
-                    state.currentPower = ORDER[ORDER.length - 1];
-                }
-            } else {
+            if (currentIndex > 0) {
                 state.currentPower = ORDER[currentIndex - 1];
             }
         },
@@ -94,6 +77,15 @@ const turnSlice = createSlice({
     },
 });
 
+export const selectCanMovePrevPower = (state: RootState) => ORDER.findIndex((country) => country === state.game.turn.currentPower) > 0
+export const selectCanMoveNextPower = (state: RootState) => ORDER.findIndex((country) => country === state.game.turn.currentPower) + 1 < ORDER.length
+export const selectCanMoveNextTurn = (state: RootState) => {
+    const countPowersSubmitted = ORDER.reduce((count: number, power: Power) => {
+        return state.game.turn[power][state.game.turn.currentId + 1] !== undefined ? count + 1 : count;
+    }, 0);
+    return countPowersSubmitted === ORDER.length;
+}
+
 export const selectTurnIds = (state: RootState) => state.game.turn.ids;
 export const selectTurnsForPower = (state: RootState, power: Power) => state.game.turn[power];
 
@@ -101,5 +93,5 @@ export const selectCurrentTurnId = (state: RootState) => state.game.turn.current
 export const selectCurrentTurn = (state: RootState) => state.game.turn[state.game.turn.currentPower][state.game.turn.currentId]
 export const selectCurrentPower = (state: RootState) => state.game.turn.currentPower;
 
-export const {nextPower, prevPower, saveCurrent} = turnSlice.actions;
+export const {nextTurn, nextPower, prevPower, saveCurrent} = turnSlice.actions;
 export const turnReducer = turnSlice.reducer;

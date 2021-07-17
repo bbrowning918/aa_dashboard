@@ -1,14 +1,15 @@
 import React from 'react';
 import { makeStyles, AppBar, Toolbar, IconButton, Button, Typography } from '@material-ui/core';
-import { ArrowForward, ArrowBack } from '@material-ui/icons';
+import { ArrowForward, ArrowBack, RotateRight, Save } from '@material-ui/icons';
 
 import { useAppDispatch, useAppSelector } from '../hooks';
 
 import {
+    nextTurn,
     nextPower,
     prevPower,
     selectCurrentTurnId,
-    selectCurrentPower,
+    selectCurrentPower, selectCanMoveNextPower, selectCanMovePrevPower, selectCanMoveNextTurn,
 } from '../redux/game/turnSlice';
 import { findSeasonYearForTurnId } from '../utils/turnUtils';
 import { toggleTurnDialog } from '../redux/ui/uiSlice';
@@ -25,39 +26,56 @@ export const ActionBar = () => {
     const currentPower = useAppSelector(selectCurrentPower);
     const currentTurnId = useAppSelector(selectCurrentTurnId);
 
+    const canMoveNextPower = useAppSelector(selectCanMoveNextPower);
+    const canMovePrevPower = useAppSelector(selectCanMovePrevPower);
+    const canMoveNextTurn = useAppSelector(selectCanMoveNextTurn);
+
     const classes = useStyles();
 
     return (
         <>
             <AppBar position="fixed">
                 <Toolbar variant="dense">
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        disabled={!canMovePrevPower}
+                        onClick={() => dispatch(prevPower())}
+                    >
+                        <ArrowBack/>
+                    </IconButton>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        disabled={!canMoveNextPower}
+                        onClick={() => dispatch(nextPower())}
+                    >
+                        <ArrowForward/>
+                    </IconButton>
                     <Button
                         variant="contained"
                         color="secondary"
                         size="small"
+                        startIcon={<Save/>}
                         onClick={() => dispatch(toggleTurnDialog())}
                     >
-                        Submit
+                        {currentPower}
                     </Button>
                     <div className={classes.grow}/>
                     <Typography>
                         {currentPower} ({findSeasonYearForTurnId(currentTurnId)})
                     </Typography>
                     <div className={classes.grow}/>
-                    <IconButton
-                        edge="end"
-                        color="inherit"
-                        onClick={() => dispatch(prevPower())}
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                        startIcon={<RotateRight/>}
+                        disabled={!canMoveNextTurn}
+                        onClick={() => dispatch(nextTurn())}
                     >
-                        <ArrowBack/>
-                    </IconButton>
-                    <IconButton
-                        edge="end"
-                        color="inherit"
-                        onClick={() => dispatch(nextPower())}
-                    >
-                        <ArrowForward/>
-                    </IconButton>
+                        Next Turn
+                    </Button>
                 </Toolbar>
             </AppBar>
             <Toolbar/>
