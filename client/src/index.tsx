@@ -11,7 +11,12 @@ import * as serviceWorker from './serviceWorker';
 import { ErrorBoundary } from './ErrorBoundary';
 
 
-export const websocket = new WebSocket("ws://desktop:8001/");
+export const websocket = new WebSocket(`ws://${process.env.REACT_APP_HOST_WS}:${process.env.REACT_APP_PORT_WS}/`);
+
+websocket.addEventListener('message', event => {
+    console.log(event.data);
+});
+
 
 ReactDOM.render(
     <React.StrictMode>

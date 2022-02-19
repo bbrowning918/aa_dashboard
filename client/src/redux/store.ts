@@ -6,14 +6,10 @@ import {
 import logger from 'redux-logger';
 
 import { gameReducer } from './game';
-
-import { websocket } from "../index";
+import { websocket } from '../index';
 
 const websocketMiddleware: Middleware = _ => next => action => {
-    websocket.addEventListener('message', event => {
-        console.log(event.data);
-    });
-
+    websocket.send(JSON.stringify(action));
     next(action);
 }
 
