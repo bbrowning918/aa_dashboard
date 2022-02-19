@@ -26,10 +26,12 @@ async def start(websocket):
         id=game_id, host=host_key, clients={}, ipp={}, turn=0, power=Power.GERMANY
     )
 
-    qr = make_qr_code(game_id)
+    qr_code = make_qr_code(
+        f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game_id}/play"
+    )
 
     try:
-        event = {"type": "init", "token": host_key, "game": game_id, "qr": qr}
+        event = {"type": "init", "token": host_key, "game": game_id, "qr_code": qr_code}
         await websocket.send(json.dumps(event))
         await play(websocket, game, connected)
     finally:
@@ -46,7 +48,7 @@ async def handler(websocket):
 
 
 async def main():
-    port = config.get_port()
+    port = config.get_ws_port()
     async with websockets.serve(handler, "", port):
         await asyncio.Future()
 
