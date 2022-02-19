@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from '../store';
 import { Powers, ORDER } from '../constants';
@@ -94,4 +94,5 @@ export const selectCurrentTurn = (state: RootState) => state.game.turn[state.gam
 export const selectCurrentPower = (state: RootState) => state.game.turn.currentPower;
 
 export const {nextTurn, nextPower, prevPower, saveCurrent} = turnSlice.actions;
+export const isTurnAction = isAnyOf(nextTurn, nextPower, prevPower, saveCurrent);
 export const turnReducer = turnSlice.reducer;

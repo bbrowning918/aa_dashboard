@@ -1,17 +1,24 @@
-import { configureStore, combineReducers, ThunkAction, Action, Middleware } from '@reduxjs/toolkit';
+import {
+    configureStore,
+    combineReducers,
+    ThunkAction,
+    Action,
+    Middleware,
+} from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 
 import { gameReducer } from './game';
+import { isTurnAction } from "./game/turnSlice";
 import { uiReducer } from './ui';
 import { websocket } from "../index";
 
-const websocketMiddleware: Middleware = (store) => {
-    return (next) => {
-        return (action) => {
-            websocket.send(JSON.stringify(store.getState()));
-            return next(action);
-        }
+const websocketMiddleware: Middleware = store => next => action => {
+    const state = store.getState();
+    if (isTurnAction(action)) {
+        websocket.send(JSON.stringify(action));
+        websocket.send(JSON.stringify(state));
     }
+    next(action);
 }
 
 const rootReducer = combineReducers({
@@ -21,7 +28,7 @@ const rootReducer = combineReducers({
 
 export const store = configureStore({
     reducer: rootReducer,
-    middleware: [logger, websocketMiddleware],
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([logger, websocketMiddleware]),
 });
 
 export type AppDispatch = typeof store.dispatch;
