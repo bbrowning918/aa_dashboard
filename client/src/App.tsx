@@ -1,16 +1,18 @@
 import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-import { ActionBar } from './components/ActionBar';
-import { CountryTable } from './components/CountryTable';
-import { TurnDialog } from './components/TurnDialog';
+import { StartGame } from './pages/StartGame';
+import { Tracker } from './pages/Tracker';
+import { Play } from './pages/Play';
 
 
 export const App = () => {
     return (
-        <>
-            <ActionBar/>
-            <CountryTable/>
-            <TurnDialog/>
-        </>
+        <Routes>
+            <Route path={'/'} element={<StartGame/>}/>
+            <Route path={':gameId/play'} element={<Play/>}/>
+            <Route path={':gameId/tracker'} element={<Tracker/>}/>
+            <Route path={':gameId/admin'} element={<>admin</>}/>
+        </Routes>
     );
 }

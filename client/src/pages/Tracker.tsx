@@ -1,18 +1,23 @@
 import React from 'react';
-import { makeStyles, AppBar, Toolbar, IconButton, Button, Typography } from '@material-ui/core';
-import { ArrowForward, ArrowBack, RotateRight, Save } from '@material-ui/icons';
+import { AppBar, Button, IconButton, makeStyles, Toolbar, Typography } from '@material-ui/core';
+import { ArrowBack, ArrowForward, RotateRight } from '@material-ui/icons';
 
 import { useAppDispatch, useAppSelector } from '../hooks';
 
+import { CountryTable } from '../components/CountryTable';
+
 import {
-    nextTurn,
     nextPower,
+    nextTurn,
     prevPower,
-    selectCurrentTurnId,
-    selectCurrentPower, selectCanMoveNextPower, selectCanMovePrevPower, selectCanMoveNextTurn,
+    selectCanMoveNextPower,
+    selectCanMoveNextTurn,
+    selectCanMovePrevPower,
+    selectCurrentPower,
+    selectCurrentTurnId
 } from '../redux/game/turnSlice';
 import { findSeasonYearForTurnId } from '../utils/turnUtils';
-import { toggleTurnDialog } from '../redux/ui/uiSlice';
+
 
 const useStyles = makeStyles(() => ({
     grow: {
@@ -20,7 +25,7 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-export const ActionBar = () => {
+export const Tracker = () => {
     const dispatch = useAppDispatch();
 
     const currentPower = useAppSelector(selectCurrentPower);
@@ -34,7 +39,7 @@ export const ActionBar = () => {
 
     return (
         <>
-            <AppBar position="fixed">
+            <AppBar position="sticky">
                 <Toolbar variant="dense">
                     <IconButton
                         edge="start"
@@ -52,15 +57,6 @@ export const ActionBar = () => {
                     >
                         <ArrowForward/>
                     </IconButton>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        size="small"
-                        startIcon={<Save/>}
-                        onClick={() => dispatch(toggleTurnDialog())}
-                    >
-                        {currentPower}
-                    </Button>
                     <div className={classes.grow}/>
                     <Typography>
                         {currentPower} ({findSeasonYearForTurnId(currentTurnId)})
@@ -78,7 +74,7 @@ export const ActionBar = () => {
                     </Button>
                 </Toolbar>
             </AppBar>
-            <Toolbar/>
+            <CountryTable/>
         </>
     );
 };
