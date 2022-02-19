@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 websockets = "~=10.1"
 tinydb = "~=4.6"
+qrcode = "~=7.3"
+pillow = "~=9.0"
 
 [dev-packages]
 
