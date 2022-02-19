@@ -7,6 +7,9 @@ import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { ErrorBoundary } from './ErrorBoundary';
 
+
+export const websocket = new WebSocket("ws://localhost:8001/");
+
 ReactDOM.render(
     <React.StrictMode>
         <ErrorBoundary>
