@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { makeStyles, AppBar, Toolbar, Button, Grid } from '@material-ui/core';
 
+import { websocket } from '../index';
+
 const useStyles = makeStyles(() => ({
     fullHeight: {
         height: '100vh',
@@ -12,6 +14,7 @@ export const StartGame = () => {
     const navigate = useNavigate();
 
     const classes = useStyles();
+
 
     return (
         <>
@@ -39,7 +42,12 @@ export const StartGame = () => {
                         variant={'contained'}
                         size={'large'}
                         color={'secondary'}
-                        onClick={() => navigate('1/tracker')}
+                        onClick={() => {
+                            websocket.send(JSON.stringify({
+                                type: "start"
+                            }));
+                            navigate('1/tracker');
+                        }}
                     >
                         Start Game
                     </Button>
