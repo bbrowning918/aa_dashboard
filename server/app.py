@@ -22,16 +22,17 @@ async def start(websocket):
     token = secrets.token_urlsafe(6)
     game_id = secrets.token_urlsafe(6)
 
-    game = Game(
-        id=game_id, host=token, clients={}, ipp={}, turn=0
-    )
+    game = Game(id=game_id, host=token, clients={}, ipp={}, turn=0)
 
     qr_code = make_qr_code(
         f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game_id}/play"
     )
 
     try:
-        event = {"type": "start", "token": token, "game": game.id, "qr_code": qr_code}
+        event = {
+            "type": "init",
+            "payload": {"token": token, "game": game.id, "qr_code": qr_code},
+        }
         await websocket.send(json.dumps(event))
         await play(websocket, game, connected)
     finally:
