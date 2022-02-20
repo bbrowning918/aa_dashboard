@@ -23,7 +23,7 @@ async def start(websocket):
     game_id = secrets.token_urlsafe(6)
 
     game = Game(
-        id=game_id, host=host_key, clients={}, ipp={}, turn=0, power=Power.GERMANY
+        id=game_id, host=host_key, clients={}, ipp={}, turn=0
     )
 
     qr_code = make_qr_code(
@@ -31,7 +31,7 @@ async def start(websocket):
     )
 
     try:
-        event = {"type": "init", "token": host_key, "game": game_id, "qr_code": qr_code}
+        event = {"type": "start", "token": host_key, "game": game.id, "qr_code": qr_code}
         await websocket.send(json.dumps(event))
         await play(websocket, game, connected)
     finally:

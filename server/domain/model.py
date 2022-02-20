@@ -56,4 +56,3 @@ class Game:
     clients: Dict[str, Player]
     ipp: Dict[Power, List[Turn]]
     turn: int
-    power: Power
