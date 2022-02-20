@@ -19,11 +19,11 @@ async def join(websocket, game):
 
 async def start(websocket):
     connected = {websocket}
-    host_key = secrets.token_urlsafe(6)
+    token = secrets.token_urlsafe(6)
     game_id = secrets.token_urlsafe(6)
 
     game = Game(
-        id=game_id, host=host_key, clients={}, ipp={}, turn=0
+        id=game_id, host=token, clients={}, ipp={}, turn=0
     )
 
     qr_code = make_qr_code(
@@ -31,7 +31,7 @@ async def start(websocket):
     )
 
     try:
-        event = {"type": "start", "token": host_key, "game": game.id, "qr_code": qr_code}
+        event = {"type": "start", "token": token, "game": game.id, "qr_code": qr_code}
         await websocket.send(json.dumps(event))
         await play(websocket, game, connected)
     finally:
