@@ -1,41 +1,50 @@
-import React from 'react';
-import { FormikErrors, useFormik } from 'formik';
-import { makeStyles, Button, Grid, TextField, Typography } from '@material-ui/core';
+import React from "react";
+import { FormikErrors, useFormik } from "formik";
+import {
+    makeStyles,
+    Button,
+    Grid,
+    TextField,
+    Typography,
+} from "@material-ui/core";
 
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useAppDispatch, useAppSelector } from "../state/hooks";
 import {
     selectCurrentTurn,
     saveCurrent,
     nextPower,
     selectCurrentPower,
-    selectCurrentTurnId
-} from '../redux/game/turnSlice';
-import { findSeasonYearForTurnId } from '../utils/turnUtils';
+    selectCurrentTurnId,
+} from "../state/ipp";
+import { findSeasonYearForTurnId } from "../utils/turnUtils";
 
 type TurnFormProps = {
-    spent: number,
-    income: number,
-}
+    spent: number;
+    income: number;
+};
 
 const useStyles = makeStyles((theme) => ({
     form: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
         padding: theme.spacing(2),
-        '& .MuiTextField-root': {
+        "& .MuiTextField-root": {
             margin: theme.spacing(1),
-            width: '300px',
+            width: "300px",
         },
-        '& .MuiButtonBase-root': {
+        "& .MuiButtonBase-root": {
             margin: theme.spacing(1),
         },
     },
 }));
 
-
 export const Play = () => {
+    // ask to join game over ws
+    // save token and controlled powers
+    // choose from available powers
+    // submit turns as they come
     const classes = useStyles();
 
     const dispatch = useAppDispatch();
@@ -56,36 +65,29 @@ export const Play = () => {
             let errors: FormikErrors<TurnFormProps> = {};
 
             if (values.spent < 0) {
-                errors.spent = 'It does not work that way';
+                errors.spent = "It does not work that way";
             }
             if (values.spent > currentTurn.start) {
-                errors.spent = 'Trying to spend more than IPP';
+                errors.spent = "Trying to spend more than IPP";
             }
             if (values.income < 0) {
-                errors.income = 'It does not work that way';
+                errors.income = "It does not work that way";
             }
 
-            return errors
+            return errors;
         },
-        onSubmit: (values: TurnFormProps, {resetForm}) => {
-            dispatch(saveCurrent({spent: values.spent, income: values.income}));
+        onSubmit: (values: TurnFormProps, { resetForm }) => {
+            dispatch(saveCurrent({ spent: values.spent, income: values.income }));
             dispatch(nextPower());
             resetForm();
         },
     });
 
     return (
-        <Grid
-            container
-            direction={'row'}
-            justify={'center'}
-            alignItems={'center'}
-        >
+        <Grid container direction={"row"} justify={"center"} alignItems={"center"}>
             <Grid item>
                 <form className={classes.form} onSubmit={formik.handleSubmit}>
-                    <Typography variant="h6">
-                        {currentPower}
-                    </Typography>
+                    <Typography variant="h6">{currentPower}</Typography>
                     <Typography variant="subtitle1">
                         {findSeasonYearForTurnId(currentTurnId)}
                     </Typography>
@@ -121,11 +123,7 @@ export const Play = () => {
                         helperText={formik.errors.income}
                     />
                     <div>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                        >
+                        <Button variant="contained" color="primary" type="submit">
                             Save
                         </Button>
                     </div>
