@@ -4,7 +4,7 @@ import { makeStyles, AppBar, Toolbar, Button, Grid } from "@material-ui/core";
 
 import { addMessageHandler, removeMessageHandler, websocket } from '../state/websocket';
 import { useAppDispatch } from '../state/hooks';
-import { login } from '../state/auth';
+import { init } from '../state/auth';
 
 
 const useStyles = makeStyles(() => ({
@@ -20,7 +20,7 @@ export const StartGame = () => {
 
     const handler = useCallback(message => {
         if (message.type == 'init') {
-            dispatch(login(message.payload));
+            dispatch(init(message.payload));
             navigate(`${message.payload.game}/tracker`)
         }
     }, []);

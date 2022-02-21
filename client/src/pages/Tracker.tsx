@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Grid, Toolbar } from "@material-ui/core";
+import { makeStyles, AppBar, Card, CardMedia, Grid, Toolbar } from "@material-ui/core";
 
 import { useAppSelector } from "../state/hooks";
 
@@ -7,10 +7,23 @@ import { CountryTable } from "../components/CountryTable";
 
 import { selectCurrentPower, selectCurrentTurnId } from "../state/ipp";
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
+import { selectQrCode } from '../state/auth';
+
+const useStyles = makeStyles(() => ({
+    qrCode: {
+        width: 145,
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+    },
+}));
 
 export const Tracker = () => {
+    const classes = useStyles();
+
     const currentPower = useAppSelector(selectCurrentPower);
     const currentTurnId = useAppSelector(selectCurrentTurnId);
+    const qrCode = useAppSelector(selectQrCode);
 
     return (
         <>
@@ -29,6 +42,9 @@ export const Tracker = () => {
                 </Toolbar>
             </AppBar>
             <CountryTable/>
+            <Card className={classes.qrCode}>
+                <CardMedia component={"img"} src={`data:image/png;base64, ${qrCode}`}/>
+            </Card>
         </>
     );
 };

@@ -3,28 +3,43 @@ import { RootState } from "./store";
 
 export type AuthState = {
     token: string;
+    game: string;
+    qrCode: string;
 };
 
-const initialState: AuthState = { token: "" };
+const initialState: AuthState = {
+    token: localStorage.getItem('token') || "",
+    game: localStorage.getItem('game') || "",
+    qrCode: localStorage.getItem('qrCode') || "",
+};
 
-export const authSlice = createSlice({
-    name: "auth",
+export const gameSlice = createSlice({
+    name: "game",
     initialState,
     reducers: {
-        login: (state: AuthState, action: PayloadAction<any>) => {
-            const token = action.payload.token;
-            localStorage.setItem("token", token);
-            state.token = token;
+        init: (state: AuthState, action: PayloadAction<any>) => {
+            localStorage.setItem("token", action.payload.token);
+            localStorage.setItem("game", action.payload.game);
+            localStorage.setItem("qrCode", action.payload.qrCode);
+            state.token = action.payload.token;
+            state.game = action.payload.game;
+            state.qrCode = action.payload.qr_code;
         },
-        logout: (state: AuthState) => {
+        clear: (state: AuthState) => {
             localStorage.removeItem("token");
+            localStorage.removeItem("game");
+            localStorage.removeItem("qrCode");
             state.token = "";
+            state.game = "";
+            state.qrCode = "";
         },
     },
 });
 
-export const selectToken = (state: RootState) => state.auth.token;
-export const selectIsLoggedIn = (state: RootState) => Boolean(state.auth.token);
+export const selectQrCode = (state: RootState) => state.game.qrCode;
+export const selectGame = (state: RootState) => state.game.game;
+export const selectToken = (state: RootState) => state.game.token;
+export const selectIsLoggedIn = (state: RootState) => Boolean(state.game.token);
 
-export const { login, logout } = authSlice.actions;
-export const authReducer = authSlice.reducer;
+export const { init, clear } = gameSlice.actions;
+export const gameReducer = gameSlice.reducer;

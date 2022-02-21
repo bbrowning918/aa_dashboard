@@ -1,12 +1,12 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import logger from "redux-logger";
 
-import { authReducer } from "./auth";
+import { gameReducer } from "./auth";
 import { ippReducer } from "./ipp";
 
 export const store = configureStore({
     reducer: combineReducers({
-        auth: authReducer,
+        game: gameReducer,
         ipp: ippReducer,
     }),
     middleware: (getDefaultMiddleware) =>
