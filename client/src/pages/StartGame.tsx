@@ -4,7 +4,7 @@ import { makeStyles, AppBar, Toolbar, Button, Grid } from "@material-ui/core";
 
 import { addMessageHandler, removeMessageHandler, websocket } from '../state/websocket';
 import { useAppDispatch } from '../state/hooks';
-import { init } from '../state/auth';
+import { init } from '../state/game';
 
 
 const useStyles = makeStyles(() => ({

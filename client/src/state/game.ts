@@ -1,31 +1,31 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
-export type AuthState = {
+export type GameState = {
     token: string;
     game: string;
     qrCode: string;
 };
 
-const initialState: AuthState = {
-    token: localStorage.getItem('token') || "",
-    game: localStorage.getItem('game') || "",
-    qrCode: localStorage.getItem('qrCode') || "",
+const initialState: GameState = {
+    token: localStorage.getItem("token") || "",
+    game: localStorage.getItem("game") || "",
+    qrCode: localStorage.getItem("qrCode") || "",
 };
 
 export const gameSlice = createSlice({
     name: "game",
     initialState,
     reducers: {
-        init: (state: AuthState, action: PayloadAction<any>) => {
+        init: (state: GameState, action: PayloadAction<any>) => {
             localStorage.setItem("token", action.payload.token);
             localStorage.setItem("game", action.payload.game);
-            localStorage.setItem("qrCode", action.payload.qrCode);
+            localStorage.setItem("qrCode", action.payload.qr_code);
             state.token = action.payload.token;
             state.game = action.payload.game;
             state.qrCode = action.payload.qr_code;
         },
-        clear: (state: AuthState) => {
+        clear: (state: GameState) => {
             localStorage.removeItem("token");
             localStorage.removeItem("game");
             localStorage.removeItem("qrCode");

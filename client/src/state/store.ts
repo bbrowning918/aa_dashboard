@@ -1,7 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import logger from "redux-logger";
 
-import { gameReducer } from "./auth";
+import { gameReducer } from "./game";
 import { ippReducer } from "./ipp";
 
 export const store = configureStore({

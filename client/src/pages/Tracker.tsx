@@ -7,7 +7,7 @@ import { CountryTable } from "../components/CountryTable";
 
 import { selectCurrentPower, selectCurrentTurnId } from "../state/ipp";
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
-import { selectQrCode } from '../state/auth';
+import { selectQrCode } from '../state/game';
 
 const useStyles = makeStyles(() => ({
     qrCode: {
