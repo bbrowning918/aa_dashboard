@@ -41,10 +41,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Play = () => {
-    // ask to join game over ws
-    // save token and controlled powers
-    // choose from available powers
-    // submit turns as they come
     const classes = useStyles();
 
     const dispatch = useAppDispatch();

@@ -5,9 +5,9 @@ import { useAppSelector } from "../state/hooks";
 
 import { CountryTable } from "../components/CountryTable";
 
-import { selectCurrentPower, selectCurrentTurnId } from "../state/ipp";
+import { selectCurrentPower, selectCurrentTurnId, useWatchQuery } from "../state/ipp";
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
-import { selectQrCode } from '../state/game';
+import { selectGame, selectQrCode } from '../state/game';
 
 const useStyles = makeStyles(() => ({
     qrCode: {
@@ -21,6 +21,8 @@ const useStyles = makeStyles(() => ({
 export const Tracker = () => {
     const classes = useStyles();
 
+    const game = useAppSelector(selectGame);
+    const ipp = useWatchQuery(game);
     const currentPower = useAppSelector(selectCurrentPower);
     const currentTurnId = useAppSelector(selectCurrentTurnId);
     const qrCode = useAppSelector(selectQrCode);
