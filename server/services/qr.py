@@ -4,9 +4,9 @@ import io
 import qrcode
 
 
-def make_qr_code(game_id):
+def make_qr_code(path):
     buffer = io.BytesIO()
-    img = qrcode.make(game_id)
+    img = qrcode.make(path)
     img.save(buffer)
 
     return base64.b64encode(buffer.getvalue()).decode()

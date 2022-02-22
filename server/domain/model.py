@@ -1,58 +1,111 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Dict
-
-powers = [
-    "GERMANY",
-    "SOVIET_UNION",
-    "COMMUNIST_CHINA",
-    "JAPAN",
-    "UK_WEST",
-    "UK_EAST",
-    "ANZAC",
-    "FRANCE",
-    "ITALY",
-    "USA",
-    "NATIONALIST_CHINA",
-]
-Power = Enum("Power", powers)
-
-TurnOrder = [
-    Power.GERMANY,
-    Power.SOVIET_UNION,
-    Power.COMMUNIST_CHINA,
-    Power.JAPAN,
-    Power.UK_WEST,
-    Power.UK_EAST,
-    Power.ANZAC,
-    Power.FRANCE,
-    Power.ITALY,
-    Power.USA,
-    Power.NATIONALIST_CHINA,
-]
-
-Season = Enum("Season", "Summer Winter")
+from typing import Dict, Set
 
 
-@dataclass()
+class Power(Enum):
+    GERMANY = "Germany"
+    SOVIET_UNION = "Soviet Union"
+    COMMUNIST_CHINA = "Communist China"
+    JAPAN = "Japan"
+    UK_WEST = "UK West"
+    UK_EAST = "UK East"
+    ANZAC = "ANZAC"
+    FRANCE = "France"
+    ITALY = "Italy"
+    USA = "United States"
+    NATIONALIST_CHINA = "Nationalist China"
+
+
+class Season(Enum):
+    SUMMER = "Summer"
+    WINTER = "Winter"
+
+
+@dataclass(frozen=True)
 class Player:
     token: str
-    controlled_powers: List[Power]
+    controlled_powers: Set[Power]
 
 
-@dataclass()
-class Turn:
-    id: int
+@dataclass(frozen=True)
+class IPP:
     start: int
-    spent: int
-    income: int
+    spent: int = 0
+    income: int = 0
 
 
-@dataclass()
+class Turn:
+    def __init__(self, year: int, season: Season, power: Power, ipp: IPP):
+        self.year = year
+        self.season = season
+        self.power = power
+        self.ipp = ipp
+
+    def __repr__(self):
+        return f"<Turn {self.year} {self.season.value} {self.power.value}>"
+
+    def __hash__(self):
+        return hash((self.year, self.season, self.power))
+
+    def __eq__(self, other):
+        if not isinstance(other, Turn):
+            return False
+        return all(
+            [
+                self.year == other.year,
+                self.season == other.season,
+                self.power == other.power,
+            ]
+        )
+
+
 class Game:
-    id: str
+    ref: str
     host: str
     clients: Dict[str, Player]
-    ipp: Dict[Power, List[Turn]]
-    turn: int
+    turns: Set[Turn]
+
+    def __init__(self, ref: str, host: str, clients=None, turns=None):
+        self.ref = ref
+        self.host = host
+
+        if clients is None:
+            self.clients = dict()
+        else:
+            self.clients = clients
+
+        if self.turns is None:
+            self.turns = first_turn()
+        else:
+            self.turns = turns
+
+    def __repr__(self):
+        return f"<Game {self.ref}>"
+
+    def __hash__(self):
+        return hash(self.ref)
+
+    def __eq__(self, other):
+        if not isinstance(other, Game):
+            return False
+        return self.ref == other.ref
+
+
+def first_turn():
+    year = 1936
+    season = Season.SUMMER
+    return {
+        Turn(year=year, season=season, power=Power.GERMANY, ipp=IPP(20)),
+        Turn(year=year, season=season, power=Power.SOVIET_UNION, ipp=IPP(8)),
+        Turn(year=year, season=season, power=Power.COMMUNIST_CHINA, ipp=IPP(2)),
+        Turn(year=year, season=season, power=Power.JAPAN, ipp=IPP(16)),
+        Turn(year=year, season=season, power=Power.UK_WEST, ipp=IPP(11)),
+        Turn(year=year, season=season, power=Power.UK_EAST, ipp=IPP(5)),
+        Turn(year=year, season=season, power=Power.ANZAC, ipp=IPP(3)),
+        Turn(year=year, season=season, power=Power.FRANCE, ipp=IPP(5)),
+        Turn(year=year, season=season, power=Power.ITALY, ipp=IPP(7)),
+        Turn(year=year, season=season, power=Power.USA, ipp=IPP(6)),
+        Turn(year=year, season=season, power=Power.NATIONALIST_CHINA, ipp=IPP(6)),
+    }

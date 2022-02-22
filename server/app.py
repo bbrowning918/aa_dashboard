@@ -19,34 +19,57 @@ async def error(websocket, message):
     await websocket.send(json.dumps(event))
 
 
-async def play(websocket, game, connected):
-    async for message in websocket:
-        event = json.loads(message)
-        print(event)
-
-        event = {
-            "type": "update",
-            "ipp": [],
-        }
-        websockets.broadcast(connected, json.dumps(event))
-
-
-async def watch(websocket, game_id):
+async def play(websocket, game_ref):
     try:
-        game, _ = GAMES[game_id]
+        game, connected = GAMES[game_ref]
+    except KeyError:
+        await error(websocket, "Game not found")
+    else:
+        async for message in websocket:
+            event = json.loads(message)
+            print(event)
+
+            event = {
+                "type": "update",
+                "turns": [
+                    {
+                        "year": turn.year,
+                        "season": turn.season.value,
+                        "power": turn.power.value,
+                        "start": turn.ipp.start,
+                        "spent": turn.ipp.spent,
+                        "income": turn.ipp.income
+                    }
+                    for turn in game.turns],
+            }
+            websockets.broadcast(connected, json.dumps(event))
+
+
+async def watch(websocket, game_ref):
+    try:
+        game, _ = GAMES[game_ref]
     except KeyError:
         await error(websocket, "Game not found")
         return
     event = {
         "type": "update",
-        "ipp": [],
+        "turns": list(
+            {
+                "year": turn.year,
+                "season": turn.season.value,
+                "power": turn.power.value,
+                "start": turn.ipp.start,
+                "spent": turn.ipp.spent,
+                "income": turn.ipp.income
+            }
+            for turn in game.turns),
     }
     await websocket.send(json.dumps(event))
 
 
-async def join(websocket, game_id):
+async def join(websocket, game_ref):
     try:
-        game, connected = GAMES[game_id]
+        game, connected = GAMES[game_ref]
     except KeyError:
         await error(websocket, "Game not found")
         return
@@ -60,31 +83,31 @@ async def join(websocket, game_id):
             "token": token,
         }
         await websocket.send(json.dumps(event))
-        await play(websocket, game, connected)
+        await play(websocket, game_ref)
     finally:
         connected.remove(websocket)
 
 
 async def start(websocket):
     token = secrets.token_urlsafe(6)
-    game_id = secrets.token_urlsafe(6)
+    game_ref = secrets.token_urlsafe(6)
 
     connected = {websocket}
-    game = Game(id=game_id, host=token, clients={}, ipp={}, turn=0)
+    game = Game(ref=game_ref, host=token)
 
     # TODO persist these
-    GAMES[game.id] = game, connected
+    GAMES[game.ref] = game, connected
 
     qr_code = make_qr_code(
-        f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game_id}/play"
+        f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game.ref}/play"
     )
 
     event = {
         "type": "init",
-        "payload": {"token": token, "game": game.id, "qr_code": qr_code},
+        "payload": {"token": token, "game": game.ref, "qr_code": qr_code},
     }
     await websocket.send(json.dumps(event))
-    await watch(websocket, game.id)
+    await watch(websocket, game.ref)
 
 
 async def handler(websocket):
