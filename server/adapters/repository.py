@@ -1,5 +1,5 @@
 import abc
-from ..domain.model import Game, Turn, IPP
+from ..domain.model import Game, Turn
 
 from tinydb import TinyDB
 from tinydb.table import Document
@@ -29,9 +29,9 @@ class TinyDBGameRepository(AbstractGameRepository):
                     "year": turn.year,
                     "season": turn.season.value,
                     "power": turn.power.value,
-                    "start": turn.ipp.start,
-                    "spent": turn.ipp.spent,
-                    "income": turn.ipp.income,
+                    "start": turn.start,
+                    "spent": turn.spent,
+                    "income": turn.income,
                 }
                 for turn in game.turns
             ],
@@ -49,11 +49,9 @@ class TinyDBGameRepository(AbstractGameRepository):
                     year=turn["year"],
                     season=turn["season"],
                     power=turn["power"],
-                    ipp=IPP(
-                        start=turn["start"],
-                        spent=turn["spent"],
-                        income=turn["income"],
-                    ),
+                    start=turn["start"],
+                    spent=turn["spent"],
+                    income=turn["income"],
                 )
                 for turn in document["turns"]
             },

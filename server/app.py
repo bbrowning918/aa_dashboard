@@ -36,9 +36,9 @@ async def play(websocket, game_ref):
                         "year": turn.year,
                         "season": turn.season.value,
                         "power": turn.power.value,
-                        "start": turn.ipp.start,
-                        "spent": turn.ipp.spent,
-                        "income": turn.ipp.income
+                        "start": turn.start,
+                        "spent": turn.spent,
+                        "income": turn.income
                     }
                     for turn in game.turns],
             }
@@ -58,9 +58,9 @@ async def watch(websocket, game_ref):
                 "year": turn.year,
                 "season": turn.season.value,
                 "power": turn.power.value,
-                "start": turn.ipp.start,
-                "spent": turn.ipp.spent,
-                "income": turn.ipp.income
+                "start": turn.start,
+                "spent": turn.spent,
+                "income": turn.income
             }
             for turn in game.turns),
     }

@@ -29,19 +29,14 @@ class Player:
     controlled_powers: Set[Power]
 
 
-@dataclass(frozen=True)
-class IPP:
-    start: int
-    spent: int = 0
-    income: int = 0
-
-
 class Turn:
-    def __init__(self, year: int, season: Season, power: Power, ipp: IPP):
+    def __init__(self, year: int, season: Season, power: Power, start: int, spent: int = 0, income: int = 0):
         self.year = year
         self.season = season
         self.power = power
-        self.ipp = ipp
+        self.start = start
+        self.spent = spent
+        self.income = income
 
     def __repr__(self):
         return f"<Turn {self.year} {self.season.value} {self.power.value}>"
