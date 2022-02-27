@@ -6,9 +6,10 @@ import websockets
 
 import config
 from domain.model import Game
+from adapters.repository import TinyDBGameRepository
 from services.qr import make_qr_code
 
-GAMES = {}
+GAME_CONNECTIONS = dict()
 
 
 async def error(websocket, message):
@@ -21,7 +22,9 @@ async def error(websocket, message):
 
 async def play(websocket, game_ref):
     try:
-        game, connected = GAMES[game_ref]
+        repo = TinyDBGameRepository(config.get_tinydb_path())
+        game = repo.get(game_ref)
+        connected = GAME_CONNECTIONS[game_ref]
     except KeyError:
         await error(websocket, "Game not found")
     else:
@@ -47,7 +50,8 @@ async def play(websocket, game_ref):
 
 async def watch(websocket, game_ref):
     try:
-        game, _ = GAMES[game_ref]
+        repo = TinyDBGameRepository(config.get_tinydb_path())
+        game = repo.get(game_ref)
     except KeyError:
         await error(websocket, "Game not found")
         return
@@ -56,8 +60,8 @@ async def watch(websocket, game_ref):
         "turns": list(
             {
                 "year": turn.year,
-                "season": turn.season.value,
-                "power": turn.power.value,
+                "season": turn.season,
+                "power": turn.power,
                 "start": turn.start,
                 "spent": turn.spent,
                 "income": turn.income
@@ -69,7 +73,7 @@ async def watch(websocket, game_ref):
 
 async def join(websocket, game_ref):
     try:
-        game, connected = GAMES[game_ref]
+        connected = GAME_CONNECTIONS[game_ref]
     except KeyError:
         await error(websocket, "Game not found")
         return
@@ -92,11 +96,11 @@ async def start(websocket):
     token = secrets.token_urlsafe(6)
     game_ref = secrets.token_urlsafe(6)
 
-    connected = {websocket}
+    repo = TinyDBGameRepository(config.get_tinydb_path())
     game = Game(ref=game_ref, host=token)
+    repo.add(game)
 
-    # TODO persist these
-    GAMES[game.ref] = game, connected
+    GAME_CONNECTIONS[game.ref] = {websocket}
 
     qr_code = make_qr_code(
         f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game.ref}/play"

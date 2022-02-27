@@ -71,7 +71,7 @@ class Game:
         else:
             self.clients = clients
 
-        if self.turns is None:
+        if turns is None:
             self.turns = first_turn()
         else:
             self.turns = turns
@@ -92,15 +92,15 @@ def first_turn():
     year = 1936
     season = Season.SUMMER
     return {
-        Turn(year=year, season=season, power=Power.GERMANY, ipp=IPP(20)),
-        Turn(year=year, season=season, power=Power.SOVIET_UNION, ipp=IPP(8)),
-        Turn(year=year, season=season, power=Power.COMMUNIST_CHINA, ipp=IPP(2)),
-        Turn(year=year, season=season, power=Power.JAPAN, ipp=IPP(16)),
-        Turn(year=year, season=season, power=Power.UK_WEST, ipp=IPP(11)),
-        Turn(year=year, season=season, power=Power.UK_EAST, ipp=IPP(5)),
-        Turn(year=year, season=season, power=Power.ANZAC, ipp=IPP(3)),
-        Turn(year=year, season=season, power=Power.FRANCE, ipp=IPP(5)),
-        Turn(year=year, season=season, power=Power.ITALY, ipp=IPP(7)),
-        Turn(year=year, season=season, power=Power.USA, ipp=IPP(6)),
-        Turn(year=year, season=season, power=Power.NATIONALIST_CHINA, ipp=IPP(6)),
+        Turn(year=year, season=season, power=Power.GERMANY, start=20),
+        Turn(year=year, season=season, power=Power.SOVIET_UNION, start=8),
+        Turn(year=year, season=season, power=Power.COMMUNIST_CHINA, start=2),
+        Turn(year=year, season=season, power=Power.JAPAN, start=16),
+        Turn(year=year, season=season, power=Power.UK_WEST, start=11),
+        Turn(year=year, season=season, power=Power.UK_EAST, start=5),
+        Turn(year=year, season=season, power=Power.ANZAC, start=3),
+        Turn(year=year, season=season, power=Power.FRANCE, start=5),
+        Turn(year=year, season=season, power=Power.ITALY, start=7),
+        Turn(year=year, season=season, power=Power.USA, start=6),
+        Turn(year=year, season=season, power=Power.NATIONALIST_CHINA, start=6),
     }
