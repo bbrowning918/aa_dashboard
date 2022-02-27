@@ -111,19 +111,20 @@ const connected = new Promise<void>(resolve => {
 
 export const ipp = createApi({
     reducerPath: 'ippApi',
-    baseQuery: async (args: { type: string, game: string | null }) => {
+    baseQuery: async (args: { type: string, game: string }) => {
         await connected;
         websocket.send(JSON.stringify({ type: args.type, game: args.game }));
         return { data: null };
     },
     endpoints: build => ({
         watch: build.query({
-            query: (game: string | null) => ({ type: "watch", game: game }),
+            query: (game: string) => ({ type: "watch", game: game }),
             onCacheEntryAdded: async (_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) => {
                 await cacheDataLoaded;
                 const handler = (message: any) => {
-                    // TODO we care about updates to the board
-                    updateCachedData = message.payload;
+                    if (message.type == "update") {
+                        updateCachedData = message.turns;
+                    }
                 };
                 addMessageHandler(handler);
                 await cacheEntryRemoved

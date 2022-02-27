@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { makeStyles, AppBar, Card, CardMedia, Grid, Toolbar } from "@material-ui/core";
 
 import { useAppSelector } from "../state/hooks";
@@ -7,7 +8,7 @@ import { CountryTable } from "../components/CountryTable";
 
 import { selectCurrentPower, selectCurrentTurnId, useWatchQuery } from "../state/ipp";
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
-import { selectGame, selectQrCode } from '../state/game';
+import { selectQrCode } from '../state/game';
 
 const useStyles = makeStyles(() => ({
     qrCode: {
@@ -20,9 +21,10 @@ const useStyles = makeStyles(() => ({
 
 export const Tracker = () => {
     const classes = useStyles();
+    const { gameId } = useParams();
 
-    const game = useAppSelector(selectGame);
-    const ipp = useWatchQuery(game);
+    const ipp = useWatchQuery(gameId!);
+
     const currentPower = useAppSelector(selectCurrentPower);
     const currentTurnId = useAppSelector(selectCurrentTurnId);
     const qrCode = useAppSelector(selectQrCode);
