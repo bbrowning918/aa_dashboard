@@ -1,8 +1,7 @@
 import abc
 from server.domain.model import Game, Turn
 
-from tinydb import TinyDB
-from tinydb.table import Document
+from tinydb import TinyDB, Query
 
 
 class AbstractGameRepository(abc.ABC):
@@ -36,10 +35,11 @@ class TinyDBGameRepository(AbstractGameRepository):
                 for turn in game.turns
             ],
         }
-        self.db.insert(Document(document, doc_id=hash(game.ref)))
+        self.db.insert(document)
 
     def get(self, game_ref: str) -> Game:
-        document = self.db.get(doc_id=hash(game_ref))
+        game = Query()
+        document = self.db.get(game.ref == game_ref)
         return Game(
             ref=document["ref"],
             host=document["host"],
