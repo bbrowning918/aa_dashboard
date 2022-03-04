@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { makeStyles, AppBar, Toolbar, Button, Grid } from "@material-ui/core";
 
-import { addMessageHandler, removeMessageHandler, websocket } from '../state/websocket';
+import { useGameSocket } from '../state/websocket';
 import { useAppDispatch } from '../state/hooks';
 import { init } from '../state/game';
 
@@ -17,6 +17,7 @@ export const StartGame = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const classes = useStyles();
+    const { sendMessage, addMessageHandler, removeMessageHandler } = useGameSocket();
 
     const handler = useCallback(message => {
         if (message.type == 'init') {
@@ -56,7 +57,7 @@ export const StartGame = () => {
                         variant={"contained"}
                         size={"large"}
                         color={"secondary"}
-                        onClick={() => websocket.send(JSON.stringify({ type: 'start' }))}
+                        onClick={() => sendMessage({ type: 'start', payload: null })}
                     >
                         Start Game
                     </Button>

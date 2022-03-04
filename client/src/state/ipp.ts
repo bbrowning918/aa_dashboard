@@ -1,7 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createApi } from '@reduxjs/toolkit/dist/query/react';
-
-import { addMessageHandler, removeMessageHandler, websocket } from './websocket';
 
 import { RootState } from "./store";
 import { Powers, ORDER } from "./constants";
@@ -104,34 +101,3 @@ export const selectCurrentPower = (state: RootState) => state.ipp.currentPower;
 export const { nextTurn, nextPower, prevPower, saveCurrent } = ippSlice.actions;
 
 export const ippReducer = ippSlice.reducer;
-
-const connected = new Promise<void>(resolve => {
-    websocket.onopen = () => resolve();
-});
-
-export const ipp = createApi({
-    reducerPath: 'ippApi',
-    baseQuery: async (args: { type: string, game: string }) => {
-        await connected;
-        websocket.send(JSON.stringify({ type: args.type, game: args.game }));
-        return { data: null };
-    },
-    endpoints: build => ({
-        watch: build.query({
-            query: (game: string) => ({ type: "watch", game: game }),
-            onCacheEntryAdded: async (_, { updateCachedData, cacheDataLoaded, cacheEntryRemoved }) => {
-                await cacheDataLoaded;
-                const handler = (message: any) => {
-                    if (message.type == "update") {
-                        updateCachedData = message.turns;
-                    }
-                };
-                addMessageHandler(handler);
-                await cacheEntryRemoved
-                removeMessageHandler(handler);
-            }
-        }),
-    }),
-});
-
-export const { useWatchQuery } = ipp;

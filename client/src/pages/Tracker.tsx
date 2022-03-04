@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles, AppBar, Card, CardMedia, Grid, Toolbar } from "@material-ui/core";
 
@@ -6,9 +6,10 @@ import { useAppSelector } from "../state/hooks";
 
 import { CountryTable } from "../components/CountryTable";
 
-import { selectCurrentPower, selectCurrentTurnId, useWatchQuery } from "../state/ipp";
+import { selectCurrentPower, selectCurrentTurnId } from "../state/ipp";
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
 import { selectQrCode } from '../state/game';
+import { useGameSocket } from '../state/websocket';
 
 const useStyles = makeStyles(() => ({
     qrCode: {
@@ -22,12 +23,17 @@ const useStyles = makeStyles(() => ({
 export const Tracker = () => {
     const classes = useStyles();
     const { gameId } = useParams();
-
-    const ipp = useWatchQuery(gameId!);
+    const { sendMessage } = useGameSocket();
 
     const currentPower = useAppSelector(selectCurrentPower);
     const currentTurnId = useAppSelector(selectCurrentTurnId);
     const qrCode = useAppSelector(selectQrCode);
+
+    useEffect(() => {
+        if (gameId) {
+            sendMessage({ type: 'watch', payload: gameId });
+        }
+    }, [gameId, sendMessage]);
 
     return (
         <>

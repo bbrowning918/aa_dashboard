@@ -2,19 +2,14 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import logger from "redux-logger";
 
 import { gameReducer } from "./game";
-import { ipp, ippReducer } from "./ipp";
+import { ippReducer } from "./ipp";
 
 export const store = configureStore({
     reducer: combineReducers({
         game: gameReducer,
         ipp: ippReducer,
-        [ipp.reducerPath]: ipp.reducer,
     }),
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat([
-            logger,
-            ipp.middleware,
-        ]),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([logger]),
 });
 
 export type AppDispatch = typeof store.dispatch;
