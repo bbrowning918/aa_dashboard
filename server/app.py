@@ -5,7 +5,7 @@ import json
 import websockets
 
 import config
-from domain.model import Game
+from server.domain.model import Game
 from adapters.repository import TinyDBGameRepository
 from services.qr import make_qr_code
 
@@ -15,7 +15,7 @@ GAME_CONNECTIONS = dict()
 async def error(websocket, message):
     event = {
         "type": "error",
-        "message": message,
+        "payload": message,
     }
     await websocket.send(json.dumps(event))
 
@@ -25,7 +25,7 @@ async def play(websocket, game_ref):
         repo = TinyDBGameRepository(config.get_tinydb_path())
         game = repo.get(game_ref)
         connected = GAME_CONNECTIONS[game_ref]
-    except KeyError:
+    except Game.NotFound:
         await error(websocket, "Game not found")
     else:
         async for message in websocket:
@@ -34,16 +34,18 @@ async def play(websocket, game_ref):
 
             event = {
                 "type": "update",
-                "turns": [
-                    {
-                        "year": turn.year,
-                        "season": turn.season.value,
-                        "power": turn.power.value,
-                        "start": turn.start,
-                        "spent": turn.spent,
-                        "income": turn.income
-                    }
-                    for turn in game.turns],
+                "payload": {
+                    "turns": [
+                        {
+                            "year": turn.year,
+                            "season": turn.season.value,
+                            "power": turn.power.value,
+                            "start": turn.start,
+                            "spent": turn.spent,
+                            "income": turn.income
+                        }
+                        for turn in game.turns],
+                }
             }
             websockets.broadcast(connected, json.dumps(event))
 
@@ -52,21 +54,23 @@ async def watch(websocket, game_ref):
     try:
         repo = TinyDBGameRepository(config.get_tinydb_path())
         game = repo.get(game_ref)
-    except KeyError:
+    except Game.NotFound:
         await error(websocket, "Game not found")
         return
     event = {
         "type": "update",
-        "turns": list(
-            {
-                "year": turn.year,
-                "season": turn.season,
-                "power": turn.power,
-                "start": turn.start,
-                "spent": turn.spent,
-                "income": turn.income
-            }
-            for turn in game.turns),
+        "payload": {
+            "turns": list(
+                {
+                    "year": turn.year,
+                    "season": turn.season,
+                    "power": turn.power,
+                    "start": turn.start,
+                    "spent": turn.spent,
+                    "income": turn.income
+                }
+                for turn in game.turns),
+        }
     }
     await websocket.send(json.dumps(event))
 
@@ -74,7 +78,7 @@ async def watch(websocket, game_ref):
 async def join(websocket, game_ref):
     try:
         connected = GAME_CONNECTIONS[game_ref]
-    except KeyError:
+    except Game.NotFound:
         await error(websocket, "Game not found")
         return
 
@@ -84,7 +88,9 @@ async def join(websocket, game_ref):
     try:
         event = {
             "type": "join",
-            "token": token,
+            "payload": {
+                "token": token,
+            },
         }
         await websocket.send(json.dumps(event))
         await play(websocket, game_ref)
@@ -121,9 +127,9 @@ async def handler(websocket):
         if event["type"] == "start":
             await start(websocket)
         elif event["type"] == "watch":
-            await watch(websocket, event["game"])
+            await watch(websocket, event["payload"])
         elif event["type"] == "join":
-            await join(websocket, event["game"])
+            await join(websocket, event["payload"])
 
 
 async def main():

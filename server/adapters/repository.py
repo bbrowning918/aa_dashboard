@@ -1,7 +1,8 @@
 import abc
-from server.domain.model import Game, Turn
 
 from tinydb import TinyDB, Query
+
+from server.domain.model import Game, Turn
 
 
 class AbstractGameRepository(abc.ABC):
@@ -40,6 +41,9 @@ class TinyDBGameRepository(AbstractGameRepository):
     def get(self, game_ref: str) -> Game:
         game = Query()
         document = self.db.get(game.ref == game_ref)
+        if not document:
+            raise Game.NotFound
+
         return Game(
             ref=document["ref"],
             host=document["host"],

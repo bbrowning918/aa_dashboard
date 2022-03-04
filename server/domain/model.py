@@ -87,6 +87,9 @@ class Game:
             return False
         return self.ref == other.ref
 
+    class NotFound(Exception):
+        pass
+
 
 def first_turn():
     year = 1936
