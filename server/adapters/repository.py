@@ -18,6 +18,7 @@ class AbstractGameRepository(abc.ABC):
 class TinyDBGameRepository(AbstractGameRepository):
     def __init__(self, path):
         self.db = TinyDB(path)
+        # TODO need UoW or context manager to close TinyDB
 
     def add(self, game: Game):
         document = {
@@ -37,10 +38,13 @@ class TinyDBGameRepository(AbstractGameRepository):
             ],
         }
         self.db.insert(document)
+        self.db.close()
 
     def get(self, game_ref: str) -> Game:
         game = Query()
         document = self.db.get(game.ref == game_ref)
+        self.db.close()
+
         if not document:
             raise Game.NotFound
 
