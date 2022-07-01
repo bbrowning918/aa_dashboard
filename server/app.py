@@ -1,13 +1,14 @@
 import asyncio
 import secrets
 import json
+import logging
 
 import websockets
 
-import config
+from server import config
 from server.domain.model import Game
-from adapters.repository import TinyDBGameRepository
-from services.qr import make_qr_code
+from server.adapters.repository import TinyDBGameRepository
+from server.services.qr import make_qr_code
 
 GAME_CONNECTIONS = dict()
 
@@ -30,7 +31,7 @@ async def play(websocket, game_ref):
     else:
         async for message in websocket:
             event = json.loads(message)
-            print(event)
+            logging.debug(event)
 
             event = {
                 "type": "update",
@@ -123,7 +124,8 @@ async def start(websocket):
 async def handler(websocket):
     async for message in websocket:
         event = json.loads(message)
-        print(event)
+        logging.debug(event)
+        
         if event["type"] == "start":
             await start(websocket)
         elif event["type"] == "watch":
@@ -133,6 +135,8 @@ async def handler(websocket):
 
 
 async def main():
+    logging.basicConfig(level=config.get_logging_level())
+
     port = config.get_ws_port()
     async with websockets.serve(handler, "", port):
         await asyncio.Future()

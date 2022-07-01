@@ -20,3 +20,7 @@ def get_http_port():
 
 def get_tinydb_path():
     return str(os.environ.get('TINY_DB_PATH', 'db.json'))
+
+
+def get_logging_level():
+    return str(os.environ.get('LOG_LEVEL', 'DEBUG'))
