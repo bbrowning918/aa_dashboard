@@ -81,7 +81,7 @@ class AsyncioTestCase(unittest.TestCase):
 MS = 0.001 * int(os.environ.get("WEBSOCKETS_TESTS_TIMEOUT_FACTOR", 1))
 
 # asyncio's debug mode has a 10x performance penalty for this test suite.
-if os.environ.get("PYTHONASYNCIODEBUG"):  # pragma: no cover
+if os.environ.get("PYTHONASYNCIODEBUG"):
     MS *= 10
 
 # Ensure that timeouts are larger than the clock's resolution (for Windows).

@@ -23,9 +23,14 @@ class GameLoopTest(AsyncioTestCase):
             # player a joins the game as germany
             # player b joins the game as soviet union
 
+            # player a knows it is their turn
             # player a makes their turn
+
             # host gets the update
             # player a gets the update
             # player b gets the update
+
+            # player b knows it is their turn
+            # player a knows it is not their turn
 
             self.fail("finish the test")

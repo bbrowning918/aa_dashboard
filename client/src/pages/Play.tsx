@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import { FormikErrors, useFormik } from "formik";
 import {
     makeStyles,
@@ -16,6 +17,7 @@ import {
     selectCurrentPower,
     selectCurrentTurnId,
 } from "../state/ipp";
+import { useGameSocket } from '../state/websocket';
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
 
 type TurnFormProps = {
@@ -42,6 +44,30 @@ const useStyles = makeStyles((theme) => ({
 
 export const Play = () => {
     const classes = useStyles();
+    const { gameId } = useParams();
+    const { sendMessage, addMessageHandler, removeMessageHandler } = useGameSocket();
+
+    useEffect(() => {
+        if (gameId) {
+            sendMessage({ type: 'join', payload: gameId });
+        }
+    }, [gameId, sendMessage]);
+
+    useEffect(() => {
+        addMessageHandler(handler);
+        return () => removeMessageHandler(handler);
+    }, []);
+
+    const handler = useCallback(message => {
+        switch (message.type) {
+            case 'join':
+                console.log("we joined, save the token");
+                break;
+            case 'update':
+                console.log("there was an update to the game state, save it")
+                break;
+        }
+    }, []);
 
     const dispatch = useAppDispatch();
 
@@ -75,6 +101,7 @@ export const Play = () => {
         onSubmit: (values: TurnFormProps, { resetForm }) => {
             dispatch(saveCurrent({ spent: values.spent, income: values.income }));
             dispatch(nextPower());
+            // TODO fire update message, redux will change in the handler
             resetForm();
         },
     });

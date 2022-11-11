@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles, AppBar, Card, CardMedia, Grid, Toolbar } from "@material-ui/core";
 
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
 export const Tracker = () => {
     const classes = useStyles();
     const { gameId } = useParams();
-    const { sendMessage } = useGameSocket();
+    const { sendMessage, addMessageHandler, removeMessageHandler } = useGameSocket();
 
     const currentPower = useAppSelector(selectCurrentPower);
     const currentTurnId = useAppSelector(selectCurrentTurnId);
@@ -34,6 +34,17 @@ export const Tracker = () => {
             sendMessage({ type: 'watch', payload: gameId });
         }
     }, [gameId, sendMessage]);
+
+    useEffect(() => {
+        addMessageHandler(handler);
+        return () => removeMessageHandler(handler);
+    }, []);
+
+    const handler = useCallback(message => {
+        if (message.type == 'update') {
+            console.log("there was an update to the game state, save it")
+        }
+    }, []);
 
     return (
         <>
