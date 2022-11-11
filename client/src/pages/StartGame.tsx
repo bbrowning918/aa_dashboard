@@ -20,7 +20,7 @@ export const StartGame = () => {
     const { sendMessage, addMessageHandler, removeMessageHandler } = useGameSocket();
 
     const handler = useCallback(message => {
-        if (message.type == 'init') {
+        if (message.type === 'init') {
             dispatch(init(message.payload));
             navigate(`${message.payload.game}/tracker`)
         }
