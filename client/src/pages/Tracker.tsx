@@ -31,7 +31,7 @@ export const Tracker = () => {
 
     useEffect(() => {
         if (gameId) {
-            sendMessage({ type: 'watch', payload: gameId });
+            sendMessage({ type: 'join', payload: gameId });
         }
     }, [gameId, sendMessage]);
 
