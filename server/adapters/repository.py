@@ -17,7 +17,7 @@ class AbstractGameRepository(abc.ABC):
 
 class TinyDBGameRepository(AbstractGameRepository):
     def __init__(self, path):
-        self.db = TinyDB(path)
+        self.db = TinyDB(path, sort_keys=True, indent=2)
         # TODO need UoW or context manager to close TinyDB
 
     def add(self, game: Game):
