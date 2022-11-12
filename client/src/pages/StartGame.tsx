@@ -1,27 +1,21 @@
 import React, { useCallback, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { makeStyles, AppBar, Toolbar, Button, Grid } from "@material-ui/core";
+import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 
-import { useGameSocket } from '../state/websocket';
+import { Message, useGameSocket } from '../state/websocket';
 import { useAppDispatch } from '../state/hooks';
 import { init } from '../state/game';
 
 
-const useStyles = makeStyles(() => ({
-    fullHeight: {
-        height: "100vh",
-    },
-}));
-
 export const StartGame = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const classes = useStyles();
     const { sendMessage, addMessageHandler, removeMessageHandler } = useGameSocket();
 
-    const handler = useCallback(message => {
+    const handler = useCallback((message: Message) => {
         if (message.type === 'init') {
             dispatch(init(message.payload));
+            // @ts-ignore
             navigate(`${message.payload.game}/tracker`)
         }
     }, []);
@@ -33,36 +27,25 @@ export const StartGame = () => {
 
     return (
         <>
-            <AppBar position="fixed">
+            <AppBar position="relative">
                 <Toolbar variant="dense">
-                    <Grid
-                        container
-                        direction={"row"}
-                        justify={"center"}
-                        alignItems={"center"}
-                    >
-                        <Grid item>Global War 1936</Grid>
-                    </Grid>
+                    <Typography variant={"h6"}>Global War 1936</Typography>
                 </Toolbar>
             </AppBar>
-            <Grid
-                container
-                className={classes.fullHeight}
-                direction={"column"}
-                justify={"space-around"}
-                alignItems={"center"}
+            <Box
+                sx={{ height: '100vh' }}
+                display={'flex'}
+                justifyContent={'center'}
+                alignItems={'center'}
             >
-                <Grid item>
-                    <Button
-                        variant={"contained"}
-                        size={"large"}
-                        color={"secondary"}
-                        onClick={() => sendMessage({ type: 'start', payload: null })}
-                    >
-                        Start Game
-                    </Button>
-                </Grid>
-            </Grid>
+                <Button
+                    variant={"contained"}
+                    size={"large"}
+                    onClick={() => sendMessage({ type: 'start', payload: null })}
+                >
+                    Start Game
+                </Button>
+            </Box>
         </>
     );
 };

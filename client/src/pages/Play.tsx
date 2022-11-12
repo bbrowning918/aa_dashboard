@@ -2,48 +2,28 @@ import React, { useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { FormikErrors, useFormik } from "formik";
 import {
-    makeStyles,
+    Box,
     Button,
-    Grid,
+    Container,
     TextField,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { useAppSelector } from "../state/hooks";
 import {
-    selectCurrentTurn,
-    saveCurrent,
-    nextPower,
-    selectCurrentPower,
     selectCurrentTurnId,
 } from "../state/ipp";
-import { useGameSocket } from '../state/websocket';
+
+import { Message, useGameSocket } from '../state/websocket';
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
 
 type TurnFormProps = {
+    start: number,
     spent: number;
     income: number;
 };
 
-const useStyles = makeStyles((theme) => ({
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: theme.spacing(2),
-        "& .MuiTextField-root": {
-            margin: theme.spacing(1),
-            width: "300px",
-        },
-        "& .MuiButtonBase-root": {
-            margin: theme.spacing(1),
-        },
-    },
-}));
-
 export const Play = () => {
-    const classes = useStyles();
     const { gameId } = useParams();
     const { sendMessage, addMessageHandler, removeMessageHandler } = useGameSocket();
 
@@ -58,10 +38,10 @@ export const Play = () => {
         return () => removeMessageHandler(handler);
     }, []);
 
-    const handler = useCallback(message => {
+    const handler = useCallback((message: Message) => {
         switch (message.type) {
             case 'join':
-                console.log("we joined, save the token");
+                console.log("we joined, save the token, now we should pick powers");
                 break;
             case 'update':
                 console.log("there was an update to the game state, save it")
@@ -69,15 +49,12 @@ export const Play = () => {
         }
     }, []);
 
-    const dispatch = useAppDispatch();
-
-    const currentPower = useAppSelector(selectCurrentPower);
     const currentTurnId = useAppSelector(selectCurrentTurnId);
-    const currentTurn = useAppSelector(selectCurrentTurn);
 
     const initialValues: TurnFormProps = {
-        spent: currentTurn.spent ?? 0,
-        income: currentTurn.income ?? 0,
+        start: 10,
+        spent: 0,
+        income: 0,
     };
 
     const formik = useFormik<TurnFormProps>({
@@ -89,7 +66,7 @@ export const Play = () => {
             if (values.spent < 0) {
                 errors.spent = "It does not work that way";
             }
-            if (values.spent > currentTurn.start) {
+            if (values.spent > initialValues.start) {
                 errors.spent = "Trying to spend more than IPP";
             }
             if (values.income < 0) {
@@ -99,31 +76,40 @@ export const Play = () => {
             return errors;
         },
         onSubmit: (values: TurnFormProps, { resetForm }) => {
-            dispatch(saveCurrent({ spent: values.spent, income: values.income }));
-            dispatch(nextPower());
             // TODO fire update message, redux will change in the handler
             resetForm();
         },
     });
 
     return (
-        <Grid container direction={"row"} justify={"center"} alignItems={"center"}>
-            <Grid item>
-                <form className={classes.form} onSubmit={formik.handleSubmit}>
-                    <Typography variant="h6">{currentPower}</Typography>
+        <Container maxWidth={'xs'}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <form
+                    onSubmit={formik.handleSubmit}
+                >
+                    <Typography variant="h6">INSERT POWER</Typography>
                     <Typography variant="subtitle1">
                         {findSeasonYearForTurnId(currentTurnId)}
                     </Typography>
                     <TextField
+                        fullWidth
                         id="ipp"
                         name="ipp"
                         type="number"
                         label="IPP"
                         variant="outlined"
-                        defaultValue={currentTurn.start ?? 0}
+                        defaultValue={formik.values.start}
                         disabled
+                        sx={{ my: 2 }}
                     />
                     <TextField
+                        fullWidth
                         id="spent"
                         name="spent"
                         type="number"
@@ -133,8 +119,10 @@ export const Play = () => {
                         onChange={formik.handleChange}
                         error={Boolean(formik.errors.spent)}
                         helperText={formik.errors.spent}
+                        sx={{ my: 2 }}
                     />
                     <TextField
+                        fullWidth
                         id="income"
                         name="income"
                         type="number"
@@ -144,6 +132,7 @@ export const Play = () => {
                         onChange={formik.handleChange}
                         error={Boolean(formik.errors.income)}
                         helperText={formik.errors.income}
+                        sx={{ my: 2 }}
                     />
                     <div>
                         <Button variant="contained" color="primary" type="submit">
@@ -151,7 +140,7 @@ export const Play = () => {
                         </Button>
                     </div>
                 </form>
-            </Grid>
-        </Grid>
+            </Box>
+        </Container>
     );
 };

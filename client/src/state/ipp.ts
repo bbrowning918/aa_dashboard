@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "./store";
-import { Powers, ORDER } from "./constants";
+import { Powers } from "./constants";
 import { Power } from "./types";
 
 type Turn = { start: number; spent?: number; income?: number };
@@ -18,9 +18,8 @@ type IPPState = {
     [Powers.ITALY]: { [turnId: number]: Turn };
     [Powers.USA]: { [turnId: number]: Turn };
     [Powers.NATIONALIST_CHINA]: { [turnId: number]: Turn };
-    ids: Array<number>;
-    currentId: number;
-    currentPower: Power;
+    turnIds: Array<number>;
+    currentTurnId: number;
 };
 
 const initialState: IPPState = {
@@ -35,69 +34,19 @@ const initialState: IPPState = {
     [Powers.ITALY]: { 0: { start: 7 } },
     [Powers.USA]: { 0: { start: 6 } },
     [Powers.NATIONALIST_CHINA]: { 0: { start: 6 } },
-    ids: [0, 1],
-    currentId: 0,
-    currentPower: ORDER[0],
+    turnIds: [0, 1],
+    currentTurnId: 0,
 };
 
 const ippSlice = createSlice({
     name: "ipp",
     initialState,
-    reducers: {
-        nextTurn: (state: IPPState) => {
-            const countPowersSubmitted = ORDER.reduce(
-                (count: number, power: Power) => {
-                    return state[power][state.currentId + 1] !== undefined
-                        ? count + 1
-                        : count;
-                },
-                0
-            );
-            if (countPowersSubmitted === ORDER.length) {
-                state.currentId += 1;
-                state.currentPower = ORDER[0];
-            }
-        },
-        nextPower: (state: IPPState) => {
-            const currentIndex = ORDER.findIndex(
-                (country) => country === state.currentPower
-            );
-            if (currentIndex + 1 < ORDER.length) {
-                state.currentPower = ORDER[currentIndex + 1];
-                state.ids = Array.from(new Set([...state.ids, state.currentId + 1]));
-            }
-        },
-        prevPower: (state: IPPState) => {
-            const currentIndex = ORDER.findIndex(
-                (country) => country === state.currentPower
-            );
-            if (currentIndex > 0) {
-                state.currentPower = ORDER[currentIndex - 1];
-            }
-        },
-        saveCurrent: (
-            state: IPPState,
-            action: PayloadAction<{ spent: number; income: number }>
-        ) => {
-            const { spent, income } = action.payload;
-
-            const start = state[state.currentPower][state.currentId].start;
-            state[state.currentPower][state.currentId].spent = spent;
-            state[state.currentPower][state.currentId].income = income;
-            state[state.currentPower][state.currentId + 1] = {
-                start: start - spent + income,
-            };
-        },
-    },
+    reducers: {},
 });
 
-export const selectTurnIds = (state: RootState) => state.ipp.ids;
+export const selectTurnIds = (state: RootState) => state.ipp.turnIds;
 export const selectTurnsForPower = (state: RootState, power: Power) => state.ipp[power];
 
-export const selectCurrentTurnId = (state: RootState) => state.ipp.currentId;
-export const selectCurrentTurn = (state: RootState) => state.ipp[state.ipp.currentPower][state.ipp.currentId];
-export const selectCurrentPower = (state: RootState) => state.ipp.currentPower;
-
-export const { nextTurn, nextPower, prevPower, saveCurrent } = ippSlice.actions;
+export const selectCurrentTurnId = (state: RootState) => state.ipp.currentTurnId;
 
 export const ippReducer = ippSlice.reducer;

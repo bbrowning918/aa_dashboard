@@ -1,7 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
-type Message = { type: string, payload: unknown };
+export type Message = { type: string, payload: unknown };
+
 type MessageHandler = (message: Message) => void;
 
 export const useGameSocket = () => {
