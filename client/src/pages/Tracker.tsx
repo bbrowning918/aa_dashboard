@@ -41,7 +41,7 @@ export const Tracker = () => {
     }, []);
 
     const handler = useCallback(message => {
-        if (message.type == 'update') {
+        if (message.type === 'update') {
             console.log("there was an update to the game state, save it")
         }
     }, []);
