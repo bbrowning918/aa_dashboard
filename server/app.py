@@ -10,7 +10,7 @@ from server.domain.model import Game
 from server.adapters.repository import TinyDBGameRepository
 from server.services.qr import make_qr_code
 
-GAME_CONNECTIONS = dict()
+connected = set()
 
 
 async def error(websocket, message):
@@ -25,15 +25,19 @@ async def play(websocket, game_ref):
     try:
         repo = TinyDBGameRepository(config.get_tinydb_path())
         game = repo.get(game_ref)
-        connected = GAME_CONNECTIONS[game_ref]
     except Game.NotFound:
-        await error(websocket, "Game not found")
+        await error(websocket, F"Game {game_ref} not found")
     else:
         async for message in websocket:
-            event = json.loads(message)
+            msg = json.loads(message)
+            logging.info(msg)
 
-            # TODO validate the callee, the game state, and then broadcast update
-            logging.debug(event)
+            # TODO can this be the spot to draft powers
+            #  other clients will need to know which are available
+
+            # TODO validate the callee and payload, host can do whatever
+            #  update the game state
+            #  send update
 
             event = {
                 "type": "update",
@@ -41,8 +45,8 @@ async def play(websocket, game_ref):
                     "turns": [
                         {
                             "year": turn.year,
-                            "season": turn.season.value,
-                            "power": turn.power.value,
+                            "season": turn.season,
+                            "power": turn.power,
                             "start": turn.start,
                             "spent": turn.spent,
                             "income": turn.income,
@@ -53,50 +57,21 @@ async def play(websocket, game_ref):
             }
             websockets.broadcast(connected, json.dumps(event))
 
-            # TODO inside this play loop we need to handle who's turn it is, and set that in the game
-            # decide if it needs to be sent to everyone or just the client whose turn it is
-
-
-async def watch(websocket, game_ref):
-    try:
-        repo = TinyDBGameRepository(config.get_tinydb_path())
-        game = repo.get(game_ref)
-    except Game.NotFound:
-        await error(websocket, "Game not found")
-        return
-    event = {
-        "type": "update",
-        "payload": {
-            "turns": list(
-                {
-                    "year": turn.year,
-                    "season": turn.season,
-                    "power": turn.power,
-                    "start": turn.start,
-                    "spent": turn.spent,
-                    "income": turn.income,
-                }
-                for turn in game.turns
-            ),
-        },
-    }
-    # TODO if we add this socket, we can broadcast updates to them as they happen
-    await websocket.send(json.dumps(event))
-
 
 async def join(websocket, game_ref):
     try:
         repo = TinyDBGameRepository(config.get_tinydb_path())
         game = repo.get(game_ref)
-        # TODO persist connections in client game, unless we don't need them?
-        # connected = GAME_CONNECTIONS[game_ref]
     except Game.NotFound:
-        await error(websocket, "Game not found")
+        await error(websocket, F"Game {game_ref} not found")
         return
 
+    connected.add(websocket)
+
+    # TODO if the msg passes a token -> check it
+    #  else produce a new one and figure out how to let them draft power(s)
+
     token = secrets.token_urlsafe(6)
-    # connected.add(websocket)
-    # TODO assign token for later access
     try:
         event = {
             "type": "join",
@@ -118,8 +93,7 @@ async def join(websocket, game_ref):
         await websocket.send(json.dumps(event))
         await play(websocket, game_ref)
     finally:
-        pass
-        # connected.remove(websocket)
+        connected.remove(websocket)
 
 
 async def start(websocket):
@@ -130,8 +104,6 @@ async def start(websocket):
     game = Game(ref=game_ref, host=token)
     repo.add(game)
 
-    GAME_CONNECTIONS[game.ref] = {websocket}
-
     qr_code = make_qr_code(
         f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game.ref}/play"
     )
@@ -141,7 +113,6 @@ async def start(websocket):
         "payload": {"token": token, "game": game.ref, "qr_code": qr_code},
     }
     await websocket.send(json.dumps(event))
-    await watch(websocket, game.ref)
 
 
 async def handler(websocket):
@@ -151,8 +122,6 @@ async def handler(websocket):
 
         if event["type"] == "start":
             await start(websocket)
-        elif event["type"] == "watch":
-            await watch(websocket, event["payload"])
         elif event["type"] == "join":
             await join(websocket, event["payload"])
 

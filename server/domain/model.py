@@ -1,5 +1,4 @@
 from __future__ import annotations
-from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Set
 
@@ -21,12 +20,6 @@ class Power(Enum):
 class Season(Enum):
     SUMMER = "Summer"
     WINTER = "Winter"
-
-
-@dataclass(frozen=True)
-class Player:
-    token: str
-    controlled_powers: Set[Power]
 
 
 class Turn:
@@ -59,17 +52,17 @@ class Turn:
 class Game:
     ref: str
     host: str
-    clients: Dict[str, Player]
+    powers: Dict[Power, str]
     turns: Set[Turn]
 
-    def __init__(self, ref: str, host: str, clients=None, turns=None):
+    def __init__(self, ref: str, host: str, powers=None, turns=None):
         self.ref = ref
         self.host = host
 
-        if clients is None:
-            self.clients = dict()
+        if powers is None:
+            self.powers = dict()
         else:
-            self.clients = clients
+            self.powers = powers
 
         if turns is None:
             self.turns = first_turn()
