@@ -32,7 +32,7 @@ class Turn:
         self.income = income
 
     def __repr__(self):
-        return f"<Turn {self.year} {self.season.value} {self.power.value}>"
+        return f"<Turn {self.year} {self.season} {self.power}>"
 
     def __hash__(self):
         return hash((self.year, self.season, self.power))

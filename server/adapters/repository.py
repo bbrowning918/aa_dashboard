@@ -51,7 +51,7 @@ class TinyDBGameRepository(AbstractGameRepository):
         return Game(
             ref=document["ref"],
             host=document["host"],
-            clients=document["clients"],
+            # clients=document["clients"],
             turns={
                 Turn(
                     year=turn["year"],
