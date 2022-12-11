@@ -12,13 +12,15 @@ from server.services.qr import make_qr_code
 
 connected = set()
 
+logger = config.get_logger()
+
 
 async def error(websocket, message):
-    event = {
+    response = {
         "type": "error",
         "payload": message,
     }
-    await websocket.send(json.dumps(event))
+    await websocket.send(json.dumps(response))
 
 
 async def play(websocket, game_ref):
@@ -26,11 +28,11 @@ async def play(websocket, game_ref):
         repo = TinyDBGameRepository(config.get_tinydb_path())
         game = repo.get(game_ref)
     except Game.NotFound:
-        await error(websocket, F"Game {game_ref} not found")
+        await error(websocket, f"Game {game_ref} not found")
     else:
-        async for message in websocket:
-            msg = json.loads(message)
-            logging.info(msg)
+        async for event in websocket:
+            message = json.loads(event)
+            logging.info(F"message: {message}")
 
             # TODO can this be the spot to draft powers
             #  other clients will need to know which are available
@@ -39,7 +41,7 @@ async def play(websocket, game_ref):
             #  update the game state
             #  send update
 
-            event = {
+            response = {
                 "type": "update",
                 "payload": {
                     "turns": [
@@ -55,15 +57,22 @@ async def play(websocket, game_ref):
                     ],
                 },
             }
-            websockets.broadcast(connected, json.dumps(event))
+            websockets.broadcast(connected, json.dumps(response))
 
 
-async def join(websocket, game_ref):
+async def join(websocket, payload):
+    logger.info(F"payload {payload}")
+
+    game_ref = payload.get("game_ref")
+    if not game_ref:
+        await error(websocket, "No game_ref found in payload")
+        return
+
     try:
         repo = TinyDBGameRepository(config.get_tinydb_path())
-        game = repo.get(game_ref)
+        game = repo.get(payload["game_ref"])
     except Game.NotFound:
-        await error(websocket, F"Game {game_ref} not found")
+        await error(websocket, f"Game {payload['game_ref']} not found")
         return
 
     connected.add(websocket)
@@ -73,7 +82,7 @@ async def join(websocket, game_ref):
 
     token = secrets.token_urlsafe(6)
     try:
-        event = {
+        message = {
             "type": "join",
             "payload": {
                 "token": token,
@@ -90,7 +99,7 @@ async def join(websocket, game_ref):
                 ),
             },
         }
-        await websocket.send(json.dumps(event))
+        await websocket.send(json.dumps(message))
         await play(websocket, game_ref)
     finally:
         connected.remove(websocket)
@@ -108,27 +117,26 @@ async def start(websocket):
         f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game.ref}/play"
     )
 
-    event = {
+    message = {
         "type": "init",
         "payload": {"token": token, "game": game.ref, "qr_code": qr_code},
     }
-    await websocket.send(json.dumps(event))
+    await websocket.send(json.dumps(message))
 
 
 async def handler(websocket):
-    async for message in websocket:
-        event = json.loads(message)
-        logging.debug(event)
+    async for event in websocket:
+        message = json.loads(event)
 
-        if event["type"] == "start":
+        logger.info(F"event {message}")
+
+        if message["type"] == "start":
             await start(websocket)
-        elif event["type"] == "join":
-            await join(websocket, event["payload"])
+        elif message["type"] == "join":
+            await join(websocket, message["payload"])
 
 
 async def main():
-    logging.basicConfig(level=config.get_logging_level())
-
     port = config.get_ws_port()
     async with websockets.serve(handler, "", port):
         await asyncio.Future()
