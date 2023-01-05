@@ -2,7 +2,7 @@ import abc
 
 from tinydb import TinyDB, Query
 
-from server.domain.model import Game, Turn
+from domain.model import Game, Turn, Power
 
 
 class AbstractGameRepository(abc.ABC):
@@ -36,6 +36,8 @@ class TinyDBGameRepository(AbstractGameRepository):
                 }
                 for turn in game.turns
             ],
+            "powers": {name: token for name, token in game.powers.items()}
+
         }
         self.db.insert(document)
         self.db.close()
@@ -47,11 +49,9 @@ class TinyDBGameRepository(AbstractGameRepository):
 
         if not document:
             raise Game.NotFound
-
         return Game(
             ref=document["ref"],
             host=document["host"],
-            # clients=document["clients"],
             turns={
                 Turn(
                     year=turn["year"],
@@ -63,4 +63,5 @@ class TinyDBGameRepository(AbstractGameRepository):
                 )
                 for turn in document["turns"]
             },
+            powers={name: token for name, token in document["powers"].items()}
         )

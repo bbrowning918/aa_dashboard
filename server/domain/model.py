@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Dict, Set
 
 
-class Power(Enum):
+class Power(str, Enum):
     GERMANY = "Germany"
     SOVIET_UNION = "Soviet Union"
     COMMUNIST_CHINA = "Communist China"
@@ -60,7 +60,7 @@ class Game:
         self.host = host
 
         if powers is None:
-            self.powers = dict()
+            self.powers = {power: '' for power in Power}
         else:
             self.powers = powers
 
