@@ -6,11 +6,12 @@ import signal
 import websockets
 
 import config
-from domain.model import Game
+from domain.model import Game, Turn
 from adapters.repository import TinyDBGameRepository
 from services.qr import make_qr_code
 from services.start_game import start_game
 from services.draft import draft
+from services.submit_turn import submit_turn
 
 connected = set()
 
@@ -26,50 +27,47 @@ async def error(websocket, message):
 
 
 async def play(websocket, game_ref):
-    try:
+    async for event in websocket:
+        message = json.loads(event)
+        logger.info(F"message {message}")
+
         with TinyDBGameRepository() as repo:
             game = repo.get(game_ref)
-    except Game.NotFound:
-        await error(websocket, f"Game {game_ref} not found")
-    else:
-        async for event in websocket:
-            message = json.loads(event)
-            logger.info(F"message {message}")
 
-            payload = message.get("payload")
+        payload = message.get("payload")
 
-            token = payload.get("token")
-            if not token:
-                await error(websocket, "token not found")
-                return
+        token = payload.get("token")
+        if not token:
+            await error(websocket, "token not found")
+            return
 
-            if message["type"] == "draft":
-                draft(game, token, payload["powers"], TinyDBGameRepository())
-            elif message["type"] == "turn":
-                # TODO this token drafted the given power, accept the turn for it
-                pass
-            else:
-                await error(websocket, "unrecognized message type")
-                return
+        if message["type"] == "draft":
+            draft(game, token, payload["powers"], TinyDBGameRepository())
+        elif message["type"] == "turn":
+            turn = Turn(**payload["turn"])
+            submit_turn(game, token, turn, TinyDBGameRepository())
+        else:
+            await error(websocket, "unrecognized message type")
+            return
 
-            response = {
-                "type": "update",
-                "payload": {
-                    "turns": [
-                        {
-                            "year": turn.year,
-                            "season": turn.season,
-                            "power": turn.power,
-                            "start": turn.start,
-                            "spent": turn.spent,
-                            "income": turn.income,
-                        }
-                        for turn in game.turns
-                    ],
-                    "powers": {name: token for name, token in game.powers.items() if token == ''}
-                },
-            }
-            websockets.broadcast(connected, json.dumps(response))
+        response = {
+            "type": "update",
+            "payload": {
+                "turns": [
+                    {
+                        "year": turn.year,
+                        "season": turn.season,
+                        "power": turn.power,
+                        "start": turn.start,
+                        "spent": turn.spent,
+                        "income": turn.income,
+                    }
+                    for turn in game.turns
+                ],
+                "powers": {name: token for name, token in game.powers.items() if token == ''}
+            },
+        }
+        websockets.broadcast(connected, json.dumps(response))
 
 
 async def join(websocket, payload):

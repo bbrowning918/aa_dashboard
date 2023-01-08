@@ -21,105 +21,155 @@ class FunctionalTest(AsyncioTestCase):
             # host starts a game
             await host.send(json.dumps({"type": "start"}))
 
-            # host gets init message back
+            # host receives init message
             response = await host.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "init")
-            self.assertIn("token", message["payload"])
-            self.assertIn("game_ref", message["payload"])
-            self.assertIn("qr_code", message["payload"])
+            self.assertIsInstance(message["payload"]["qr_code"], str)
 
             host_token = message["payload"]["token"]
+            self.assertIsNotNone(host_token)
+
             game_ref = message["payload"]["game_ref"]
+            self.assertIsNotNone(game_ref)
 
             # host joins the game
             await host.send(
                 json.dumps({"type": "join", "payload": {"game_ref": game_ref, "token": host_token}}))
 
-            # host gets join message back
+            # host receives join message
             response = await host.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "join")
-            self.assertIn("token", message["payload"])
             self.assertEqual(host_token, message["payload"]["token"])
-            self.assertIn("turns", message["payload"])
-            self.assertIn("powers", message["payload"])
 
-            # player_a joins game
+            self.assertCountEqual(message["payload"]["turns"], [
+                {"year": 1936, "season": "Summer", "power": "Germany", "start": 20, "spent": 0, "income": 0},
+                {"year": 1936, "season": "Summer", "power": "Soviet Union", "start": 8, "spent": 0, "income": 0},
+                {"year": 1936, "season": "Summer", "power": "Communist China", "start": 2, "spent": 0, "income": 0},
+                {"year": 1936, "season": "Summer", "power": "Japan", "start": 16, "spent": 0, "income": 0},
+                {"year": 1936, "season": "Summer", "power": "UK West", "start": 11, "spent": 0, "income": 0},
+                {"year": 1936, "season": "Summer", "power": "UK East", "start": 5, "spent": 0, "income": 0},
+                {"year": 1936, "season": "Summer", "power": "ANZAC", "start": 3, "spent": 0, "income": 0},
+                {"year": 1936, "season": "Summer", "power": "France", "start": 5, "spent": 0, "income": 0},
+                {"year": 1936, "season": "Summer", "power": "Italy", "start": 7, "spent": 0, "income": 0},
+                {"year": 1936, "season": "Summer", "power": "United States", "start": 6, "spent": 0, "income": 0},
+                {"year": 1936, "season": "Summer", "power": "Nationalist China", "start": 6, "spent": 0, "income": 0},
+            ])
+
+            self.assertCountEqual(message["payload"]["powers"], {
+                "Germany": "",
+                "Soviet Union": "",
+                "Communist China": "",
+                "Japan": "",
+                "UK West": "",
+                "UK East": "",
+                "ANZAC": "",
+                "France": "",
+                "Italy": "",
+                "United States": "",
+                "Nationalist China": "",
+            })
+
+            # player_a joins the game
             await player_a.send(json.dumps({"type": "join", "payload": {"game_ref": game_ref}}))
 
-            # player_a gets join message back
+            # player_a receives join message
             response = await player_a.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "join")
-            self.assertIn("token", message["payload"])
-            self.assertIn("turns", message["payload"])
-            self.assertIn("powers", message["payload"])
+
+            self.assertEqual(len(message["payload"]["turns"]), 11)
+            self.assertEqual(len(message["payload"]["powers"]), 11)
 
             player_a_token = message["payload"]["token"]
+            self.assertIsNotNone(player_a_token)
 
             # player_a drafts germany
             await player_a.send(
                 json.dumps({"type": "draft", "payload": {"token": player_a_token, "powers": ["Germany"]}}))
 
-            # player_a gets update message back
+            # player_a receives update message
             response = await player_a.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "update")
-            self.assertIn("turns", message["payload"])
-            self.assertIn("powers", message["payload"])
+            self.assertEqual(len(message["payload"]["turns"]), 11)
+            self.assertEqual(len(message["payload"]["powers"]), 10)
+            self.assertNotIn("Germany", message["payload"]["powers"])
 
-            # host sees update from player_a's draft
+            # host receives update from player_a's draft
             response = await host.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "update")
-            self.assertIn("turns", message["payload"])
-            self.assertIn("powers", message["payload"])
-            # germany disappears from powers
+            self.assertEqual(len(message["payload"]["turns"]), 11)
+            self.assertEqual(len(message["payload"]["powers"]), 10)
+            self.assertNotIn("Germany", message["payload"]["powers"])
 
             # player_b joins game
             await player_b.send(json.dumps({"type": "join", "payload": {"game_ref": game_ref}}))
 
-            # player_b gets join message back
+            # player_b receives join message
             response = await player_b.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "join")
-            self.assertIn("token", message["payload"])
-            self.assertIn("turns", message["payload"])
-            self.assertIn("powers", message["payload"])
+            self.assertEqual(len(message["payload"]["turns"]), 11)
+            self.assertEqual(len(message["payload"]["powers"]), 10)
 
             player_b_token = message["payload"]["token"]
+            self.assertIsNotNone(player_b_token)
 
             # player_b drafts soviet union
             await player_b.send(
                 json.dumps({"type": "draft", "payload": {"token": player_b_token, "powers": ["Soviet Union"]}}))
 
-            # player_b gets update message back
+            # player_b receives update message
             response = await player_b.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "update")
-            self.assertIn("turns", message["payload"])
-            self.assertIn("powers", message["payload"])
+            self.assertEqual(len(message["payload"]["turns"]), 11)
+            self.assertEqual(len(message["payload"]["powers"]), 9)
+            self.assertNotIn("Soviet Union", message["payload"]["powers"])
 
-            # player_a sees update from player_b's draft
+            # player_a receives update from player_b's draft
             response = await player_a.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "update")
-            self.assertIn("turns", message["payload"])
-            self.assertIn("powers", message["payload"])
+            self.assertEqual(len(message["payload"]["turns"]), 11)
+            self.assertEqual(len(message["payload"]["powers"]), 9)
 
-            # host sees update from player_b's draft
+            # host receives update from player_b's draft
             response = await host.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "update")
-            self.assertIn("turns", message["payload"])
-            self.assertIn("powers", message["payload"])
+            self.assertEqual(len(message["payload"]["turns"]), 11)
+            self.assertEqual(len(message["payload"]["powers"]), 9)
 
-            # player_a makes their turn
+            # player_a makes a turn
+            new_turn = {"year": 1936, "season": "Winter", "power": "Germany",
+                        "start": 20, "spent": 0, "income": 0}
+            await player_a.send(
+                json.dumps({"type": "turn", "payload": {"token": player_a_token, "turn": new_turn}}))
 
-            # player a sees the update
+            # player_a receives update message
+            response = await player_a.recv()
+            message = json.loads(response)
+            self.assertEqual(message["type"], "update")
+            self.assertEqual(len(message["payload"]["turns"]), 12)
+            self.assertIn(new_turn, message["payload"]["turns"])
+            self.assertEqual(len(message["payload"]["powers"]), 9)
 
-            # host sees the update from player_a's turn
-            # player_b sees the update from player_a's turn
+            # host receives the update from player_a's turn
+            response = await host.recv()
+            message = json.loads(response)
+            self.assertEqual(message["type"], "update")
+            self.assertEqual(len(message["payload"]["turns"]), 12)
+            self.assertIn(new_turn, message["payload"]["turns"])
+            self.assertEqual(len(message["payload"]["powers"]), 9)
 
-            self.fail("finish the test")
+            # player_b receives the update from player_a's turn
+            response = await player_b.recv()
+            message = json.loads(response)
+            self.assertEqual(message["type"], "update")
+            self.assertEqual(len(message["payload"]["turns"]), 12)
+            self.assertIn(new_turn, message["payload"]["turns"])
+            self.assertEqual(len(message["payload"]["powers"]), 9)
