@@ -2,7 +2,8 @@ import abc
 
 from tinydb import TinyDB, Query
 
-from domain.model import Game, Turn, Power
+import config
+from domain.model import Game, Turn
 
 
 class AbstractGameRepository(abc.ABC):
@@ -14,17 +15,22 @@ class AbstractGameRepository(abc.ABC):
     def get(self, game_ref: str) -> Game:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def update(self, game: Game):
+        raise NotImplementedError
+
+
+DEFAULT_PATH = config.get_tinydb_path()
+
 
 class TinyDBGameRepository(AbstractGameRepository):
-    def __init__(self, path):
+    def __init__(self, path=DEFAULT_PATH):
         self.db = TinyDB(path, sort_keys=True, indent=2)
-        # TODO need UoW or context manager to close TinyDB
 
     def add(self, game: Game):
         document = {
             "ref": game.ref,
             "host": game.host,
-            "clients": {},
             "turns": [
                 {
                     "year": turn.year,
@@ -65,3 +71,20 @@ class TinyDBGameRepository(AbstractGameRepository):
             },
             powers={name: token for name, token in document["powers"].items()}
         )
+
+    def update(self, game: Game):
+        query = Query()
+        self.db.update({
+            "turns": [
+                {
+                    "year": turn.year,
+                    "season": turn.season,
+                    "power": turn.power,
+                    "start": turn.start,
+                    "spent": turn.spent,
+                    "income": turn.income,
+                }
+                for turn in game.turns
+            ],
+            "powers": {name: token for name, token in game.powers.items()}
+        }, query.ref == game.ref)

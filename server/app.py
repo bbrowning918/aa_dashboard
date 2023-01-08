@@ -9,6 +9,8 @@ import config
 from domain.model import Game
 from adapters.repository import TinyDBGameRepository
 from services.qr import make_qr_code
+from services.start_game import start_game
+from services.draft import draft
 
 connected = set()
 
@@ -25,7 +27,7 @@ async def error(websocket, message):
 
 async def play(websocket, game_ref):
     try:
-        repo = TinyDBGameRepository(config.get_tinydb_path())
+        repo = TinyDBGameRepository()
         game = repo.get(game_ref)
     except Game.NotFound:
         await error(websocket, f"Game {game_ref} not found")
@@ -34,11 +36,15 @@ async def play(websocket, game_ref):
             message = json.loads(event)
             logger.info(F"message {message}")
 
-            # TODO if we did not find a token, close
+            payload = message.get("payload")
+
+            token = payload.get("token")
+            if not token:
+                await error(websocket, "token not found")
+                return
 
             if message["type"] == "draft":
-                # TODO type draft powers for the given (non-host) token
-                pass
+                draft(game, token, payload["powers"], TinyDBGameRepository())
             elif message["type"] == "turn":
                 # TODO this token drafted the given power, accept the turn for it
                 pass
@@ -60,7 +66,7 @@ async def play(websocket, game_ref):
                         }
                         for turn in game.turns
                     ],
-                    "powers": {name: token for name, token in game.powers.items() if token is ''}
+                    "powers": {name: token for name, token in game.powers.items() if token == ''}
                 },
             }
             websockets.broadcast(connected, json.dumps(response))
@@ -73,7 +79,7 @@ async def join(websocket, payload):
         return
 
     try:
-        repo = TinyDBGameRepository(config.get_tinydb_path())
+        repo = TinyDBGameRepository()
         game = repo.get(payload["game_ref"])
     except Game.NotFound:
         await error(websocket, f"Game {payload['game_ref']} not found")
@@ -101,7 +107,7 @@ async def join(websocket, payload):
                     }
                     for turn in game.turns
                 ],
-                "powers": {name: token for name, token in game.powers.items() if token is ''}
+                "powers": {name: token for name, token in game.powers.items() if token == ''}
             },
         }
         await websocket.send(json.dumps(message))
@@ -111,20 +117,14 @@ async def join(websocket, payload):
 
 
 async def start(websocket):
-    token = secrets.token_urlsafe(6)
-    game_ref = secrets.token_urlsafe(6)
-
-    repo = TinyDBGameRepository(config.get_tinydb_path())
-    game = Game(ref=game_ref, host=token)
-    repo.add(game)
-
+    game = start_game(TinyDBGameRepository())
     qr_code = make_qr_code(
         f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game.ref}/play"
     )
 
     message = {
         "type": "init",
-        "payload": {"token": token, "game_ref": game.ref, "qr_code": qr_code},
+        "payload": {"token": game.host, "game_ref": game.ref, "qr_code": qr_code},
     }
     await websocket.send(json.dumps(message))
 

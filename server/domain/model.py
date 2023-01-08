@@ -1,6 +1,6 @@
 from __future__ import annotations
 from enum import Enum
-from typing import Dict, Set
+from typing import Dict, List, Set
 
 
 class Power(str, Enum):
@@ -79,6 +79,10 @@ class Game:
         if not isinstance(other, Game):
             return False
         return self.ref == other.ref
+
+    def draft(self, token: str, powers: List[Power]):
+        for power in powers:
+            self.powers[power] = token
 
     class NotFound(Exception):
         pass
