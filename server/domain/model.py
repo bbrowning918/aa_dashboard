@@ -23,7 +23,15 @@ class Season(Enum):
 
 
 class Turn:
-    def __init__(self, year: int, season: Season, power: Power, start: int, spent: int = 0, income: int = 0):
+    def __init__(
+            self,
+            year: int,
+            season: Season,
+            power: Power,
+            start: int,
+            spent: int = 0,
+            income: int = 0,
+    ):
         self.year = year
         self.season = season
         self.power = power
@@ -60,7 +68,7 @@ class Game:
         self.host = host
 
         if powers is None:
-            self.powers = {power: '' for power in Power}
+            self.powers = {power: "" for power in Power}
         else:
             self.powers = powers
 
@@ -83,6 +91,12 @@ class Game:
     def draft(self, token: str, powers: List[Power]):
         for power in powers:
             self.powers[power] = token
+
+    def submit_turn(self, token: str, turn: Turn):
+        if token == self.host or token == self.powers[turn.power]:
+            if turn in self.turns:
+                self.turns.remove(turn)
+            self.turns.add(turn)
 
     class NotFound(Exception):
         pass
