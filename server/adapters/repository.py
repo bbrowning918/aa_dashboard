@@ -31,14 +31,14 @@ DEFAULT_PATH = config.get_tinydb_path()
 
 class TinyDBGameRepository(AbstractGameRepository):
     def __init__(self, path=DEFAULT_PATH):
-        self.db = TinyDB(path, sort_keys=True, indent=2)
+        self.path = path
 
     def __enter__(self):
+        self.db = TinyDB(self.path, sort_keys=True, indent=2)
         return super().__enter__()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.db.close()
-        super().__exit__(exc_type, exc_val, exc_tb)
 
     def add(self, game: Game):
         document = {
