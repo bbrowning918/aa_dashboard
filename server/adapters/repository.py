@@ -88,3 +88,4 @@ class TinyDBGameRepository(AbstractGameRepository):
             ],
             "powers": {name: token for name, token in game.powers.items()}
         }, query.ref == game.ref)
+        self.db.close()
