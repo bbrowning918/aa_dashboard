@@ -7,6 +7,12 @@ from domain.model import Game, Turn
 
 
 class AbstractGameRepository(abc.ABC):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
     @abc.abstractmethod
     def add(self, game: Game):
         raise NotImplementedError
@@ -27,6 +33,13 @@ class TinyDBGameRepository(AbstractGameRepository):
     def __init__(self, path=DEFAULT_PATH):
         self.db = TinyDB(path, sort_keys=True, indent=2)
 
+    def __enter__(self):
+        return super().__enter__()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.db.close()
+        super().__exit__(exc_type, exc_val, exc_tb)
+
     def add(self, game: Game):
         document = {
             "ref": game.ref,
@@ -46,12 +59,10 @@ class TinyDBGameRepository(AbstractGameRepository):
 
         }
         self.db.insert(document)
-        self.db.close()
 
     def get(self, game_ref: str) -> Game:
         game = Query()
         document = self.db.get(game.ref == game_ref)
-        self.db.close()
 
         if not document:
             raise Game.NotFound
@@ -88,4 +99,3 @@ class TinyDBGameRepository(AbstractGameRepository):
             ],
             "powers": {name: token for name, token in game.powers.items()}
         }, query.ref == game.ref)
-        self.db.close()

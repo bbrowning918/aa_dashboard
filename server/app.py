@@ -27,8 +27,8 @@ async def error(websocket, message):
 
 async def play(websocket, game_ref):
     try:
-        repo = TinyDBGameRepository()
-        game = repo.get(game_ref)
+        with TinyDBGameRepository() as repo:
+            game = repo.get(game_ref)
     except Game.NotFound:
         await error(websocket, f"Game {game_ref} not found")
     else:
@@ -79,8 +79,8 @@ async def join(websocket, payload):
         return
 
     try:
-        repo = TinyDBGameRepository()
-        game = repo.get(payload["game_ref"])
+        with TinyDBGameRepository() as repo:
+            game = repo.get(game_ref)
     except Game.NotFound:
         await error(websocket, f"Game {payload['game_ref']} not found")
         return

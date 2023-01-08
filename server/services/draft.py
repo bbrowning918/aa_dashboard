@@ -10,5 +10,6 @@ def draft(
         powers: List[Power],
         repo: AbstractGameRepository
 ) -> None:
-    game.draft(token, powers)
-    repo.update(game)
+    with repo:
+        game.draft(token, powers)
+        repo.update(game)
