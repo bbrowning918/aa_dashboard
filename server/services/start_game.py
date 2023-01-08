@@ -1,0 +1,13 @@
+import secrets
+
+from domain.model import Game
+from adapters.repository import AbstractGameRepository
+
+
+def start_game(repo: AbstractGameRepository) -> Game:
+    token = secrets.token_urlsafe(6)
+    game_ref = secrets.token_urlsafe(6)
+    game = Game(ref=game_ref, host=token)
+    repo.add(game)
+
+    return game
