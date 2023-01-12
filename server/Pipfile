@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-websockets = "~=10.1"
+websockets = "~=10.4"
 tinydb = "~=4.7"
 qrcode = "~=7.3"
-pillow = "~=9.0"
+pillow = "~=9.2"
 
 [dev-packages]
 
