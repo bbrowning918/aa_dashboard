@@ -20,10 +20,7 @@ const theme = createTheme({
     spacing: 8,
 });
 
-const container = document.getElementById("root");
-const root = createRoot(container!);
-
-root.render(
+createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
         <ErrorBoundary>
             <BrowserRouter>

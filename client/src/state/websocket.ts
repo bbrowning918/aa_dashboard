@@ -15,7 +15,7 @@ export const useGameSocket = () => {
         };
 
         ws.current = new ReconnectingWebSocket(
-            `ws://${process.env.REACT_APP_HOST_WS}:${process.env.REACT_APP_PORT_WS}/`,
+            `ws://${import.meta.env.VITE_REACT_APP_HOST_WS}:${import.meta.env.VITE_REACT_APP_PORT_WS}/`,
             [],
             options
         );
