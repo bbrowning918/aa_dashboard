@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 
 import { Message, useGameSocket } from '../state/websocket';
 import { useAppDispatch } from '../state/hooks';
@@ -16,7 +15,7 @@ export const StartGame = () => {
         if (message.type === 'init') {
             dispatch(init(message.payload));
             // @ts-ignore
-            navigate(`${message.payload.game}/tracker`)
+            navigate(`${message.payload.game_ref}/tracker`)
         }
     }, []);
 
@@ -26,26 +25,14 @@ export const StartGame = () => {
     }, []);
 
     return (
-        <>
-            <AppBar position="relative">
-                <Toolbar variant="dense">
-                    <Typography variant={"h6"}>Global War 1936</Typography>
-                </Toolbar>
-            </AppBar>
-            <Box
-                sx={{ height: '100vh' }}
-                display={'flex'}
-                justifyContent={'center'}
-                alignItems={'center'}
-            >
-                <Button
-                    variant={"contained"}
-                    size={"large"}
+        <div className="container py-24 mx-auto">
+            <h1 className="text-center mb-12 sm:text-3xl text-2xl font-medium title-font text-gray-900">Global War 1936</h1>
+            <div className="flex justify-center flex-col mx-auto max-w-xs">
+                <button
+                    className="text-white bg-blue-700 border-0 py-2 focus:outline-none hover:bg-blue-800 rounded text-lg"
                     onClick={() => sendMessage({ type: 'start', payload: null })}
-                >
-                    Start Game
-                </Button>
-            </Box>
-        </>
+                >Start Game</button>
+            </div>
+        </div>
     );
 };

@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { AppBar, Card, CardMedia, Grid, Toolbar } from "@mui/material";
 
 import { useAppSelector } from "../state/hooks";
 
@@ -38,29 +37,15 @@ export const Tracker = () => {
 
     return (
         <>
-            <AppBar position="sticky">
-                <Toolbar variant="dense">
-                    <Grid
-                        container
-                        direction={"row"}
-                    >
-                        <Grid item>
-                            {findSeasonYearForTurnId(currentTurnId)}
-                        </Grid>
-                    </Grid>
-                </Toolbar>
-            </AppBar>
+            <nav className="p-4 border-gray-200 rounded-b-lg bg-blue-600">
+                <div className="container flex flex-wrap items-center">
+                    <h1 className="sm:text-2xl text-xl font-medium title-font text-white">{findSeasonYearForTurnId(currentTurnId)}</h1>
+                </div>
+            </nav>
             <CountryTable/>
-            <Card
-                sx={{
-                    width: 145,
-                    position: 'absolute',
-                    right: 0,
-                    bottom: 0
-                }}
-            >
-                <CardMedia component={"img"} src={`data:image/png;base64, ${qrCode}`}/>
-            </Card>
+            <div className="w-36 border-gray-200 rounded-2xl shadow-md absolute bottom-0 right-0">
+                <img src={`data:image/png;base64, ${qrCode}`}/>
+            </div>
         </>
     );
 };

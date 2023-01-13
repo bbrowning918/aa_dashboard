@@ -1,13 +1,4 @@
 import React from "react";
-import {
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-} from "@mui/material";
 
 import { useAppSelector } from "../state/hooks";
 
@@ -58,65 +49,65 @@ export const CountryTable = () => {
     );
 
     return (
-        <TableContainer component={Paper}>
-            <Table stickyHeader size="small">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Turn</TableCell>
-                        <TableCell>{Powers.GERMANY}</TableCell>
-                        <TableCell>{Powers.SOVIET_UNION}</TableCell>
-                        <TableCell>{Powers.COMMUNIST_CHINA}</TableCell>
-                        <TableCell>{Powers.JAPAN}</TableCell>
-                        <TableCell>{Powers.UK_WEST}</TableCell>
-                        <TableCell>{Powers.UK_EAST}</TableCell>
-                        <TableCell>{Powers.ANZAC}</TableCell>
-                        <TableCell>{Powers.FRANCE}</TableCell>
-                        <TableCell>{Powers.ITALY}</TableCell>
-                        <TableCell>{Powers.USA}</TableCell>
-                        <TableCell>{Powers.NATIONALIST_CHINA}</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Turn</th>
+                        <th>{Powers.GERMANY}</th>
+                        <th>{Powers.SOVIET_UNION}</th>
+                        <th>{Powers.COMMUNIST_CHINA}</th>
+                        <th>{Powers.JAPAN}</th>
+                        <th>{Powers.UK_WEST}</th>
+                        <th>{Powers.UK_EAST}</th>
+                        <th>{Powers.ANZAC}</th>
+                        <th>{Powers.FRANCE}</th>
+                        <th>{Powers.ITALY}</th>
+                        <th>{Powers.USA}</th>
+                        <th>{Powers.NATIONALIST_CHINA}</th>
+                    </tr>
+                </thead>
+                <tbody>
                     {turnIds.map((turnId: number) => (
-                        <TableRow key={turnId}>
-                            <TableCell>{findSeasonYearForTurnId(turnId)}</TableCell>
-                            <TableCell align="left">
+                        <tr key={turnId}>
+                            <td>{findSeasonYearForTurnId(turnId)}</td>
+                            <td>
                                 {germanTurns[turnId]?.start}
-                            </TableCell>
-                            <TableCell align="left">
+                            </td>
+                            <td>
                                 {sovietTurns[turnId]?.start}
-                            </TableCell>
-                            <TableCell align="left">
+                            </td>
+                            <td>
                                 {commieChinaTurns[turnId]?.start}
-                            </TableCell>
-                            <TableCell align="left">
+                            </td>
+                            <td>
                                 {japanTurns[turnId]?.start}
-                            </TableCell>
-                            <TableCell align="left">
+                            </td>
+                            <td>
                                 {ukWestTurns[turnId]?.start}
-                            </TableCell>
-                            <TableCell align="left">
+                            </td>
+                            <td>
                                 {ukEastTurns[turnId]?.start}
-                            </TableCell>
-                            <TableCell align="left">
+                            </td>
+                            <td>
                                 {anzacTurns[turnId]?.start}
-                            </TableCell>
-                            <TableCell align="left">
+                            </td>
+                            <td>
                                 {franceTurns[turnId]?.start}
-                            </TableCell>
-                            <TableCell align="left">
+                            </td>
+                            <td>
                                 {italyTurns[turnId]?.start}
-                            </TableCell>
-                            <TableCell align="left">
+                            </td>
+                            <td>
                                 {usaTurns[turnId]?.start}
-                            </TableCell>
-                            <TableCell align="left">
+                            </td>
+                            <td>
                                 {nattyChinaTurns[turnId]?.start}
-                            </TableCell>
-                        </TableRow>
+                            </td>
+                        </tr>
                     ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                </tbody>
+            </table>
+        </div>
     );
 };

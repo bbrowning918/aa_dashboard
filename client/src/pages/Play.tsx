@@ -1,13 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { FormikErrors, useFormik } from "formik";
-import {
-    Box,
-    Button,
-    Container,
-    TextField,
-    Typography,
-} from "@mui/material";
 
 import { useAppSelector } from "../state/hooks";
 import {
@@ -82,65 +75,27 @@ export const Play = () => {
     });
 
     return (
-        <Container maxWidth={'xs'}>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <form
-                    onSubmit={formik.handleSubmit}
-                >
-                    <Typography variant="h6">INSERT POWER</Typography>
-                    <Typography variant="subtitle1">
-                        {findSeasonYearForTurnId(currentTurnId)}
-                    </Typography>
-                    <TextField
-                        fullWidth
-                        id="ipp"
-                        name="ipp"
-                        type="number"
-                        label="IPP"
-                        variant="outlined"
-                        defaultValue={formik.values.start}
-                        disabled
-                        sx={{ my: 2 }}
-                    />
-                    <TextField
-                        fullWidth
-                        id="spent"
-                        name="spent"
-                        type="number"
-                        label="Spent"
-                        variant="outlined"
-                        value={formik.values.spent}
-                        onChange={formik.handleChange}
-                        error={Boolean(formik.errors.spent)}
-                        helperText={formik.errors.spent}
-                        sx={{ my: 2 }}
-                    />
-                    <TextField
-                        fullWidth
-                        id="income"
-                        name="income"
-                        type="number"
-                        label="Income"
-                        variant="outlined"
-                        value={formik.values.income}
-                        onChange={formik.handleChange}
-                        error={Boolean(formik.errors.income)}
-                        helperText={formik.errors.income}
-                        sx={{ my: 2 }}
-                    />
-                    <div>
-                        <Button variant="contained" color="primary" type="submit">
-                            Save
-                        </Button>
+        <div className="container max-w-sm py-24 mx-auto">
+            <div className="flex flex-col items-center">
+                <form onSubmit={formik.handleSubmit}>
+                    <h6>INSERT POWER</h6>
+                    <p>{findSeasonYearForTurnId(currentTurnId)}</p>
+                    <div className="grid gap-6 mb-6">
+                        <label>IPP</label>
+                        <input type="number"></input>
+                        <label>Spent</label>
+                        <input type="number"></input>
+                        <label>Income</label>
+                        <input type="number"></input>
                     </div>
+                    <button
+                        className="text-white bg-blue-700 border-0 py-2 focus:outline-none hover:bg-blue-800 rounded text-lg"
+                        type="submit"
+                    >
+                        Save
+                    </button>
                 </form>
-            </Box>
-        </Container>
+            </div>
+        </div>
     );
 };
