@@ -45,39 +45,68 @@ export const CountryTable = () => {
     );
 
     return (
-        <div>
-            <table>
-                <thead>
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table className="w-full text-left text-sm text-gray-900 dark:text-gray-900">
+                <thead className="bg-gray-50 text-sm uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th>Turn</th>
-                        <th>{Powers.GERMANY}</th>
-                        <th>{Powers.SOVIET_UNION}</th>
-                        <th>{Powers.COMMUNIST_CHINA}</th>
-                        <th>{Powers.JAPAN}</th>
-                        <th>{Powers.UK_WEST}</th>
-                        <th>{Powers.UK_EAST}</th>
-                        <th>{Powers.ANZAC}</th>
-                        <th>{Powers.FRANCE}</th>
-                        <th>{Powers.ITALY}</th>
-                        <th>{Powers.USA}</th>
-                        <th>{Powers.NATIONALIST_CHINA}</th>
+                        <th className="px-6 py-3">Turn</th>
+                        <th className="px-6 py-3">{Powers.GERMANY}</th>
+                        <th className="px-6 py-3">{Powers.SOVIET_UNION}</th>
+                        <th className="px-6 py-3">{Powers.COMMUNIST_CHINA}</th>
+                        <th className="px-6 py-3">{Powers.JAPAN}</th>
+                        <th className="px-6 py-3">{Powers.UK_WEST}</th>
+                        <th className="px-6 py-3">{Powers.UK_EAST}</th>
+                        <th className="px-6 py-3">{Powers.ANZAC}</th>
+                        <th className="px-6 py-3">{Powers.FRANCE}</th>
+                        <th className="px-6 py-3">{Powers.ITALY}</th>
+                        <th className="px-6 py-3">{Powers.USA}</th>
+                        <th className="px-6 py-3">
+                            {Powers.NATIONALIST_CHINA}
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {turnIds.map((turnId: number) => (
-                        <tr key={turnId}>
-                            <td>{findSeasonYearForTurnId(turnId)}</td>
-                            <td>{germanTurns[turnId]?.start}</td>
-                            <td>{sovietTurns[turnId]?.start}</td>
-                            <td>{commieChinaTurns[turnId]?.start}</td>
-                            <td>{japanTurns[turnId]?.start}</td>
-                            <td>{ukWestTurns[turnId]?.start}</td>
-                            <td>{ukEastTurns[turnId]?.start}</td>
-                            <td>{anzacTurns[turnId]?.start}</td>
-                            <td>{franceTurns[turnId]?.start}</td>
-                            <td>{italyTurns[turnId]?.start}</td>
-                            <td>{usaTurns[turnId]?.start}</td>
-                            <td>{nattyChinaTurns[turnId]?.start}</td>
+                        <tr
+                            key={turnId}
+                            className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
+                        >
+                            <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                {findSeasonYearForTurnId(turnId)}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {germanTurns[turnId]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {sovietTurns[turnId]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {commieChinaTurns[turnId]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {japanTurns[turnId]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {ukWestTurns[turnId]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {ukEastTurns[turnId]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {anzacTurns[turnId]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {franceTurns[turnId]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {italyTurns[turnId]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {usaTurns[turnId]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {nattyChinaTurns[turnId]?.start}
+                            </td>
                         </tr>
                     ))}
                 </tbody>

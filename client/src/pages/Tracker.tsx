@@ -36,8 +36,8 @@ export const Tracker = () => {
     }, []);
 
     return (
-        <>
-            <nav className="rounded-b-lg border-gray-200 bg-blue-600 p-4">
+        <div className="h-screen bg-white dark:bg-gray-900">
+            <nav className="mb-4 rounded-b-lg border-gray-200 bg-blue-700 p-4 shadow-md">
                 <div className="container flex flex-wrap items-center">
                     <h1 className="title-font text-xl font-medium text-white sm:text-2xl">
                         {findSeasonYearForTurnId(currentTurnId)}
@@ -45,9 +45,10 @@ export const Tracker = () => {
                 </div>
             </nav>
             <CountryTable />
-            <div className="absolute bottom-0 right-0 w-36 rounded-2xl border-gray-200 shadow-md">
-                <img src={`data:image/png;base64, ${qrCode}`} />
-            </div>
-        </>
+            <img
+                className="absolute bottom-0 right-0 w-36 rounded-2xl border-gray-200 shadow-md"
+                src={`data:image/png;base64, ${qrCode}`}
+            />
+        </div>
     );
 };
