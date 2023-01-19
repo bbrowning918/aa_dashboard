@@ -1,21 +1,21 @@
 import React, { useCallback, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-import { Message, useGameSocket } from '../state/websocket';
-import { useAppDispatch } from '../state/hooks';
-import { init } from '../state/game';
-
+import { Message, useGameSocket } from "../state/websocket";
+import { useAppDispatch } from "../state/hooks";
+import { init } from "../state/game";
 
 export const StartGame = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const { sendMessage, addMessageHandler, removeMessageHandler } = useGameSocket();
+    const { sendMessage, addMessageHandler, removeMessageHandler } =
+        useGameSocket();
 
     const handler = useCallback((message: Message) => {
-        if (message.type === 'init') {
+        if (message.type === "init") {
             dispatch(init(message.payload));
             // @ts-ignore
-            navigate(`${message.payload.game_ref}/tracker`)
+            navigate(`${message.payload.game_ref}/tracker`);
         }
     }, []);
 
@@ -25,13 +25,19 @@ export const StartGame = () => {
     }, []);
 
     return (
-        <div className="container py-24 mx-auto">
-            <h1 className="text-center mb-12 sm:text-3xl text-2xl font-medium title-font text-gray-900">Global War 1936</h1>
-            <div className="flex justify-center flex-col mx-auto max-w-xs">
+        <div className="container mx-auto py-24">
+            <h1 className="title-font mb-12 text-center text-2xl font-medium text-gray-900 sm:text-3xl">
+                Global War 1936
+            </h1>
+            <div className="mx-auto flex max-w-xs flex-col justify-center">
                 <button
-                    className="text-white bg-blue-700 border-0 py-2 focus:outline-none hover:bg-blue-800 rounded text-lg"
-                    onClick={() => sendMessage({ type: 'start', payload: null })}
-                >Start Game</button>
+                    className="rounded border-0 bg-blue-700 py-2 text-lg text-white hover:bg-blue-800 focus:outline-none"
+                    onClick={() =>
+                        sendMessage({ type: "start", payload: null })
+                    }
+                >
+                    Start Game
+                </button>
             </div>
         </div>
     );

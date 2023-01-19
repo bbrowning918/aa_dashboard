@@ -3,26 +3,25 @@ import { useParams } from "react-router-dom";
 import { FormikErrors, useFormik } from "formik";
 
 import { useAppSelector } from "../state/hooks";
-import {
-    selectCurrentTurnId,
-} from "../state/ipp";
+import { selectCurrentTurnId } from "../state/ipp";
 
-import { Message, useGameSocket } from '../state/websocket';
+import { Message, useGameSocket } from "../state/websocket";
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
 
 type TurnFormProps = {
-    start: number,
+    start: number;
     spent: number;
     income: number;
 };
 
 export const Play = () => {
     const { gameId } = useParams();
-    const { sendMessage, addMessageHandler, removeMessageHandler } = useGameSocket();
+    const { sendMessage, addMessageHandler, removeMessageHandler } =
+        useGameSocket();
 
     useEffect(() => {
         if (gameId) {
-            sendMessage({ type: 'join', payload: gameId });
+            sendMessage({ type: "join", payload: gameId });
         }
     }, [gameId, sendMessage]);
 
@@ -33,11 +32,13 @@ export const Play = () => {
 
     const handler = useCallback((message: Message) => {
         switch (message.type) {
-            case 'join':
-                console.log("we joined, save the token, now we should pick powers");
+            case "join":
+                console.log(
+                    "we joined, save the token, now we should pick powers"
+                );
                 break;
-            case 'update':
-                console.log("there was an update to the game state, save it")
+            case "update":
+                console.log("there was an update to the game state, save it");
                 break;
         }
     }, []);
@@ -75,12 +76,12 @@ export const Play = () => {
     });
 
     return (
-        <div className="container max-w-sm py-24 mx-auto">
+        <div className="container mx-auto max-w-sm py-24">
             <div className="flex flex-col items-center">
                 <form onSubmit={formik.handleSubmit}>
                     <h6>INSERT POWER</h6>
                     <p>{findSeasonYearForTurnId(currentTurnId)}</p>
-                    <div className="grid gap-6 mb-6">
+                    <div className="mb-6 grid gap-6">
                         <label>IPP</label>
                         <input type="number"></input>
                         <label>Spent</label>
@@ -89,7 +90,7 @@ export const Play = () => {
                         <input type="number"></input>
                     </div>
                     <button
-                        className="text-white bg-blue-700 border-0 py-2 focus:outline-none hover:bg-blue-800 rounded text-lg"
+                        className="rounded border-0 bg-blue-700 py-2 text-lg text-white hover:bg-blue-800 focus:outline-none"
                         type="submit"
                     >
                         Save

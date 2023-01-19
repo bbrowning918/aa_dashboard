@@ -45,8 +45,10 @@ const ippSlice = createSlice({
 });
 
 export const selectTurnIds = (state: RootState) => state.ipp.turnIds;
-export const selectTurnsForPower = (state: RootState, power: Power) => state.ipp[power];
+export const selectTurnsForPower = (state: RootState, power: Power) =>
+    state.ipp[power];
 
-export const selectCurrentTurnId = (state: RootState) => state.ipp.currentTurnId;
+export const selectCurrentTurnId = (state: RootState) =>
+    state.ipp.currentTurnId;
 
 export const ippReducer = ippSlice.reducer;

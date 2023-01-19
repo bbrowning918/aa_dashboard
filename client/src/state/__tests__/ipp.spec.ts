@@ -1,6 +1,4 @@
-import {
-    ippReducer,
-} from "../ipp";
+import { ippReducer } from "../ipp";
 import { Powers } from "../constants";
 
 describe("ippSlice tests", () => {

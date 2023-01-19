@@ -4,12 +4,8 @@ import { useAppSelector } from "../state/hooks";
 
 import { Powers } from "../state/constants";
 
-import {
-    selectTurnsForPower,
-    selectTurnIds,
-} from "../state/ipp";
+import { selectTurnsForPower, selectTurnIds } from "../state/ipp";
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
-
 
 export const CountryTable = () => {
     const turnIds = useAppSelector(selectTurnIds);
@@ -71,39 +67,17 @@ export const CountryTable = () => {
                     {turnIds.map((turnId: number) => (
                         <tr key={turnId}>
                             <td>{findSeasonYearForTurnId(turnId)}</td>
-                            <td>
-                                {germanTurns[turnId]?.start}
-                            </td>
-                            <td>
-                                {sovietTurns[turnId]?.start}
-                            </td>
-                            <td>
-                                {commieChinaTurns[turnId]?.start}
-                            </td>
-                            <td>
-                                {japanTurns[turnId]?.start}
-                            </td>
-                            <td>
-                                {ukWestTurns[turnId]?.start}
-                            </td>
-                            <td>
-                                {ukEastTurns[turnId]?.start}
-                            </td>
-                            <td>
-                                {anzacTurns[turnId]?.start}
-                            </td>
-                            <td>
-                                {franceTurns[turnId]?.start}
-                            </td>
-                            <td>
-                                {italyTurns[turnId]?.start}
-                            </td>
-                            <td>
-                                {usaTurns[turnId]?.start}
-                            </td>
-                            <td>
-                                {nattyChinaTurns[turnId]?.start}
-                            </td>
+                            <td>{germanTurns[turnId]?.start}</td>
+                            <td>{sovietTurns[turnId]?.start}</td>
+                            <td>{commieChinaTurns[turnId]?.start}</td>
+                            <td>{japanTurns[turnId]?.start}</td>
+                            <td>{ukWestTurns[turnId]?.start}</td>
+                            <td>{ukEastTurns[turnId]?.start}</td>
+                            <td>{anzacTurns[turnId]?.start}</td>
+                            <td>{franceTurns[turnId]?.start}</td>
+                            <td>{italyTurns[turnId]?.start}</td>
+                            <td>{usaTurns[turnId]?.start}</td>
+                            <td>{nattyChinaTurns[turnId]?.start}</td>
                         </tr>
                     ))}
                 </tbody>

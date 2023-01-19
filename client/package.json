@@ -7,6 +7,7 @@
         "dev": "vite --port=8080",
         "build": "tsc && vite build",
         "preview": "vite preview --port=8080",
+        "prettier": "prettier --write src/",
         "test": "jest"
     },
     "dependencies": {
@@ -30,6 +31,8 @@
         "autoprefixer": "10.4.13",
         "jest": "29.3.1",
         "postcss": "8.4.21",
+        "prettier": "^2.8.3",
+        "prettier-plugin-tailwindcss": "^0.2.1",
         "redux-logger": "3.0.6",
         "tailwindcss": "3.2.4",
         "ts-jest": "29.0.4",

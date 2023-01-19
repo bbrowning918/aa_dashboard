@@ -1,7 +1,7 @@
-import { useEffect, useRef, useCallback } from 'react';
-import ReconnectingWebSocket from 'reconnecting-websocket';
+import { useEffect, useRef, useCallback } from "react";
+import ReconnectingWebSocket from "reconnecting-websocket";
 
-export type Message = { type: string, payload: unknown };
+export type Message = { type: string; payload: unknown };
 
 type MessageHandler = (message: Message) => void;
 
@@ -11,11 +11,13 @@ export const useGameSocket = () => {
 
     useEffect(() => {
         const options = {
-            debug: true
+            debug: true,
         };
 
         ws.current = new ReconnectingWebSocket(
-            `ws://${import.meta.env.VITE_REACT_APP_HOST_WS}:${import.meta.env.VITE_REACT_APP_PORT_WS}/`,
+            `ws://${import.meta.env.VITE_REACT_APP_HOST_WS}:${
+                import.meta.env.VITE_REACT_APP_PORT_WS
+            }/`,
             [],
             options
         );
@@ -26,8 +28,8 @@ export const useGameSocket = () => {
         ws.current.onmessage = (event) => {
             const message = JSON.parse(event.data);
             console.log(message);
-            messageHandlers.forEach(handler => handler(message));
-        }
+            messageHandlers.forEach((handler) => handler(message));
+        };
 
         const wsCurrent = ws.current;
 
@@ -37,11 +39,11 @@ export const useGameSocket = () => {
     }, []);
 
     const addMessageHandler = useCallback((handler: MessageHandler) => {
-        messageHandlers.add(handler)
+        messageHandlers.add(handler);
     }, []);
 
     const removeMessageHandler = useCallback((handler: MessageHandler) => {
-        messageHandlers.delete(handler)
+        messageHandlers.delete(handler);
     }, []);
 
     const sendMessage = useCallback((message: Message) => {
@@ -54,6 +56,6 @@ export const useGameSocket = () => {
     return {
         addMessageHandler,
         removeMessageHandler,
-        sendMessage
+        sendMessage,
     };
 };

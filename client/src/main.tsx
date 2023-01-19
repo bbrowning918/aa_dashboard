@@ -15,7 +15,7 @@ createRoot(document.getElementById("root") as HTMLElement).render(
         <ErrorBoundary>
             <BrowserRouter>
                 <Provider store={store}>
-                    <App/>
+                    <App />
                 </Provider>
             </BrowserRouter>
         </ErrorBoundary>

@@ -8,10 +8,10 @@ import { Play } from "./pages/Play";
 export const App = () => {
     return (
         <Routes>
-            <Route path={"/"} element={<StartGame/>}/>
-            <Route path={":gameId/play"} element={<Play/>}/>
-            <Route path={":gameId/tracker"} element={<Tracker/>}/>
-            <Route path={":gameId/admin"} element={<>admin</>}/>
+            <Route path={"/"} element={<StartGame />} />
+            <Route path={":gameId/play"} element={<Play />} />
+            <Route path={":gameId/tracker"} element={<Tracker />} />
+            <Route path={":gameId/admin"} element={<>admin</>} />
         </Routes>
     );
 };

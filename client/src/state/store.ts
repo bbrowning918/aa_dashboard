@@ -9,7 +9,8 @@ export const store = configureStore({
         game: gameReducer,
         ipp: ippReducer,
     }),
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([logger]),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat([logger]),
 });
 
 export type AppDispatch = typeof store.dispatch;
