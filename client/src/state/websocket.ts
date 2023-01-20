@@ -1,7 +1,10 @@
 import { useEffect, useRef, useCallback } from "react";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
-export type Message = { type: string; payload: unknown };
+export type Message = {
+    type: string;
+    payload: { token?: string; game_ref?: string };
+};
 
 type MessageHandler = (message: Message) => void;
 
@@ -49,8 +52,13 @@ export const useGameSocket = () => {
     const sendMessage = useCallback((message: Message) => {
         if (!ws.current) {
             return;
+        } else if (ws.current.readyState == WebSocket.CONNECTING) {
+            ws.current?.addEventListener("open", () =>
+                ws.current?.send(JSON.stringify(message))
+            );
+        } else {
+            ws.current.send(JSON.stringify(message));
         }
-        ws.current.send(JSON.stringify(message));
     }, []);
 
     return {
