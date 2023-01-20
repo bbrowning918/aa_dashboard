@@ -20,7 +20,7 @@ export const Tracker = () => {
 
     useEffect(() => {
         if (gameId) {
-            sendMessage({ type: "join", payload: gameId });
+            sendMessage({ type: "join", payload: { game_ref: gameId }});
         }
     }, [gameId, sendMessage]);
 
