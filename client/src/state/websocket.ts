@@ -1,10 +1,15 @@
 import { useEffect, useRef, useCallback } from "react";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
-export type Message = {
-    type: string;
-    payload: { token?: string; game_ref?: string };
+type Start = { type: "start"; payload: {} };
+type Init = {
+    type: "init";
+    payload: { token: string; game_ref: string; qr_code: string };
 };
+type Join = { type: "join"; payload: { token: string; game_ref: string } };
+type Update = { type: "update"; payload: unknown };
+
+export type Message = Start | Init | Join | Update;
 
 type MessageHandler = (message: Message) => void;
 

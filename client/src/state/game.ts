@@ -3,13 +3,13 @@ import { RootState } from "./store";
 
 export type GameState = {
     token: string;
-    game: string;
+    gameRef: string;
     qrCode: string;
 };
 
 const initialState: GameState = {
     token: localStorage.getItem("token") || "",
-    game: localStorage.getItem("game") || "",
+    gameRef: localStorage.getItem("gameRef") || "",
     qrCode: localStorage.getItem("qrCode") || "",
 };
 
@@ -19,25 +19,25 @@ export const gameSlice = createSlice({
     reducers: {
         init: (state: GameState, action: PayloadAction<any>) => {
             localStorage.setItem("token", action.payload.token);
-            localStorage.setItem("game", action.payload.game);
+            localStorage.setItem("gameRef", action.payload.game_ref);
             localStorage.setItem("qrCode", action.payload.qr_code);
             state.token = action.payload.token;
-            state.game = action.payload.game;
+            state.gameRef = action.payload.game_ref;
             state.qrCode = action.payload.qr_code;
         },
         clear: (state: GameState) => {
             localStorage.removeItem("token");
-            localStorage.removeItem("game");
+            localStorage.removeItem("gameRef");
             localStorage.removeItem("qrCode");
             state.token = "";
-            state.game = "";
+            state.gameRef = "";
             state.qrCode = "";
         },
     },
 });
 
 export const selectQrCode = (state: RootState) => state.game.qrCode;
-export const selectGame = (state: RootState) => state.game.game;
+export const selectGame = (state: RootState) => state.game.gameRef;
 export const selectToken = (state: RootState) => state.game.token;
 export const selectIsLoggedIn = (state: RootState) => Boolean(state.game.token);
 
