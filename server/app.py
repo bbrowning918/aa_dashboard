@@ -85,7 +85,7 @@ async def join(websocket, payload):
 
     token = payload.get("token")
     if not token:
-        token = secrets.token_urlsafe(6)
+        token = secrets.token_urlsafe(4)
 
     connected.add(websocket)
 
