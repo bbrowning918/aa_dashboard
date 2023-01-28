@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import { Draft } from "../components/Draft";
@@ -7,6 +7,8 @@ import { Message, useGameSocket } from "../state/websocket";
 
 export const Play = () => {
     const { gameId } = useParams();
+    const [token, setToken] = useState("");
+    const [powers, setPowers] = useState({});
     const { sendMessage, addMessageHandler, removeMessageHandler } =
         useGameSocket();
 
@@ -24,7 +26,8 @@ export const Play = () => {
     const handler = useCallback((message: Message) => {
         switch (message.type) {
             case "join":
-                console.log(message.payload.token);
+                setToken(message.payload.token);
+                setPowers(message.payload.powers);
                 break;
             case "update":
                 console.log("there was an update to the game state, save it");
@@ -34,7 +37,7 @@ export const Play = () => {
 
     return (
         <div className="h-screen bg-white dark:bg-gray-900">
-            <Draft />
+            <Draft token={token} powers={powers} />
         </div>
     );
 };
