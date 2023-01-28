@@ -2,7 +2,7 @@ import React, { useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import { useAppSelector } from "../state/hooks";
-import { selectQrCode, selectToken, reset } from "../state/game";
+import { selectQrCode, selectToken } from "../state/game";
 import { Message, useGameSocket } from "../state/websocket";
 import { selectCurrentTurnId } from "../state/ipp";
 
