@@ -6,10 +6,11 @@ type Init = {
     type: "init";
     payload: { token: string; game_ref: string; qr_code: string };
 };
-type Join = { type: "join"; payload: { token: string; game_ref: string } };
+type Join = { type: "join"; payload: { game_ref: string } };
+type Rejoin = { type: "join"; payload: { token: string; game_ref: string } };
 type Update = { type: "update"; payload: unknown };
 
-export type Message = Start | Init | Join | Update;
+export type Message = Start | Init | Join | Rejoin | Update;
 
 type MessageHandler = (message: Message) => void;
 
