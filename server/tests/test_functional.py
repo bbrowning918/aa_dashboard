@@ -57,18 +57,18 @@ class FunctionalTest(AsyncioTestCase):
                 {"year": 1936, "season": "Summer", "power": "Nationalist China", "start": 6, "spent": 0, "income": 0},
             ])
 
-            self.assertCountEqual(message["payload"]["powers"], {
-                "Germany": "",
-                "Soviet Union": "",
-                "Communist China": "",
-                "Japan": "",
-                "UK West": "",
-                "UK East": "",
-                "ANZAC": "",
-                "France": "",
-                "Italy": "",
-                "United States": "",
-                "Nationalist China": "",
+            self.assertEqual(message["payload"]["powers"], {
+                "Germany": False,
+                "Soviet Union": False,
+                "Communist China": False,
+                "Japan": False,
+                "UK West": False,
+                "UK East": False,
+                "ANZAC": False,
+                "France": False,
+                "Italy": False,
+                "United States": False,
+                "Nationalist China": False,
             })
 
             # player_a joins the game
@@ -94,16 +94,38 @@ class FunctionalTest(AsyncioTestCase):
             message = json.loads(response)
             self.assertEqual(message["type"], "update")
             self.assertEqual(len(message["payload"]["turns"]), 11)
-            self.assertEqual(len(message["payload"]["powers"]), 10)
-            self.assertNotIn("Germany", message["payload"]["powers"])
+            self.assertEqual(message["payload"]["powers"], {
+                "Germany": True,
+                "Soviet Union": False,
+                "Communist China": False,
+                "Japan": False,
+                "UK West": False,
+                "UK East": False,
+                "ANZAC": False,
+                "France": False,
+                "Italy": False,
+                "United States": False,
+                "Nationalist China": False,
+            })
 
             # host receives update from player_a's draft
             response = await host.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "update")
             self.assertEqual(len(message["payload"]["turns"]), 11)
-            self.assertEqual(len(message["payload"]["powers"]), 10)
-            self.assertNotIn("Germany", message["payload"]["powers"])
+            self.assertEqual(message["payload"]["powers"], {
+                "Germany": True,
+                "Soviet Union": False,
+                "Communist China": False,
+                "Japan": False,
+                "UK West": False,
+                "UK East": False,
+                "ANZAC": False,
+                "France": False,
+                "Italy": False,
+                "United States": False,
+                "Nationalist China": False,
+            })
 
             # player_b joins game
             await player_b.send(json.dumps({"type": "join", "payload": {"game_ref": game_ref}}))
@@ -113,7 +135,19 @@ class FunctionalTest(AsyncioTestCase):
             message = json.loads(response)
             self.assertEqual(message["type"], "join")
             self.assertEqual(len(message["payload"]["turns"]), 11)
-            self.assertEqual(len(message["payload"]["powers"]), 10)
+            self.assertEqual(message["payload"]["powers"], {
+                "Germany": True,
+                "Soviet Union": False,
+                "Communist China": False,
+                "Japan": False,
+                "UK West": False,
+                "UK East": False,
+                "ANZAC": False,
+                "France": False,
+                "Italy": False,
+                "United States": False,
+                "Nationalist China": False,
+            })
 
             player_b_token = message["payload"]["token"]
             self.assertIsNotNone(player_b_token)
@@ -127,22 +161,57 @@ class FunctionalTest(AsyncioTestCase):
             message = json.loads(response)
             self.assertEqual(message["type"], "update")
             self.assertEqual(len(message["payload"]["turns"]), 11)
-            self.assertEqual(len(message["payload"]["powers"]), 9)
-            self.assertNotIn("Soviet Union", message["payload"]["powers"])
+            self.assertEqual(message["payload"]["powers"], {
+                "Germany": True,
+                "Soviet Union": True,
+                "Communist China": False,
+                "Japan": False,
+                "UK West": False,
+                "UK East": False,
+                "ANZAC": False,
+                "France": False,
+                "Italy": False,
+                "United States": False,
+                "Nationalist China": False,
+            })
 
             # player_a receives update from player_b's draft
             response = await player_a.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "update")
             self.assertEqual(len(message["payload"]["turns"]), 11)
-            self.assertEqual(len(message["payload"]["powers"]), 9)
+            self.assertEqual(message["payload"]["powers"], {
+                "Germany": True,
+                "Soviet Union": True,
+                "Communist China": False,
+                "Japan": False,
+                "UK West": False,
+                "UK East": False,
+                "ANZAC": False,
+                "France": False,
+                "Italy": False,
+                "United States": False,
+                "Nationalist China": False,
+            })
 
             # host receives update from player_b's draft
             response = await host.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "update")
             self.assertEqual(len(message["payload"]["turns"]), 11)
-            self.assertEqual(len(message["payload"]["powers"]), 9)
+            self.assertEqual(message["payload"]["powers"], {
+                "Germany": True,
+                "Soviet Union": True,
+                "Communist China": False,
+                "Japan": False,
+                "UK West": False,
+                "UK East": False,
+                "ANZAC": False,
+                "France": False,
+                "Italy": False,
+                "United States": False,
+                "Nationalist China": False,
+            })
 
             # player_a makes a turn
             new_turn = {"year": 1936, "season": "Winter", "power": "Germany",
@@ -156,7 +225,19 @@ class FunctionalTest(AsyncioTestCase):
             self.assertEqual(message["type"], "update")
             self.assertEqual(len(message["payload"]["turns"]), 12)
             self.assertIn(new_turn, message["payload"]["turns"])
-            self.assertEqual(len(message["payload"]["powers"]), 9)
+            self.assertEqual(message["payload"]["powers"], {
+                "Germany": True,
+                "Soviet Union": True,
+                "Communist China": False,
+                "Japan": False,
+                "UK West": False,
+                "UK East": False,
+                "ANZAC": False,
+                "France": False,
+                "Italy": False,
+                "United States": False,
+                "Nationalist China": False,
+            })
 
             # host receives the update from player_a's turn
             response = await host.recv()
@@ -164,7 +245,19 @@ class FunctionalTest(AsyncioTestCase):
             self.assertEqual(message["type"], "update")
             self.assertEqual(len(message["payload"]["turns"]), 12)
             self.assertIn(new_turn, message["payload"]["turns"])
-            self.assertEqual(len(message["payload"]["powers"]), 9)
+            self.assertEqual(message["payload"]["powers"], {
+                "Germany": True,
+                "Soviet Union": True,
+                "Communist China": False,
+                "Japan": False,
+                "UK West": False,
+                "UK East": False,
+                "ANZAC": False,
+                "France": False,
+                "Italy": False,
+                "United States": False,
+                "Nationalist China": False,
+            })
 
             # player_b receives the update from player_a's turn
             response = await player_b.recv()
@@ -172,4 +265,16 @@ class FunctionalTest(AsyncioTestCase):
             self.assertEqual(message["type"], "update")
             self.assertEqual(len(message["payload"]["turns"]), 12)
             self.assertIn(new_turn, message["payload"]["turns"])
-            self.assertEqual(len(message["payload"]["powers"]), 9)
+            self.assertEqual(message["payload"]["powers"], {
+                "Germany": True,
+                "Soviet Union": True,
+                "Communist China": False,
+                "Japan": False,
+                "UK West": False,
+                "UK East": False,
+                "ANZAC": False,
+                "France": False,
+                "Italy": False,
+                "United States": False,
+                "Nationalist China": False,
+            })

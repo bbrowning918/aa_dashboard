@@ -64,7 +64,7 @@ async def play(websocket, game_ref):
                     }
                     for turn in game.turns
                 ],
-                "powers": {name: token for name, token in game.powers.items() if token == ''}
+                "powers": {name: bool(token) for name, token in game.powers.items()}
             },
         }
         websockets.broadcast(connected, json.dumps(response))
@@ -105,7 +105,7 @@ async def join(websocket, payload):
                     }
                     for turn in game.turns
                 ],
-                "powers": {name: token for name, token in game.powers.items() if token == ''}
+                "powers": {name: bool(token) for name, token in game.powers.items()}
             },
         }
         await websocket.send(json.dumps(message))
