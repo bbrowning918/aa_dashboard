@@ -25,21 +25,11 @@ export const gameSlice = createSlice({
             state.gameRef = action.payload.game_ref;
             state.qrCode = action.payload.qr_code;
         },
-        clear: (state: GameState) => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("gameRef");
-            localStorage.removeItem("qrCode");
-            state.token = "";
-            state.gameRef = "";
-            state.qrCode = "";
-        },
     },
 });
 
 export const selectQrCode = (state: RootState) => state.game.qrCode;
-export const selectGame = (state: RootState) => state.game.gameRef;
 export const selectToken = (state: RootState) => state.game.token;
-export const selectIsLoggedIn = (state: RootState) => Boolean(state.game.token);
 
-export const { init, clear } = gameSlice.actions;
+export const { init } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;
