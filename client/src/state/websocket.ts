@@ -1,18 +1,24 @@
 import { useEffect, useRef, useCallback } from "react";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
-type Start = { type: "start"; payload: {} };
-type Init = {
-    type: "init";
-    payload: { token: string; game_ref: string; qr_code: string };
-};
-type Join = { type: "join"; payload: { game_ref: string } };
-type Rejoin = { type: "join"; payload: { token: string; game_ref: string } };
-type Update = { type: "update"; payload: unknown };
+export type OutboundMessage =
+    | { type: "start"; payload: {} }
+    | { type: "join"; payload: { game_ref: string } }
+    | { type: "join"; payload: { token: string; game_ref: string } }
+    | { type: "draft"; payload: { token: string; powers: string[] } };
 
-export type Message = Start | Init | Join | Rejoin | Update;
+export type InboundMessage =
+    | {
+          type: "init";
+          payload: { token: string; game_ref: string; qr_code: string };
+      }
+    | {
+          type: "join";
+          payload: { token: string; powers: { [key: string]: boolean } };
+      }
+    | { type: "update"; payload: { powers: { [key: string]: boolean } } };
 
-type MessageHandler = (message: Message) => void;
+type MessageHandler = (message: InboundMessage) => void;
 
 export const useGameSocket = () => {
     const ws = useRef<ReconnectingWebSocket>();
@@ -55,7 +61,7 @@ export const useGameSocket = () => {
         messageHandlers.delete(handler);
     }, []);
 
-    const sendMessage = useCallback((message: Message) => {
+    const sendMessage = useCallback((message: OutboundMessage) => {
         if (!ws.current) {
             return;
         } else if (ws.current.readyState == WebSocket.CONNECTING) {
