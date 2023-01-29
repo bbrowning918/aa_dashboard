@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { Draft } from "../components/Draft";
 
-import { Message, useGameSocket } from "../state/websocket";
+import { InboundMessage, useGameSocket } from "../state/websocket";
 
 export const Play = () => {
     const { gameId } = useParams();
@@ -14,7 +14,12 @@ export const Play = () => {
 
     useEffect(() => {
         if (gameId) {
-            sendMessage({ type: "join", payload: { game_ref: gameId } });
+            token
+                ? sendMessage({
+                      type: "join",
+                      payload: { token: token, game_ref: gameId },
+                  })
+                : sendMessage({ type: "join", payload: { game_ref: gameId } });
         }
     }, [gameId, sendMessage]);
 
@@ -23,21 +28,30 @@ export const Play = () => {
         return () => removeMessageHandler(handler);
     }, []);
 
-    const handler = useCallback((message: Message) => {
+    const handler = useCallback((message: InboundMessage) => {
         switch (message.type) {
             case "join":
                 setToken(message.payload.token);
                 setPowers(message.payload.powers);
                 break;
             case "update":
-                console.log("there was an update to the game state, save it");
+                setPowers(message.payload.powers);
                 break;
         }
     }, []);
 
     return (
         <div className="h-screen bg-white dark:bg-gray-900">
-            <Draft token={token} powers={powers} />
+            <Draft
+                token={token}
+                powers={powers}
+                draft={(powers: string[]) =>
+                    sendMessage({
+                        type: "draft",
+                        payload: { token: token, powers: powers },
+                    })
+                }
+            />
         </div>
     );
 };

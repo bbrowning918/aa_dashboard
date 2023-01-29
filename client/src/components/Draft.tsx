@@ -1,28 +1,35 @@
 import React from "react";
-import { Formik, Field, Form } from "formik";
-import { Powers } from "../state/constants";
+import { Formik, Field, Form, FormikHelpers } from "formik";
 
 interface Props {
     token: string;
-    powers: any;
+    powers: { [key: string]: boolean };
+    draft: (powers: string[]) => void;
 }
 
-export const Draft = ({ token, powers }: Props) => {
-    // TODO save calls websocket draft with chosen powers + token
-    // TODO already drafted powers are disabled -> indicate visually
+export const Draft = ({ token, powers, draft }: Props) => {
     console.log({ token, powers });
+
+    const onSubmit = (
+        values: { [key: string]: boolean },
+        actions: FormikHelpers<{ [key: string]: boolean }>
+    ) => {
+        const selectedPowers = Object.entries(values).map(([power, selected]) =>
+            selected ? power : ""
+        );
+        draft(selectedPowers);
+        actions.resetForm();
+    };
+
     return (
-        <Formik
-            initialValues={{}}
-            onSubmit={(values) => console.log({ values })}
-        >
+        <Formik initialValues={{}} onSubmit={onSubmit}>
             <Form>
                 <div className="mx-auto max-w-screen-sm">
                     <h3 className="mb-6 text-lg font-medium text-gray-900 dark:text-white">
                         Draft
                     </h3>
                     <ul className="mb-6 grid w-full gap-6 md:grid-cols-3">
-                        {Object.values(Powers).map((power) => (
+                        {Object.entries(powers).map(([power, drafted]) => (
                             <li key={power}>
                                 <Field
                                     type="checkbox"
@@ -30,11 +37,11 @@ export const Draft = ({ token, powers }: Props) => {
                                     id={power}
                                     className="peer hidden"
                                     required={false}
-                                    disabled={false}
+                                    disabled={drafted}
                                 />
                                 <label
                                     htmlFor={power}
-                                    className="inline-flex w-full cursor-pointer items-center justify-between rounded-lg border-2 border-gray-200 bg-white p-5 text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-800 peer-checked:text-gray-600 peer-disabled:bg-gray-100 peer-disabled:text-gray-500 dark:peer-disabled:border-gray-800 dark:peer-disabled:bg-gray-800 dark:peer-disabled:text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300"
+                                    className="inline-flex w-full cursor-pointer items-center justify-between rounded-lg border-2 border-gray-200 bg-white p-5 text-gray-500 hover:bg-gray-50 hover:text-gray-600 peer-checked:border-blue-800 peer-checked:text-gray-600 peer-disabled:bg-gray-100 peer-disabled:text-gray-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 dark:peer-checked:text-gray-300 dark:peer-disabled:border-gray-800 dark:peer-disabled:bg-gray-800 dark:peer-disabled:text-gray-600"
                                 >
                                     <div className="block">
                                         <div className="text-md w-full font-semibold">
