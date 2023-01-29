@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { useAppSelector } from "../state/hooks";
 import { selectQrCode, selectToken } from "../state/game";
-import { Message, useGameSocket } from "../state/websocket";
+import { InboundMessage, useGameSocket } from "../state/websocket";
 import { selectCurrentTurnId } from "../state/ipp";
 
 import { CountryTable } from "../components/CountryTable";
@@ -33,7 +33,7 @@ export const Tracker = () => {
         return () => removeMessageHandler(handler);
     }, []);
 
-    const handler = useCallback((message: Message) => {
+    const handler = useCallback((message: InboundMessage) => {
         if (message.type === "update") {
             console.log("there was an update to the game state, save it");
         }

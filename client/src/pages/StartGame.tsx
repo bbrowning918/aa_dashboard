@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Message, useGameSocket } from "../state/websocket";
+import { InboundMessage, useGameSocket } from "../state/websocket";
 import { useAppDispatch } from "../state/hooks";
 import { init } from "../state/game";
 
@@ -11,10 +11,9 @@ export const StartGame = () => {
     const { sendMessage, addMessageHandler, removeMessageHandler } =
         useGameSocket();
 
-    const handler = useCallback((message: Message) => {
+    const handler = useCallback((message: InboundMessage) => {
         if (message.type === "init") {
             dispatch(init(message.payload));
-            // @ts-ignore
             navigate(`${message.payload.game_ref}/tracker`);
         }
     }, []);
