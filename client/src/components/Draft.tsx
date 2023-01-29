@@ -2,14 +2,11 @@ import React from "react";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 
 interface Props {
-    token: string;
     powers: { [key: string]: boolean };
     draft: (powers: string[]) => void;
 }
 
-export const Draft = ({ token, powers, draft }: Props) => {
-    console.log({ token, powers });
-
+export const Draft = ({ powers, draft }: Props) => {
     const onSubmit = (
         values: { [key: string]: boolean },
         actions: FormikHelpers<{ [key: string]: boolean }>

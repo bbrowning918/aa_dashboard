@@ -43,7 +43,6 @@ export const Play = () => {
     return (
         <div className="h-screen bg-white dark:bg-gray-900">
             <Draft
-                token={token}
                 powers={powers}
                 draft={(powers: string[]) =>
                     sendMessage({
