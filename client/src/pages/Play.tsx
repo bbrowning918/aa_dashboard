@@ -3,14 +3,18 @@ import { useParams } from "react-router-dom";
 
 import { Draft } from "../components/Draft";
 
+import { selectToken, setToken } from "../state/game";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { InboundMessage, useGameSocket } from "../state/websocket";
 
 export const Play = () => {
+    const dispatch = useAppDispatch();
     const { gameId } = useParams();
-    const [token, setToken] = useState("");
-    const [powers, setPowers] = useState({});
+    const token = useAppSelector(selectToken);
     const { sendMessage, addMessageHandler, removeMessageHandler } =
         useGameSocket();
+
+    const [powers, setPowers] = useState({});
 
     useEffect(() => {
         if (gameId) {
@@ -31,7 +35,7 @@ export const Play = () => {
     const handler = useCallback((message: InboundMessage) => {
         switch (message.type) {
             case "join":
-                setToken(message.payload.token);
+                dispatch(setToken(message.payload.token));
                 setPowers(message.payload.powers);
                 break;
             case "update":

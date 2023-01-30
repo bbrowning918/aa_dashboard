@@ -1,10 +1,9 @@
 import React from "react";
 
-import { useAppSelector } from "../state/hooks";
-
 import { Powers } from "../state/constants";
-
+import { useAppSelector } from "../state/hooks";
 import { selectTurnsForPower, selectTurnIds } from "../state/ipp";
+
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
 
 export const CountryTable = () => {
