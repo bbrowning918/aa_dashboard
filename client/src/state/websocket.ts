@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback } from "react";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
 export type OutboundMessage =
-    | { type: "start"; payload: {} }
+    | { type: "new" }
     | { type: "join"; payload: { game_ref: string } }
     | { type: "join"; payload: { token: string; game_ref: string } }
     | { type: "draft"; payload: { token: string; powers: string[] } };
