@@ -9,7 +9,7 @@ import config
 from domain.model import Game, Turn
 from adapters.repository import TinyDBGameRepository
 from services.qr import make_qr_code
-from services.start_game import start_game
+from services.new_game import new_game
 from services.draft import draft
 from services.submit_turn import submit_turn
 
@@ -114,8 +114,8 @@ async def join(websocket, payload):
         connected.remove(websocket)
 
 
-async def start(websocket):
-    game = start_game(TinyDBGameRepository())
+async def new(websocket):
+    game = new_game(TinyDBGameRepository())
     qr_code = make_qr_code(
         f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game.ref}/play"
     )
@@ -133,8 +133,8 @@ async def handler(websocket):
 
         logger.info(F"event {message}")
 
-        if message["type"] == "start":
-            await start(websocket)
+        if message["type"] == "new":
+            await new(websocket)
         elif message["type"] == "join":
             await join(websocket, message["payload"])
         else:

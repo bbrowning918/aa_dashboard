@@ -19,7 +19,7 @@ class FunctionalTest(AsyncioTestCase):
             player_b = await websockets.connect(ws_uri)
 
             # host starts a game
-            await host.send(json.dumps({"type": "start"}))
+            await host.send(json.dumps({"type": "new"}))
 
             # host receives init message
             response = await host.recv()
