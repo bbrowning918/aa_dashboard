@@ -94,6 +94,7 @@ async def join(websocket, payload):
             "type": "join",
             "payload": {
                 "token": token,
+                "game_ref": game_ref,
                 "turns": [
                     {
                         "year": turn.year,
@@ -117,7 +118,7 @@ async def join(websocket, payload):
 async def new(websocket):
     game = new_game(TinyDBGameRepository())
     qr_code = make_qr_code(
-        f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game.ref}/play"
+        f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game.ref}/join"
     )
 
     message = {
