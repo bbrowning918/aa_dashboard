@@ -1,43 +1,16 @@
-import React, { useEffect, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import React from "react";
 
-import { selectQrCode, selectToken } from "../state/game";
+import { selectQrCode } from "../state/game";
 import { useAppSelector } from "../state/hooks";
 import { selectCurrentTurnId } from "../state/ipp";
-import { InboundMessage, useGameSocket } from "../state/websocket";
 
 import { CountryTable } from "../components/CountryTable";
 
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
 
 export const Tracker = () => {
-    const { gameId } = useParams();
-    const { sendMessage, addMessageHandler, removeMessageHandler } =
-        useGameSocket();
-
     const currentTurnId = useAppSelector(selectCurrentTurnId);
     const qrCode = useAppSelector(selectQrCode);
-    const token = useAppSelector(selectToken);
-
-    useEffect(() => {
-        if (gameId) {
-            sendMessage({
-                type: "join",
-                payload: { token: token, game_ref: gameId },
-            });
-        }
-    }, [gameId, sendMessage]);
-
-    useEffect(() => {
-        addMessageHandler(handler);
-        return () => removeMessageHandler(handler);
-    }, []);
-
-    const handler = useCallback((message: InboundMessage) => {
-        if (message.type === "update") {
-            console.log("there was an update to the game state, save it");
-        }
-    }, []);
 
     return (
         <div className="h-screen bg-white dark:bg-gray-900">
@@ -49,10 +22,12 @@ export const Tracker = () => {
                 </div>
             </nav>
             <CountryTable />
-            <img
-                className="absolute bottom-0 right-0 w-36 rounded-2xl border-gray-200 shadow-md"
-                src={`data:image/png;base64, ${qrCode}`}
-            />
+            {qrCode && (
+                <img
+                    className="absolute bottom-0 right-0 w-36 rounded-2xl border-gray-200 shadow-md"
+                    src={`data:image/png;base64, ${qrCode}`}
+                />
+            )}
         </div>
     );
 };

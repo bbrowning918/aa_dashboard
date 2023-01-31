@@ -14,7 +14,11 @@ export type InboundMessage =
       }
     | {
           type: "join";
-          payload: { token: string; powers: { [key: string]: boolean } };
+          payload: {
+              token: string;
+              game_ref: string;
+              powers: { [key: string]: boolean };
+          };
       }
     | { type: "update"; payload: { powers: { [key: string]: boolean } } };
 
@@ -26,7 +30,7 @@ export const useGameSocket = () => {
 
     useEffect(() => {
         const options = {
-            debug: true,
+            debug: false,
         };
 
         ws.current = new ReconnectingWebSocket(
@@ -37,8 +41,6 @@ export const useGameSocket = () => {
             options
         );
 
-        // ws.current.onopen = () => console.log("ws opened");
-        // ws.current.onclose = () => console.log("ws closed");
         ws.current.onerror = (event) => console.error(event);
         ws.current.onmessage = (event) => {
             const message = JSON.parse(event.data);
@@ -48,9 +50,7 @@ export const useGameSocket = () => {
 
         const wsCurrent = ws.current;
 
-        return () => {
-            wsCurrent.close();
-        };
+        return () => wsCurrent.close();
     }, []);
 
     const addMessageHandler = useCallback((handler: MessageHandler) => {

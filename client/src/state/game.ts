@@ -3,12 +3,14 @@ import { RootState } from "./store";
 
 export type GameState = {
     token: string;
+    powers: { [key: string]: boolean };
     qrCode: string;
 };
 
 const initialState: GameState = {
     token: localStorage.getItem("token") || "",
     qrCode: localStorage.getItem("qrCode") || "",
+    powers: {},
 };
 
 export const gameSlice = createSlice({
@@ -25,11 +27,15 @@ export const gameSlice = createSlice({
             localStorage.setItem("token", action.payload.token);
             state.token = action.payload.token;
         },
+        setPowers: (state: GameState, action: PayloadAction<any>) => {
+            state.powers = action.payload.powers;
+        },
     },
 });
 
 export const selectQrCode = (state: RootState) => state.game.qrCode;
 export const selectToken = (state: RootState) => state.game.token;
+export const selectPowers = (state: RootState) => state.game.powers;
 
-export const { init, setToken } = gameSlice.actions;
+export const { init, setToken, setPowers } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;
