@@ -1,3 +1,5 @@
+export const WS_HOST = import.meta.env.VITE_REACT_APP_HOST_WS;
+export const WS_PORT = import.meta.env.VITE_REACT_APP_PORT_WS;
 export enum Powers {
     GERMANY = "GERMANY",
     SOVIET_UNION = "SOVIET_UNION",

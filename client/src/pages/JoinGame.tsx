@@ -3,27 +3,27 @@ import { useParams } from "react-router-dom";
 
 import { selectToken } from "../state/game";
 import { useAppSelector } from "../state/hooks";
-import { OutboundMessage } from "../state/websocket";
+import { OutboundMessage } from "../state/types";
 
 interface Props {
-    sendMessage: (message: OutboundMessage) => void;
+    send: (message: OutboundMessage) => void;
 }
 
-export const JoinGame = ({ sendMessage }: Props) => {
+export const JoinGame = ({ send }: Props) => {
     const { gameId } = useParams();
     const token = useAppSelector(selectToken);
 
     const joinGame = () => {
         if (gameId) {
             token
-                ? sendMessage({
+                ? send({
                       type: "join",
                       payload: {
                           token: token,
                           game_ref: gameId,
                       },
                   })
-                : sendMessage({
+                : send({
                       type: "join",
                       payload: { game_ref: gameId },
                   });

@@ -1,81 +1,57 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
-export type OutboundMessage =
-    | { type: "new" }
-    | { type: "join"; payload: { game_ref: string } }
-    | { type: "join"; payload: { token: string; game_ref: string } }
-    | { type: "draft"; payload: { token: string; powers: string[] } };
+import { WS_HOST, WS_PORT } from "./constants";
 
-export type InboundMessage =
-    | {
-          type: "init";
-          payload: { token: string; game_ref: string; qr_code: string };
-      }
-    | {
-          type: "join";
-          payload: {
-              token: string;
-              game_ref: string;
-              powers: { [key: string]: boolean };
-          };
-      }
-    | { type: "update"; payload: { powers: { [key: string]: boolean } } };
+import { OutboundMessage, MessageHandler } from "./types";
 
-type MessageHandler = (message: InboundMessage) => void;
-
-export const useGameSocket = () => {
-    const ws = useRef<ReconnectingWebSocket>();
+export const useWebSocket = () => {
+    const websocket = useRef<ReconnectingWebSocket>();
     const messageHandlers = new Set<MessageHandler>();
 
     useEffect(() => {
-        const options = {
-            debug: false,
-        };
-
-        ws.current = new ReconnectingWebSocket(
-            `ws://${import.meta.env.VITE_REACT_APP_HOST_WS}:${
-                import.meta.env.VITE_REACT_APP_PORT_WS
-            }/`,
+        const ws = new ReconnectingWebSocket(
+            `ws://${WS_HOST}:${WS_PORT}/`,
             [],
-            options
+            {
+                debug: true,
+            }
         );
 
-        ws.current.onerror = (event) => console.error(event);
-        ws.current.onmessage = (event) => {
+        ws.onerror = (event) => console.error(event);
+        ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
             console.log(message);
             messageHandlers.forEach((handler) => handler(message));
         };
+        websocket.current = ws;
 
-        const wsCurrent = ws.current;
-
-        return () => wsCurrent.close();
+        return () => ws.close();
     }, []);
 
-    const addMessageHandler = useCallback((handler: MessageHandler) => {
+    const addHandler = (handler: MessageHandler) => {
         messageHandlers.add(handler);
-    }, []);
+    };
 
-    const removeMessageHandler = useCallback((handler: MessageHandler) => {
+    const removeHandler = (handler: MessageHandler) => {
         messageHandlers.delete(handler);
-    }, []);
+    };
 
-    const sendMessage = useCallback((message: OutboundMessage) => {
-        if (!ws.current) {
+    const send = (message: OutboundMessage) => {
+        if (!websocket.current) {
             return;
-        } else if (ws.current.readyState == WebSocket.CONNECTING) {
-            ws.current?.addEventListener("open", () =>
-                ws.current?.send(JSON.stringify(message))
+        } else if (websocket.current?.readyState == WebSocket.CONNECTING) {
+            websocket.current?.addEventListener("open", () =>
+                websocket.current?.send(JSON.stringify(message))
             );
         } else {
-            ws.current.send(JSON.stringify(message));
+            websocket.current?.send(JSON.stringify(message));
         }
-    }, []);
+    };
 
     return {
-        addMessageHandler,
-        removeMessageHandler,
-        sendMessage,
+        addHandler,
+        removeHandler,
+        send,
     };
 };

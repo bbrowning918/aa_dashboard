@@ -1,10 +1,8 @@
-import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React from "react";
 import { ErrorMessage, Field, Form, Formik, FormikErrors } from "formik";
 
 import { useAppSelector } from "../state/hooks";
 import { selectCurrentTurnId } from "../state/ipp";
-import { useGameSocket } from "../state/websocket";
 
 import { findSeasonYearForTurnId } from "../utils/turnUtils";
 
@@ -15,15 +13,6 @@ type TurnFormProps = {
 };
 
 export const Turn = () => {
-    const { gameId } = useParams();
-    const { sendMessage } = useGameSocket();
-
-    useEffect(() => {
-        if (gameId) {
-            sendMessage({ type: "join", payload: { game_ref: gameId } });
-        }
-    }, [gameId, sendMessage]);
-
     const currentTurnId = useAppSelector(selectCurrentTurnId);
 
     const initialValues: TurnFormProps = {

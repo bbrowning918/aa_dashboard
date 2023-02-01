@@ -3,15 +3,18 @@ import { Formik, Field, Form, FormikHelpers } from "formik";
 
 import { selectToken, selectPowers } from "../state/game";
 import { useAppSelector } from "../state/hooks";
-import { OutboundMessage } from "../state/websocket";
+import { OutboundMessage } from "../state/types";
 
 interface Props {
-    sendMessage: (message: OutboundMessage) => void;
+    send: (message: OutboundMessage) => void;
 }
 
-export const Draft = ({ sendMessage }: Props) => {
+export const Draft = ({ send }: Props) => {
     const token = useAppSelector(selectToken);
     const powers = useAppSelector(selectPowers);
+
+    // if we don't have powers but do have token, we should re join on load
+    // if we don't have powers or a token, we should go to 'join' page?
 
     const onSubmit = (
         values: { [key: string]: boolean },
@@ -20,7 +23,7 @@ export const Draft = ({ sendMessage }: Props) => {
         const selectedPowers = Object.entries(values).map(([power, selected]) =>
             selected ? power : ""
         );
-        sendMessage({
+        send({
             type: "draft",
             payload: { token: token, powers: selectedPowers },
         });
