@@ -21,7 +21,7 @@ class FunctionalTest(AsyncioTestCase):
             # host starts a game
             await host.send(json.dumps({"type": "new"}))
 
-            # host receives init message
+            # host receives init game message
             response = await host.recv()
             message = json.loads(response)
             self.assertEqual(message["type"], "init")
@@ -37,10 +37,10 @@ class FunctionalTest(AsyncioTestCase):
             await host.send(
                 json.dumps({"type": "join", "payload": {"game_ref": game_ref, "token": host_token}}))
 
-            # host receives join message
+            # host receives connected message
             response = await host.recv()
             message = json.loads(response)
-            self.assertEqual(message["type"], "join")
+            self.assertEqual(message["type"], "connected")
             self.assertEqual(host_token, message["payload"]["token"])
 
             self.assertCountEqual(message["payload"]["turns"], [
@@ -74,10 +74,10 @@ class FunctionalTest(AsyncioTestCase):
             # player_a joins the game
             await player_a.send(json.dumps({"type": "join", "payload": {"game_ref": game_ref}}))
 
-            # player_a receives join message
+            # player_a receives connected message
             response = await player_a.recv()
             message = json.loads(response)
-            self.assertEqual(message["type"], "join")
+            self.assertEqual(message["type"], "connected")
 
             self.assertEqual(len(message["payload"]["turns"]), 11)
             self.assertEqual(len(message["payload"]["powers"]), 11)
@@ -130,10 +130,10 @@ class FunctionalTest(AsyncioTestCase):
             # player_b joins game
             await player_b.send(json.dumps({"type": "join", "payload": {"game_ref": game_ref}}))
 
-            # player_b receives join message
+            # player_b receives connected message
             response = await player_b.recv()
             message = json.loads(response)
-            self.assertEqual(message["type"], "join")
+            self.assertEqual(message["type"], "connected")
             self.assertEqual(len(message["payload"]["turns"]), 11)
             self.assertEqual(message["payload"]["powers"], {
                 "Germany": True,

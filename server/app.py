@@ -91,7 +91,7 @@ async def join(websocket, payload):
 
     try:
         message = {
-            "type": "join",
+            "type": "connected",
             "payload": {
                 "token": token,
                 "game_ref": game_ref,
