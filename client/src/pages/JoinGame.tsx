@@ -1,17 +1,32 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { selectToken } from "../state/game";
-import { useAppSelector } from "../state/hooks";
-import { OutboundMessage } from "../state/types";
+import { useWebsocket } from "../Websocket";
 
-interface Props {
-    send: (message: OutboundMessage) => void;
-}
+import { selectToken, setPowers, setToken } from "../state/game";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { InboundMessage } from "../state/types";
 
-export const JoinGame = ({ send }: Props) => {
+export const JoinGame = () => {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const { gameId } = useParams();
     const token = useAppSelector(selectToken);
+
+    const { send, addHandler, removeHandler } = useWebsocket();
+
+    useEffect(() => {
+        addHandler(handler);
+        return () => removeHandler(handler);
+    }, []);
+
+    const handler = (message: InboundMessage) => {
+        if (message.type === "connected") {
+            dispatch(setToken(message.payload));
+            dispatch(setPowers(message.payload));
+            navigate(`${message.payload.game_ref}/draft`);
+        }
+    };
 
     const joinGame = () => {
         if (gameId) {

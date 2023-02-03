@@ -7,6 +7,7 @@ import "./index.css";
 
 import { App } from "./App";
 import { store } from "./state/store";
+import { WebsocketProvider } from "./Websocket";
 
 import { ErrorBoundary } from "./ErrorBoundary";
 
@@ -15,7 +16,9 @@ createRoot(document.getElementById("root") as HTMLElement).render(
         <ErrorBoundary>
             <BrowserRouter>
                 <Provider store={store}>
-                    <App />
+                    <WebsocketProvider>
+                        <App />
+                    </WebsocketProvider>
                 </Provider>
             </BrowserRouter>
         </ErrorBoundary>

@@ -1,11 +1,38 @@
-import { useEffect, useRef } from "react";
+import {
+    useEffect,
+    useRef,
+    createContext,
+    useContext,
+    FC,
+    ReactNode,
+} from "react";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
-import { WS_HOST, WS_PORT } from "./constants";
+import { WS_HOST, WS_PORT } from "./state/constants";
 
-import { OutboundMessage, MessageHandler } from "./types";
+import { OutboundMessage, MessageHandler } from "./state/types";
 
-export const useWebSocket = () => {
+export const useWebsocket = () => {
+    const context = useContext(WebsocketContext);
+    if (!context) {
+        throw new Error("useWebsocket msut be used within a WebsocketProvider");
+    }
+    return context;
+};
+
+interface WebsocketContextType {
+    send: (arg0: OutboundMessage) => void;
+    addHandler: (arg0: MessageHandler) => void;
+    removeHandler: (arg0: MessageHandler) => void;
+}
+
+const WebsocketContext = createContext<WebsocketContextType | null>(null);
+
+interface WebsocketProviderProps {
+    children: ReactNode;
+}
+
+export const WebsocketProvider: FC<WebsocketProviderProps> = ({ children }) => {
     const websocket = useRef<ReconnectingWebSocket>();
     const messageHandlers = new Set<MessageHandler>();
 
@@ -49,9 +76,9 @@ export const useWebSocket = () => {
         }
     };
 
-    return {
-        addHandler,
-        removeHandler,
-        send,
-    };
+    return (
+        <WebsocketContext.Provider value={{ send, addHandler, removeHandler }}>
+            {children}
+        </WebsocketContext.Provider>
+    );
 };

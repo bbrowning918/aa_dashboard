@@ -1,18 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 
-import { selectToken, selectPowers } from "../state/game";
-import { useAppSelector } from "../state/hooks";
-import { OutboundMessage } from "../state/types";
+import { useWebsocket } from "../Websocket";
 
-interface Props {
-    send: (message: OutboundMessage) => void;
-}
+import { selectToken, selectPowers, setPowers } from "../state/game";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { InboundMessage } from "../state/types";
 
-export const Draft = ({ send }: Props) => {
+export const Draft = () => {
+    const dispatch = useAppDispatch();
+
+    const { send, addHandler, removeHandler } = useWebsocket();
+
     const token = useAppSelector(selectToken);
     const powers = useAppSelector(selectPowers);
 
+    useEffect(() => {
+        addHandler(handler);
+        return () => removeHandler(handler);
+    }, []);
+
+    const handler = (message: InboundMessage) => {
+        if (message.type === "update") {
+            dispatch(setPowers(message.payload));
+            console.log(message.payload);
+        }
+    };
     // if we don't have powers but do have token, we should re join on load
     // if we don't have powers or a token, we should go to 'join' page?
 
