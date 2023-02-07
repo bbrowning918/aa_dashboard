@@ -1,11 +1,13 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import logger from "redux-logger";
 
+import { draftReducer } from "./draft";
 import { gameReducer } from "./game";
 import { ippReducer } from "./ipp";
 
 export const store = configureStore({
     reducer: combineReducers({
+        draft: draftReducer,
         game: gameReducer,
         ipp: ippReducer,
     }),

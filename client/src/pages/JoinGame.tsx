@@ -3,7 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useWebsocket } from "../Websocket";
 
-import { selectToken, setPowers, setToken } from "../state/game";
+import { setPowers } from "../state/draft";
+import { selectToken, setToken } from "../state/game";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { InboundMessage } from "../state/types";
 
@@ -24,7 +25,7 @@ export const JoinGame = () => {
         if (message.type === "connected") {
             dispatch(setToken(message.payload));
             dispatch(setPowers(message.payload));
-            navigate(`${message.payload.game_ref}/draft`);
+            navigate(`/${message.payload.game_ref}/draft`);
         }
     };
 

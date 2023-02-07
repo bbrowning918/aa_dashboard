@@ -3,7 +3,8 @@ import { Formik, Field, Form, FormikHelpers } from "formik";
 
 import { useWebsocket } from "../Websocket";
 
-import { selectToken, selectPowers, setPowers } from "../state/game";
+import { selectPowers, setDrafted, setPowers } from "../state/draft";
+import { selectToken } from "../state/game";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { InboundMessage } from "../state/types";
 
@@ -26,6 +27,8 @@ export const Draft = () => {
             console.log(message.payload);
         }
     };
+
+    // on mount we should attempt a join call, to ensure the websocket is setup
     // if we don't have powers but do have token, we should re join on load
     // if we don't have powers or a token, we should go to 'join' page?
 
@@ -40,7 +43,10 @@ export const Draft = () => {
             type: "draft",
             payload: { token: token, powers: selectedPowers },
         });
+        // don't overwrite the state if selectedPowers is empty, it should be an append too
+        dispatch(setDrafted(selectedPowers));
         actions.resetForm();
+        // navigate away to turn
     };
 
     return (
