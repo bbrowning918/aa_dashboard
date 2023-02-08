@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useWebsocket } from "../Websocket";
 
 import { setPowers } from "../state/draft";
-import { selectToken, setToken } from "../state/game";
+import { selectToken, setToken, setConnected } from "../state/game";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { InboundMessage } from "../state/types";
 
@@ -25,6 +25,7 @@ export const JoinGame = () => {
         if (message.type === "connected") {
             dispatch(setToken(message.payload));
             dispatch(setPowers(message.payload));
+            dispatch(setConnected(message.payload));
             navigate(`/${message.payload.game_ref}/draft`);
         }
     };

@@ -14,12 +14,18 @@ export class ErrorBoundary extends Component<Props, State> {
     };
 
     static getDerivedStateFromError(error: Error): State {
-        return { error: "Uh Oh... " + error.stack?.toString() };
+        return { error: "Uh Oh... \n" + error };
     }
 
     render() {
         if (this.state.error) {
-            return <>{this.state.error}</>;
+            return (
+                <>
+                    {this.state.error.split("\n").map((item, index) => (
+                        <div key={index}>{item}</div>
+                    ))}
+                </>
+            );
         }
         return this.props.children;
     }

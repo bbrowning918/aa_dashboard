@@ -1,20 +1,25 @@
 import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 
 import { useWebsocket } from "../Websocket";
 
+import { Loading } from "../components/Loading";
+
 import { selectPowers, setDrafted, setPowers } from "../state/draft";
-import { selectToken } from "../state/game";
+import { selectConnected, selectToken, setConnected } from "../state/game";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { InboundMessage } from "../state/types";
 
 export const Draft = () => {
     const dispatch = useAppDispatch();
+    const { gameId } = useParams();
 
     const { send, addHandler, removeHandler } = useWebsocket();
 
     const token = useAppSelector(selectToken);
     const powers = useAppSelector(selectPowers);
+    const connected = useAppSelector(selectConnected);
 
     useEffect(() => {
         addHandler(handler);
@@ -22,15 +27,33 @@ export const Draft = () => {
     }, []);
 
     const handler = (message: InboundMessage) => {
+        if (message.type === "connected") {
+            dispatch(setPowers(message.payload));
+            dispatch(setConnected(message.payload));
+        }
         if (message.type === "update") {
             dispatch(setPowers(message.payload));
-            console.log(message.payload);
         }
     };
 
-    // on mount we should attempt a join call, to ensure the websocket is setup
-    // if we don't have powers but do have token, we should re join on load
-    // if we don't have powers or a token, we should go to 'join' page?
+    useEffect(() => {
+        if (!connected) {
+            if (gameId) {
+                token
+                    ? send({
+                          type: "join",
+                          payload: {
+                              token: token,
+                              game_ref: gameId,
+                          },
+                      })
+                    : send({
+                          type: "join",
+                          payload: { game_ref: gameId },
+                      });
+            }
+        }
+    }, [connected]);
 
     const onSubmit = (
         values: { [key: string]: boolean },
@@ -48,6 +71,10 @@ export const Draft = () => {
         actions.resetForm();
         // navigate away to turn
     };
+
+    if (!connected) {
+        return <Loading />;
+    }
 
     return (
         <div className="h-screen bg-white dark:bg-gray-900">

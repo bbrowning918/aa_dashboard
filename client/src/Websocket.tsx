@@ -14,8 +14,9 @@ import { OutboundMessage, MessageHandler } from "./state/types";
 
 export const useWebsocket = () => {
     const context = useContext(WebsocketContext);
+
     if (!context) {
-        throw new Error("useWebsocket msut be used within a WebsocketProvider");
+        throw new Error("useWebsocket must be used within a WebsocketProvider");
     }
     return context;
 };
@@ -35,6 +36,7 @@ interface WebsocketProviderProps {
 export const WebsocketProvider: FC<WebsocketProviderProps> = ({ children }) => {
     const websocket = useRef<ReconnectingWebSocket>();
     const messageHandlers = new Set<MessageHandler>();
+    const messageBuffer = new Set<OutboundMessage>();
 
     useEffect(() => {
         const ws = new ReconnectingWebSocket(
@@ -45,6 +47,11 @@ export const WebsocketProvider: FC<WebsocketProviderProps> = ({ children }) => {
             }
         );
 
+        ws.onopen = (_) => {
+            for (const message of messageBuffer) {
+                ws.send(JSON.stringify(message));
+            }
+        };
         ws.onerror = (event) => console.error(event);
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
@@ -68,9 +75,7 @@ export const WebsocketProvider: FC<WebsocketProviderProps> = ({ children }) => {
         if (!websocket.current) {
             return;
         } else if (websocket.current?.readyState == WebSocket.CONNECTING) {
-            websocket.current?.addEventListener("open", () =>
-                websocket.current?.send(JSON.stringify(message))
-            );
+            messageBuffer.add(message);
         } else {
             websocket.current?.send(JSON.stringify(message));
         }
