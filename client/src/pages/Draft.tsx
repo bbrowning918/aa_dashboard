@@ -9,6 +9,7 @@ import { Loading } from "../components/Loading";
 import { selectPowers, setDrafted, setPowers } from "../state/draft";
 import { selectConnected, selectToken, setConnected } from "../state/game";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { setTurns } from "../state/turn";
 import { InboundMessage } from "../state/types";
 
 export const Draft = () => {
@@ -30,9 +31,11 @@ export const Draft = () => {
         if (message.type === "connected") {
             dispatch(setPowers(message.payload));
             dispatch(setConnected(message.payload));
+            dispatch(setTurns(message.payload));
         }
         if (message.type === "update") {
             dispatch(setPowers(message.payload));
+            dispatch(setTurns(message.payload));
         }
     };
 

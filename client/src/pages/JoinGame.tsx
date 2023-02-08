@@ -6,6 +6,7 @@ import { useWebsocket } from "../Websocket";
 import { setPowers } from "../state/draft";
 import { selectToken, setToken, setConnected } from "../state/game";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { setTurns } from "../state/turn";
 import { InboundMessage } from "../state/types";
 
 export const JoinGame = () => {
@@ -25,6 +26,7 @@ export const JoinGame = () => {
         if (message.type === "connected") {
             dispatch(setToken(message.payload));
             dispatch(setPowers(message.payload));
+            dispatch(setTurns(message.payload));
             dispatch(setConnected(message.payload));
             navigate(`/${message.payload.game_ref}/draft`);
         }
