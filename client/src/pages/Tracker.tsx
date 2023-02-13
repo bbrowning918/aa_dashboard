@@ -2,14 +2,10 @@ import React from "react";
 
 import { selectQrCode } from "../state/game";
 import { useAppSelector } from "../state/hooks";
-import { selectCurrentTurnId } from "../state/ipp";
 
 import { CountryTable } from "../components/CountryTable";
 
-import { findSeasonYearForTurnId } from "../utils/turnUtils";
-
 export const Tracker = () => {
-    const currentTurnId = useAppSelector(selectCurrentTurnId);
     const qrCode = useAppSelector(selectQrCode);
 
     return (
@@ -17,7 +13,7 @@ export const Tracker = () => {
             <nav className="mb-4 rounded-b-lg border-gray-200 bg-blue-700 p-4 shadow-md">
                 <div className="flex flex-wrap items-center items-center justify-between">
                     <h1 className="title-font text-xl font-medium text-white sm:text-2xl">
-                        {findSeasonYearForTurnId(currentTurnId)}
+                        SEASON YEAR
                     </h1>
                 </div>
             </nav>

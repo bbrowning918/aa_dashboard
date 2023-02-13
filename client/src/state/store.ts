@@ -3,14 +3,12 @@ import logger from "redux-logger";
 
 import { draftReducer } from "./draft";
 import { gameReducer } from "./game";
-import { ippReducer } from "./ipp";
 import { turnReducer } from "./turn";
 
 export const store = configureStore({
     reducer: combineReducers({
         draft: draftReducer,
         game: gameReducer,
-        ipp: ippReducer,
         turn: turnReducer,
     }),
     middleware: (getDefaultMiddleware) =>

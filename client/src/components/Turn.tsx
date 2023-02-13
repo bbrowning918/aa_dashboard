@@ -1,11 +1,6 @@
 import React from "react";
 import { ErrorMessage, Field, Form, Formik, FormikErrors } from "formik";
 
-import { useAppSelector } from "../state/hooks";
-import { selectCurrentTurnId } from "../state/ipp";
-
-import { findSeasonYearForTurnId } from "../utils/turnUtils";
-
 type TurnFormProps = {
     start: number;
     spent: number;
@@ -13,8 +8,6 @@ type TurnFormProps = {
 };
 
 export const Turn = () => {
-    const currentTurnId = useAppSelector(selectCurrentTurnId);
-
     const initialValues: TurnFormProps = {
         start: 10,
         spent: 0,
@@ -47,7 +40,7 @@ export const Turn = () => {
             >
                 <Form>
                     <h6>CHOSEN POWER</h6>
-                    <p>{findSeasonYearForTurnId(currentTurnId)}</p>
+                    <p>SEASON YEAR</p>
                     <div className="mb-6 grid gap-6">
                         <label htmlFor="start">IPP</label>
                         <Field type="number" id="start" name="start" disabled />
