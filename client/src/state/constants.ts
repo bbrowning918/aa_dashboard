@@ -1,19 +1,33 @@
 export const WS_HOST = import.meta.env.VITE_REACT_APP_HOST_WS;
 export const WS_PORT = import.meta.env.VITE_REACT_APP_PORT_WS;
 
-export const Powers  = {
-    GERMANY: "GERMANY",
-    SOVIET_UNION: "SOVIET_UNION",
-    COMMUNIST_CHINA: "COMMUNIST_CHINA",
-    JAPAN: "JAPAN",
-    UK_WEST: "UK_WEST",
-    UK_EAST: "UK_EAST",
+export const Powers = {
+    GERMANY: "Germany",
+    SOVIET_UNION: "Soviet Union",
+    COMMUNIST_CHINA: "Communist China",
+    JAPAN: "Japan",
+    UK_WEST: "UK West",
+    UK_EAST: "UK East",
     ANZAC: "ANZAC",
-    FRANCE: "FRANCE",
-    ITALY: "ITALY",
-    USA: "USA",
-    NATIONALIST_CHINA: "NATIONALIST_CHINA",
+    FRANCE: "France",
+    ITALY: "Italy",
+    USA: "United States",
+    NATIONALIST_CHINA: "Nationalist China",
 } as const;
+
+export const powerOrder = [
+    Powers.GERMANY,
+    Powers.SOVIET_UNION,
+    Powers.COMMUNIST_CHINA,
+    Powers.JAPAN,
+    Powers.UK_WEST,
+    Powers.UK_EAST,
+    Powers.ANZAC,
+    Powers.FRANCE,
+    Powers.ITALY,
+    Powers.USA,
+    Powers.NATIONALIST_CHINA,
+];
 
 export const Seasons = {
     WINTER: "Winter",

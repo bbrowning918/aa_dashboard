@@ -1,4 +1,4 @@
-import { assert, expect, test } from 'vitest';
+import { assert, expect, test } from "vitest";
 
 import { Seasons, START_SEASON, START_YEAR } from "../../state/constants";
 import * as utils from "../turnUtils";

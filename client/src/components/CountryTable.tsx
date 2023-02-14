@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Powers } from "../state/constants";
+import { Powers, powerOrder } from "../state/constants";
 import { useAppSelector } from "../state/hooks";
 import { selectTurns, Turn } from "../state/turn";
 
@@ -8,20 +8,6 @@ import { findSeasonYearForTurnId } from "../utils/turnUtils";
 
 export const CountryTable = () => {
     const turns = useAppSelector(selectTurns); // remembering why the prototype had these keyed by power
-
-    const powerOrder = [
-        "Germany",
-        "Soviet Union",
-        "Communist China",
-        "Japan",
-        "UK West",
-        "UK East",
-        "ANZAC",
-        "France",
-        "Italy",
-        "United States",
-        "Nationalist China",
-    ];
 
     const orderedTurns = [...turns].sort((a: Turn, b: Turn) => {
         if (a.year === b.year) {
@@ -51,7 +37,7 @@ export const CountryTable = () => {
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-left text-sm text-gray-900 dark:text-gray-900">
-                <thead className="bg-gray-50 text-sm uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <thead className="bg-gray-50 text-sm text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th className="px-6 py-3">Turn</th>
                         <th className="px-6 py-3">{Powers.GERMANY}</th>
