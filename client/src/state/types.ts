@@ -1,7 +1,9 @@
 import { Powers, Seasons } from "./constants";
 
-export type Power = keyof typeof Powers;
-export type Season = keyof typeof Seasons;
+type Values<T> = T[keyof T];
+
+export type Power = Values<typeof Powers>;
+export type Season = Values<typeof Seasons>;
 
 export type OutboundMessage =
     | { type: "new" }
