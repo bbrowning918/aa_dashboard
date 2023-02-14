@@ -1,7 +1,9 @@
+import { assert, expect, test } from 'vitest';
+
 import { Seasons, START_SEASON, START_YEAR } from "../../state/constants";
 import * as utils from "../turnUtils";
 
-describe("switchSeason tests", () => {
+test("switchSeason tests", () => {
     test("summer becomes winter", () => {
         expect(utils.switchSeason(Seasons.SUMMER)).toEqual(Seasons.WINTER);
     });
@@ -10,7 +12,7 @@ describe("switchSeason tests", () => {
     });
 });
 
-describe("findSeasonYearForTurnId tests", () => {
+test("findSeasonYearForTurnId tests", () => {
     test("first turn is START_SEASON of START_YEAR", () => {
         expect(utils.findSeasonYearForTurnId(0)).toEqual(
             `${START_SEASON} ${START_YEAR}`
