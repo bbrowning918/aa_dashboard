@@ -22,13 +22,13 @@ export const Turn = () => {
                     let errors: FormikErrors<TurnFormProps> = {};
 
                     if (values.spent < 0) {
-                        errors.spent = "It does not work that way";
+                        errors.spent = "That is not how spending works";
                     }
                     if (values.spent > initialValues.start) {
-                        errors.spent = "Trying to spend more than IPP";
+                        errors.spent = "That is not how budgets work";
                     }
                     if (values.income < 0) {
-                        errors.income = "It does not work that way";
+                        errors.income = "That is not how income works";
                     }
 
                     return errors;
