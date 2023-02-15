@@ -1,38 +1,45 @@
 import React from "react";
 
-import { Powers, powerOrder } from "../state/constants";
+import { Powers } from "../state/constants";
 import { useAppSelector } from "../state/hooks";
-import { selectTurns, Turn } from "../state/turn";
-
-import { findSeasonYearForTurnId } from "../utils/turnUtils";
+import { selectTurnLabels, selectTurnsForPower } from "../state/turn";
 
 export const CountryTable = () => {
-    const turns = useAppSelector(selectTurns); // remembering why the prototype had these keyed by power
+    const turnLabels = useAppSelector(selectTurnLabels);
 
-    const orderedTurns = [...turns].sort((a: Turn, b: Turn) => {
-        if (a.year === b.year) {
-            if (a.season === b.season) {
-                const aPower = powerOrder.indexOf(a.power);
-                const bPower = powerOrder.indexOf(b.power);
-                return aPower == -1 ? 1 : bPower == -1 ? -1 : aPower - bPower;
-            } else {
-                return a.season.localeCompare(b.season);
-            }
-        } else {
-            return a.year < b.year ? -1 : 1;
-        }
-    });
-
-    const sortedTurns = orderedTurns.reduce((result, turn, index) => {
-        const chunkIndex = Math.floor(index / powerOrder.length);
-
-        if (!result[chunkIndex]) {
-            result[chunkIndex] = [];
-        }
-        result[chunkIndex].push(turn);
-
-        return result;
-    }, []);
+    const germanTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.GERMANY)
+    );
+    const sovietTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.SOVIET_UNION)
+    );
+    const commieChinaTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.COMMUNIST_CHINA)
+    );
+    const japanTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.JAPAN)
+    );
+    const ukWestTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.UK_WEST)
+    );
+    const ukEastTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.UK_EAST)
+    );
+    const anzacTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.ANZAC)
+    );
+    const franceTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.FRANCE)
+    );
+    const italyTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.ITALY)
+    );
+    const usaTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.USA)
+    );
+    const nattyChinaTurns = useAppSelector((state) =>
+        selectTurnsForPower(state, Powers.NATIONALIST_CHINA)
+    );
 
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -56,22 +63,47 @@ export const CountryTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedTurns.map((turns: Turn[], turnIndex: number) => (
+                    {turnLabels.map((turnLabel: string, turnIndex: number) => (
                         <tr
                             key={turnIndex}
                             className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
                         >
                             <td className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
-                                {findSeasonYearForTurnId(turnIndex)}
+                                {turnLabel}
                             </td>
-                            {[...Array(11)].map((_, powerIndex) => (
-                                <td
-                                    key={`${turnIndex}-${powerIndex}`}
-                                    className="px-6 py-4 dark:text-white"
-                                >
-                                    {turns[powerIndex]?.start}
-                                </td>
-                            ))}
+                            <td className="px-6 py-4 dark:text-white">
+                                {germanTurns[turnIndex]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {sovietTurns[turnIndex]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {commieChinaTurns[turnIndex]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {japanTurns[turnIndex]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {ukWestTurns[turnIndex]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {ukEastTurns[turnIndex]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {anzacTurns[turnIndex]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {franceTurns[turnIndex]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {italyTurns[turnIndex]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {usaTurns[turnIndex]?.start}
+                            </td>
+                            <td className="px-6 py-4 dark:text-white">
+                                {nattyChinaTurns[turnIndex]?.start}
+                            </td>
                         </tr>
                     ))}
                 </tbody>

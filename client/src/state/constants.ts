@@ -15,20 +15,6 @@ export const Powers = {
     NATIONALIST_CHINA: "Nationalist China",
 } as const;
 
-export const powerOrder = [
-    Powers.GERMANY,
-    Powers.SOVIET_UNION,
-    Powers.COMMUNIST_CHINA,
-    Powers.JAPAN,
-    Powers.UK_WEST,
-    Powers.UK_EAST,
-    Powers.ANZAC,
-    Powers.FRANCE,
-    Powers.ITALY,
-    Powers.USA,
-    Powers.NATIONALIST_CHINA,
-];
-
 export const Seasons = {
     WINTER: "Winter",
     SUMMER: "Summer",

@@ -1,7 +1,7 @@
-import { assert, expect, test } from "vitest";
+import { expect, test } from "vitest";
 
-import { Seasons, START_SEASON, START_YEAR } from "../../state/constants";
-import * as utils from "../turnUtils";
+import { Seasons, START_SEASON, START_YEAR } from "../constants";
+import * as utils from "../utils";
 
 test("switchSeason tests", () => {
     test("summer becomes winter", () => {
