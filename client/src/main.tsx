@@ -14,11 +14,11 @@ import { JoinGame } from "./pages/JoinGame";
 import { Draft } from "./pages/Draft";
 import { Tracker } from "./pages/Tracker";
 
-export const routes = [
+const routes = [
     { path: "/", element: <NewGame /> },
-    { path: ":gameId/join", element: <JoinGame /> },
-    { path: ":gameId/draft", element: <Draft /> },
-    { path: ":gameId/tracker", element: <Tracker /> },
+    { path: "/join/:gameId", element: <JoinGame /> },
+    { path: "/draft", element: <Draft /> },
+    { path: "/tracker", element: <Tracker /> },
 ];
 
 const router = createBrowserRouter(routes);

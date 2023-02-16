@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
 
 import { useWebsocket } from "../Websocket";
 
@@ -8,6 +7,7 @@ import { Header } from "../components/Header";
 
 import {
     selectConnected,
+    selectGameId,
     selectQrCode,
     selectToken,
     setConnected,
@@ -18,13 +18,13 @@ import { InboundMessage } from "../state/types";
 
 export const Tracker = () => {
     const dispatch = useAppDispatch();
-    const { gameId } = useParams();
 
     const { send, addHandler, removeHandler } = useWebsocket();
 
     const qrCode = useAppSelector(selectQrCode);
     const token = useAppSelector(selectToken);
     const connected = useAppSelector(selectConnected);
+    const gameId = useAppSelector(selectGameId);
 
     useEffect(() => {
         addHandler(handler);
@@ -33,7 +33,7 @@ export const Tracker = () => {
 
     const handler = (message: InboundMessage) => {
         if (message.type === "connected") {
-            dispatch(setConnected(message.payload));
+            dispatch(setConnected());
             dispatch(setTurns(message.payload));
         }
         if (message.type === "update") {

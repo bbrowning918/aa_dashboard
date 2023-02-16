@@ -118,7 +118,7 @@ async def join(websocket, payload):
 async def new(websocket):
     game = new_game(TinyDBGameRepository())
     qr_code = make_qr_code(
-        f"http://{config.get_http_hostname()}:{config.get_http_port()}/{game.ref}/join"
+        f"http://{config.get_http_hostname()}:{config.get_http_port()}/join/{game.ref}"
     )
 
     message = {

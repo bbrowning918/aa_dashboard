@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 
 import { useWebsocket } from "../Websocket";
@@ -8,20 +7,25 @@ import { Loading } from "../components/Loading";
 import { Header } from "../components/Header";
 
 import { selectPowers, setDrafted, setPowers } from "../state/draft";
-import { selectConnected, selectToken, setConnected } from "../state/game";
+import {
+    selectConnected,
+    selectGameId,
+    selectToken,
+    setConnected,
+} from "../state/game";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { setTurns } from "../state/turn";
 import { InboundMessage } from "../state/types";
 
 export const Draft = () => {
     const dispatch = useAppDispatch();
-    const { gameId } = useParams();
 
     const { send, addHandler, removeHandler } = useWebsocket();
 
     const token = useAppSelector(selectToken);
     const powers = useAppSelector(selectPowers);
     const connected = useAppSelector(selectConnected);
+    const gameId = useAppSelector(selectGameId);
 
     useEffect(() => {
         addHandler(handler);
@@ -31,7 +35,7 @@ export const Draft = () => {
     const handler = (message: InboundMessage) => {
         if (message.type === "connected") {
             dispatch(setPowers(message.payload));
-            dispatch(setConnected(message.payload));
+            dispatch(setConnected());
             dispatch(setTurns(message.payload));
         }
         if (message.type === "update") {

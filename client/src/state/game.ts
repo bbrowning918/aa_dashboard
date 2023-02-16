@@ -22,6 +22,8 @@ export const gameSlice = createSlice({
         init: (state: GameState, action: PayloadAction<any>) => {
             localStorage.setItem("token", action.payload.token);
             localStorage.setItem("qrCode", action.payload.qr_code);
+            localStorage.setItem("gameId", action.payload.game_ref);
+            state.gameId = action.payload.game_ref;
             state.token = action.payload.token;
             state.qrCode = action.payload.qr_code;
         },
@@ -29,9 +31,7 @@ export const gameSlice = createSlice({
             localStorage.setItem("token", action.payload.token);
             state.token = action.payload.token;
         },
-        setConnected: (state: GameState, action: PayloadAction<any>) => {
-            localStorage.setItem("gameId", action.payload.game_ref);
-            state.gameId = action.payload.game_ref;
+        setConnected: (state: GameState) => {
             state.connected = true;
         },
     },
@@ -40,6 +40,7 @@ export const gameSlice = createSlice({
 export const selectQrCode = (state: RootState) => state.game.qrCode;
 export const selectToken = (state: RootState) => state.game.token;
 export const selectConnected = (state: RootState) => state.game.connected;
+export const selectGameId = (state: RootState) => state.game.gameId;
 
 export const { init, setToken, setConnected } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;

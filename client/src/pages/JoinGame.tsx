@@ -28,7 +28,7 @@ export const JoinGame = () => {
             dispatch(setPowers(message.payload));
             dispatch(setTurns(message.payload));
             dispatch(setConnected(message.payload));
-            navigate(`/${message.payload.game_ref}/draft`);
+            navigate("/draft");
         }
     };
 

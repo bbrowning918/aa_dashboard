@@ -21,7 +21,7 @@ export const NewGame = () => {
     const handler = (message: InboundMessage) => {
         if (message.type === "init") {
             dispatch(init(message.payload));
-            navigate(`${message.payload.game_ref}/tracker`);
+            navigate("/tracker");
         }
     };
 
