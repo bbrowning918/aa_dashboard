@@ -5,6 +5,7 @@ import { Formik, Field, Form, FormikHelpers } from "formik";
 import { useWebsocket } from "../Websocket";
 
 import { Loading } from "../components/Loading";
+import { Header } from "../components/Header";
 
 import { selectPowers, setDrafted, setPowers } from "../state/draft";
 import { selectConnected, selectToken, setConnected } from "../state/game";
@@ -81,12 +82,10 @@ export const Draft = () => {
 
     return (
         <div className="h-screen bg-white dark:bg-gray-900">
+            <Header title="Draft" />
             <Formik initialValues={{}} onSubmit={onSubmit}>
                 <Form>
                     <div className="mx-auto max-w-screen-sm">
-                        <h3 className="mb-6 text-lg font-medium text-gray-900 dark:text-white">
-                            Draft
-                        </h3>
                         <ul className="mb-6 grid w-full gap-6 md:grid-cols-3">
                             {Object.entries(powers).map(([power, drafted]) => (
                                 <li key={power}>
