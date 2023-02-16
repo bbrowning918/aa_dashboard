@@ -31,7 +31,9 @@ export const gameSlice = createSlice({
             localStorage.setItem("token", action.payload.token);
             state.token = action.payload.token;
         },
-        setConnected: (state: GameState) => {
+        setConnected: (state: GameState, action: PayloadAction<any>) => {
+            localStorage.setItem("gameId", action.payload.game_ref);
+            state.gameId = action.payload.game_ref;
             state.connected = true;
         },
     },

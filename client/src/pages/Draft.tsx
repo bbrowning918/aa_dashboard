@@ -35,7 +35,7 @@ export const Draft = () => {
     const handler = (message: InboundMessage) => {
         if (message.type === "connected") {
             dispatch(setPowers(message.payload));
-            dispatch(setConnected());
+            dispatch(setConnected(message.payload));
             dispatch(setTurns(message.payload));
         }
         if (message.type === "update") {
