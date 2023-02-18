@@ -85,7 +85,7 @@ export const Draft = () => {
     }
 
     return (
-        <div className="h-screen bg-white dark:bg-gray-900">
+        <div className="min-h-screen bg-white dark:bg-gray-900">
             <Header title="Draft" />
             <Formik initialValues={{}} onSubmit={onSubmit}>
                 <Form>
@@ -115,7 +115,7 @@ export const Draft = () => {
                             ))}
                         </ul>
                         <button
-                            className="w-1/2 rounded border-0 bg-blue-700 py-2 text-lg text-white hover:bg-blue-800 focus:outline-none"
+                            className="w-full rounded border-0 bg-blue-700 py-2 text-lg text-white hover:bg-blue-800 focus:outline-none"
                             type="submit"
                         >
                             Save
