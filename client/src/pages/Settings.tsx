@@ -123,7 +123,7 @@ export const Settings = () => {
                                 type="button"
                                 onClick={() => {
                                     localStorage.clear();
-                                    navigate("/")
+                                    navigate("/");
                                 }}
                             >
                                 Leave Game

@@ -24,6 +24,7 @@ export type InboundMessage =
               powers: { [key: string]: boolean };
           };
       }
-    | { type: "update"; payload: { powers: { [key: string]: boolean } } };
+    | { type: "update"; payload: { powers: { [key: string]: boolean } } }
+    | { type: "error"; payload: { message: string } };
 
 export type MessageHandler = (message: InboundMessage) => void;
