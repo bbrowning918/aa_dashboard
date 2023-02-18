@@ -20,7 +20,7 @@ export const Header = ({ title }: Props) => {
                         {[
                             ["Draft", "/draft"],
                             ["Tracker", "/tracker"],
-                            ["Settings", "/"],
+                            ["Settings", "/settings"],
                         ].map(([name, path]) => (
                             <NavLink
                                 key={name}

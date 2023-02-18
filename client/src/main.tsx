@@ -9,9 +9,10 @@ import { store } from "./state/store";
 import { WebsocketProvider } from "./Websocket";
 
 import { ErrorBoundary } from "./ErrorBoundary";
-import { NewGame } from "./pages/NewGame";
-import { JoinGame } from "./pages/JoinGame";
 import { Draft } from "./pages/Draft";
+import { JoinGame } from "./pages/JoinGame";
+import { NewGame } from "./pages/NewGame";
+import { Settings } from "./pages/Settings";
 import { Tracker } from "./pages/Tracker";
 
 const routes = [
@@ -19,6 +20,7 @@ const routes = [
     { path: "/join/:gameId", element: <JoinGame /> },
     { path: "/draft", element: <Draft /> },
     { path: "/tracker", element: <Tracker /> },
+    { path: "/settings", element: <Settings /> },
 ];
 
 const router = createBrowserRouter(routes);
