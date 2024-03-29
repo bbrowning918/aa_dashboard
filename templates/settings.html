@@ -1,83 +1,4 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Formik, Field, Form, FormikHelpers } from "formik";
-
-import { useWebsocket } from "../Websocket";
-
-import { Loading } from "../components/Loading";
-import { Header } from "../components/Header";
-
-import { setPowers } from "../state/draft";
-import {
-    selectConnected,
-    selectGameId,
-    selectToken,
-    setConnected,
-    setToken,
-} from "../state/game";
-import { useAppDispatch, useAppSelector } from "../state/hooks";
-import { setTurns } from "../state/turn";
-import { InboundMessage } from "../state/types";
-
-export const Settings = () => {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-
-    const { send, addHandler, removeHandler } = useWebsocket();
-
-    const token = useAppSelector(selectToken);
-    const connected = useAppSelector(selectConnected);
-    const gameId = useAppSelector(selectGameId);
-
-    useEffect(() => {
-        addHandler(handler);
-        return () => removeHandler(handler);
-    }, []);
-
-    const handler = (message: InboundMessage) => {
-        if (message.type === "connected") {
-            dispatch(setPowers(message.payload));
-            dispatch(setConnected(message.payload));
-            dispatch(setTurns(message.payload));
-        }
-        if (message.type === "update") {
-            dispatch(setPowers(message.payload));
-            dispatch(setTurns(message.payload));
-        }
-    };
-
-    useEffect(() => {
-        if (!connected) {
-            if (gameId) {
-                token
-                    ? send({
-                          type: "join",
-                          payload: {
-                              token: token,
-                              game_ref: gameId,
-                          },
-                      })
-                    : send({
-                          type: "join",
-                          payload: { game_ref: gameId },
-                      });
-            }
-        }
-    }, [connected]);
-
-    const onSubmit = (
-        values: { [key: string]: boolean },
-        _: FormikHelpers<{ [key: string]: boolean }>
-    ) => {
-        dispatch(setToken({ token: values.token }));
-    };
-
-    if (!connected) {
-        return <Loading />;
-    }
-
-    return (
-        <div className="h-screen bg-white dark:bg-gray-900">
+<div className="h-screen bg-white dark:bg-gray-900">
             <Header title="Settings" />
             <Formik
                 initialValues={{
@@ -139,5 +60,4 @@ export const Settings = () => {
                 </Form>
             </Formik>
         </div>
-    );
-};
+

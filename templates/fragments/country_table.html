@@ -1,48 +1,4 @@
-import React from "react";
-
-import { Powers } from "../state/constants";
-import { useAppSelector } from "../state/hooks";
-import { selectTurnLabels, selectTurnsForPower } from "../state/turn";
-
-export const CountryTable = () => {
-    const turnLabels = useAppSelector(selectTurnLabels);
-
-    const germanTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.GERMANY)
-    );
-    const sovietTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.SOVIET_UNION)
-    );
-    const commieChinaTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.COMMUNIST_CHINA)
-    );
-    const japanTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.JAPAN)
-    );
-    const ukWestTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.UK_WEST)
-    );
-    const ukEastTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.UK_EAST)
-    );
-    const anzacTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.ANZAC)
-    );
-    const franceTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.FRANCE)
-    );
-    const italyTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.ITALY)
-    );
-    const usaTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.USA)
-    );
-    const nattyChinaTurns = useAppSelector((state) =>
-        selectTurnsForPower(state, Powers.NATIONALIST_CHINA)
-    );
-
-    return (
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+<div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-left text-sm text-gray-900 dark:text-gray-900">
                 <thead className="bg-gray-50 text-sm text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -109,5 +65,3 @@ export const CountryTable = () => {
                 </tbody>
             </table>
         </div>
-    );
-};

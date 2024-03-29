@@ -1,21 +1,4 @@
-import React from "react";
-import { ErrorMessage, Field, Form, Formik, FormikErrors } from "formik";
-
-type TurnFormProps = {
-    start: number;
-    spent: number;
-    income: number;
-};
-
-export const Turn = () => {
-    const initialValues: TurnFormProps = {
-        start: 10,
-        spent: 0,
-        income: 0,
-    };
-
-    return (
-        <div className="flex flex-col items-center">
+<div className="flex flex-col items-center">
             <Formik
                 initialValues={initialValues}
                 validate={(values: TurnFormProps) => {
@@ -62,5 +45,3 @@ export const Turn = () => {
                 </Form>
             </Formik>
         </div>
-    );
-};
