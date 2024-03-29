@@ -8,8 +8,19 @@ websockets = "~=10.4"
 tinydb = "~=4.7"
 qrcode = "~=7.3"
 pillow = "~=9.2"
+fastapi = "*"
+uvicorn = "*"
+jinja2 = "*"
+itsdangerous = "*"
+asgi-htmx = "*"
+jinja2-fragments = "*"
 
 [dev-packages]
+pytailwindcss = "*"
+
+[scripts]
+server = "uvicorn main:app --reload"
+tailwind = "tailwindcss -i styles.css -o static/css/styles.css --watch"
 
 [requires]
-python_version = "3.8"
+python_version = "3.10"

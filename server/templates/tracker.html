@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% with title="Tracker" %}{% include 'fragments/header.html' %}{% endwith %}  
+<div class="min-h-screen">
+
+</div>
+{% if qr_code %}
+  <img
+    class="absolute bottom-0 right-0 w-36 rounded-2xl border-gray-200 shadow-md"
+    src="data:image/png;base64, {{qr_code}}"
+  />
+{% endif %}
+{% endblock %}
+
