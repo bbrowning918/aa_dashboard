@@ -1,47 +1,24 @@
-<div className="flex flex-col items-center">
-            <Formik
-                initialValues={initialValues}
-                validate={(values: TurnFormProps) => {
-                    let errors: FormikErrors<TurnFormProps> = {};
+<div class="flex flex-col items-center">
+  <form>
+    <h6>CHOSEN POWER</h6>
+    <p>SEASON YEAR</p>
+    <div class="mb-6 grid gap-6">
+      <label htmlFor="start">IPP</label>
+      <input type="number" id="start" value="10" disabled />
 
-                    if (values.spent < 0) {
-                        errors.spent = "That is not how spending works";
-                    }
-                    if (values.spent > initialValues.start) {
-                        errors.spent = "That is not how budgets work";
-                    }
-                    if (values.income < 0) {
-                        errors.income = "That is not how income works";
-                    }
+      <label htmlFor="spent">Spent</label>
+      <input type="number" id="spent" />
+      <ErrorMessage name={"spent"} />
 
-                    return errors;
-                }}
-                onSubmit={(values: TurnFormProps, { resetForm }) => {
-                    // TODO fire update message, redux will change in the handler
-                    resetForm();
-                }}
-            >
-                <Form>
-                    <h6>CHOSEN POWER</h6>
-                    <p>SEASON YEAR</p>
-                    <div className="mb-6 grid gap-6">
-                        <label htmlFor="start">IPP</label>
-                        <Field type="number" id="start" name="start" disabled />
-
-                        <label htmlFor="spent">Spent</label>
-                        <Field type="number" id="spent" name="spent" />
-                        <ErrorMessage name={"spent"} />
-
-                        <label htmlFor="income">Income</label>
-                        <Field type="number" id="income" name="income" />
-                        <ErrorMessage name={"income"} />
-                    </div>
-                    <button
-                        className="w-1/2 rounded border-0 bg-blue-700 py-2 text-lg text-white hover:bg-blue-800 focus:outline-none"
-                        type="submit"
-                    >
-                        Save
-                    </button>
-                </Form>
-            </Formik>
-        </div>
+      <label htmlFor="income">Income</label>
+      <input type="number" id="income" />
+      <ErrorMessage name={"income"} />                
+    </div>            
+    <button              
+      class="w-1/2 rounded border-0 bg-blue-700 py-2 text-lg text-white hover:bg-blue-800 focus:outline-none"
+      type="submit"
+    >
+      Save
+    </button>
+  </form>
+</div>

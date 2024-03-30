@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from asgi_htmx import HtmxRequest as Request
 from asgi_htmx import HtmxMiddleware
 from fastapi import FastAPI
@@ -41,13 +43,18 @@ async def tracker(request: Request):
             game = repo.get(game_ref)
         qr_code = make_qr_code(f"http://{config.get_http_hostname()}:{config.get_http_port()}/join/?game_ref={game.ref}")
         block_name = "content" if request.scope["htmx"] else None
+
+        turns = defaultdict(list)
+        for turn in game.turns:
+            turns[turn.year].append(turn)
+
         return templates.TemplateResponse(
             "tracker.html",
             {
                 "request": request,
                 "qr_code": qr_code,
                 "powers": game.powers,
-                "turns": game.turns
+                "turns": turns
             },
             block_name=block_name
         )
@@ -67,6 +74,21 @@ async def tracker(request: Request):
             {
                 "request": request,
                 "powers": powers
+            },
+            block_name=block_name
+        )
+    return RedirectResponse("/")
+
+
+@app.get("/settings")
+async def settings(request: Request):
+    if game_ref := request.session["game_ref"]:
+        block_name = "content" if request.scope["htmx"] else None
+        return templates.TemplateResponse(
+            "settings.html",
+            {
+                "request": request,
+                "game_ref": game_ref
             },
             block_name=block_name
         )

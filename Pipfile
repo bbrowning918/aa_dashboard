@@ -4,16 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-websockets = "~=10.4"
-tinydb = "~=4.7"
-qrcode = "~=7.3"
-pillow = "~=9.2"
-fastapi = "*"
-uvicorn = "*"
-jinja2 = "*"
-itsdangerous = "*"
 asgi-htmx = "*"
+fastapi = "*"
+itsdangerous = "*"
+jinja2 = "*"
 jinja2-fragments = "*"
+pillow = "*"
+qrcode = "*"
+tinydb = "*"
+uvicorn = "*"
+websockets = "*"
 
 [dev-packages]
 pytailwindcss = "*"
