@@ -1,4 +1,5 @@
 from collections import defaultdict
+from operator import attrgetter
 
 from asgi_htmx import HtmxRequest as Request
 from asgi_htmx import HtmxMiddleware
@@ -10,7 +11,7 @@ from jinja2_fragments.fastapi import Jinja2Blocks
 from starlette.middleware.sessions import SessionMiddleware
 
 import config
-from domain.model import Game, Turn
+from domain.model import Game, Turn, Power
 from adapters.repository import TinyDBGameRepository
 from services.qr import make_qr_code
 from services.new_game import new_game
@@ -43,17 +44,22 @@ async def tracker(request: Request):
             game = repo.get(game_ref)
         qr_code = make_qr_code(f"http://{config.get_http_hostname()}:{config.get_http_port()}/join/?game_ref={game.ref}")
         block_name = "content" if request.scope["htmx"] else None
+        
+        powers = list(map(lambda p: p.value, Power))
 
-        turns = defaultdict(list)
-        for turn in game.turns:
-            turns[turn.year].append(turn)
+        turns = defaultdict(dict)
+        for turn in sorted(game.turns, key=attrgetter('year', 'season')):
+            turns[f"{turn.year} {turn.season}"][turn.power] = turn
 
+        logger.debug(powers)
+        logger.debug(turns)
+        
         return templates.TemplateResponse(
             "tracker.html",
             {
                 "request": request,
                 "qr_code": qr_code,
-                "powers": game.powers,
+                "powers": powers,
                 "turns": turns
             },
             block_name=block_name

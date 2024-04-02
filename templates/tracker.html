@@ -14,14 +14,18 @@
         </tr>
       </thead>
       <tbody>
-        {% for year, powers in turns.items() %}
+        {% for year, turn in turns.items() %}
         <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
           <td class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
             {{ year }}
           </td>
           {% for power in powers %}
           <td class="px-6 py-4 dark:text-white">
-            {{ power.start }}
+            {% if power in turn %}
+              {{ turn[power].start }}
+            {% else %}
+              -
+            {% endif %}
           </td>
           {% endfor %}
        </tr>
