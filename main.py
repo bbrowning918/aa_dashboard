@@ -1,9 +1,11 @@
 from collections import defaultdict
 from operator import attrgetter
+from secrets import token_urlsafe
+from typing import Optional
 
 from asgi_htmx import HtmxRequest as Request
 from asgi_htmx import HtmxMiddleware
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -13,6 +15,7 @@ from starlette.middleware.sessions import SessionMiddleware
 import config
 from domain.model import Game, Turn, Power
 from adapters.repository import TinyDBGameRepository
+from services.draft import draft
 from services.qr import make_qr_code
 from services.new_game import new_game
 
@@ -28,7 +31,7 @@ logger = config.get_logger()
 
 @app.get("/")
 async def home(request: Request):
-    if game_ref := request.session["game_ref"]:
+    if game_ref := request.session.get("game_ref"):
         return RedirectResponse("/tracker")
     return templates.TemplateResponse(
         "home.html",
@@ -39,7 +42,7 @@ async def home(request: Request):
 
 @app.get("/tracker")
 async def tracker(request: Request):
-    if game_ref := request.session["game_ref"]:
+    if game_ref := request.session.get("game_ref"):
         with TinyDBGameRepository() as repo:
             game = repo.get(game_ref)
         qr_code = make_qr_code(f"http://{config.get_http_hostname()}:{config.get_http_port()}/join/?game_ref={game.ref}")
@@ -68,12 +71,20 @@ async def tracker(request: Request):
 
 
 @app.get("/draft")
-async def tracker(request: Request):
-    if game_ref := request.session["game_ref"]:
+async def draft_list(request: Request):
+    if game_ref := request.session.get("game_ref"):
         with TinyDBGameRepository() as repo:
             game = repo.get(game_ref)
+       
+        def get_power_status(t):
+            if t == request.session["token"]:
+                return 1  # drafted
+            if t:
+                return 2  # unavailable
+            return 0  # available
+
+        powers = {name: get_power_status(token) for name, token in game.powers.items()}
         
-        powers = {name: bool(token) for name, token in game.powers.items()}
         block_name = "content" if request.scope["htmx"] else None
         return templates.TemplateResponse(
             "draft.html",
@@ -86,9 +97,43 @@ async def tracker(request: Request):
     return RedirectResponse("/")
 
 
+@app.post("/draft")
+async def draft_powers(request: Request):
+    form_data = await request.form()
+    logger.debug(form_data)
+
+    if game_ref := request.session.get("game_ref"):
+        with TinyDBGameRepository() as repo:
+            game = repo.get(game_ref)
+   
+        drafted_powers = [p for p, _ in form_data.items()]
+        draft(game, request.session["token"], drafted_powers, TinyDBGameRepository())
+            
+        def get_power_status(t):
+            if t == request.session["token"]:
+                return 1  # drafted
+            if t:
+                return 2  # unavailable
+            return 0  # available
+
+        powers = {name: get_power_status(token) for name, token in game.powers.items()}
+        
+        block_name = "content" if request.scope["htmx"] else None
+        return templates.TemplateResponse(
+            "draft.html",
+            {
+                "request": request,
+                "powers": powers
+            },
+            block_name=block_name
+        )
+    return RedirectResponse("/")
+
+
+
 @app.get("/settings")
 async def settings(request: Request):
-    if game_ref := request.session["game_ref"]:
+    if game_ref := request.session.get("game_ref"):
         block_name = "content" if request.scope["htmx"] else None
         return templates.TemplateResponse(
             "settings.html",
@@ -122,9 +167,10 @@ async def new(request: Request):
 async def join(request: Request, game_ref: str):
     assert(htmx := request.scope["htmx"])
 
-    token = None  # TODO
+    token = token_urlsafe(4)
     logger.debug(f"game_ref: {game_ref}, token: {token}")
 
+    request.session["token"] = token
     request.session["game_ref"] = game_ref
    
     return RedirectResponse("/tracker")

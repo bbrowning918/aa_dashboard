@@ -89,8 +89,12 @@ class Game:
         return self.ref == other.ref
 
     def draft(self, token: str, powers: List[Power]):
-        for power in powers:
-            self.powers[power] = token
+        for p, t in self.powers.items():
+            if t == token:
+                self.powers[p] = ""
+
+        for p in powers:
+            self.powers[p] = token
 
     def submit_turn(self, token: str, turn: Turn):
         if token == self.host or token == self.powers[turn.power]:
