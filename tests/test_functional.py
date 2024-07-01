@@ -1,7 +1,7 @@
 import json
 import websockets
 
-from server.app import handler
+from app import handler
 
 from .base import AsyncioTestCase
 
