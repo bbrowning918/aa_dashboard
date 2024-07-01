@@ -1,44 +1,44 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% with title="Tracker" %}{% include 'fragments/nav.html' %}{% endwith %}  
-<div class="min-h-screen">
-  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <table class="w-full text-left text-sm text-gray-900 dark:text-gray-900">
-      <thead class="bg-gray-50 text-sm text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-        <tr>
-          <th class="px-6 py-3">Turn</th>
-          {% for power in powers %}
-          <th class="px-6 py-3">{{ power }}</th>
-          {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for year, turn in turns.items() %}
-        <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-          <td class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
-            {{ year }}
-          </td>
-          {% for power in powers %}
-          <td class="px-6 py-4 dark:text-white">
-            {% if power in turn %}
-              {{ turn[power].start }}
-            {% else %}
-              -
-            {% endif %}
-          </td>
-          {% endfor %}
-       </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-{% if qr_code %}
-  <img
-    class="absolute bottom-0 right-0 w-36 rounded-2xl border-gray-200 shadow-md"
-    src="data:image/png;base64, {{qr_code}}"
-  />
-{% endif %}
+    {% with title="Tracker" %}{% include 'fragments/nav.html' %}{% endwith %}
+    <div class="min-h-screen">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-left text-sm text-gray-900 dark:text-gray-900">
+                <thead class="bg-gray-50 text-sm text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th class="px-6 py-3">Turn</th>
+                    {% for power in powers %}
+                        <th class="px-6 py-3">{{ power }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for year, turn in turns.items() %}
+                    <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                        <td class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
+                            {{ year }}
+                        </td>
+                        {% for power in powers %}
+                            <td class="px-6 py-4 dark:text-white">
+                                {% if power in turn %}
+                                    {{ turn[power].start }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if qr_code %}
+        <img
+            class="absolute bottom-0 right-0 w-36 rounded-2xl border-gray-200 shadow-md"
+            src="data:image/png;base64, {{ qr_code }}"
+        />
+    {% endif %}
 {% endblock %}
 

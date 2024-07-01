@@ -1,31 +1,46 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% with title="Settings" %}{% include 'fragments/nav.html' %}{% endwith %}  
-<div class="min-h-screen">
-  <div class="mx-auto max-w-screen-sm">
-    <div class="mb-6">
-      <label
-        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-        htmlFor="game"
-      >
-        Game
-      </label>
-      <input
-        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-        type="text"
-        id="game"
-        value="{{ game_ref }}"
-        disabled
-      />
+    {% with title="Settings" %}{% include 'fragments/nav.html' %}{% endwith %}
+    <div class="min-h-screen">
+        <div class="mx-auto max-w-screen-sm">
+            <div class="mb-6">
+                <label
+                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                    htmlFor="token"
+                >
+                    Token
+                </label>
+                <input
+                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                    type="text"
+                    id="game"
+                    value="{{ token }}"
+                    disabled
+                />
+            </div>
+            <div class="mb-6">
+                <label
+                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                    htmlFor="game"
+                >
+                    Game
+                </label>
+                <input
+                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                    type="text"
+                    id="game"
+                    value="{{ game_ref }}"
+                    disabled
+                />
+            </div>
+            <button
+                hx-get="/leave"
+                hx-replace-url="true"
+                class="w-full rounded border-0 border border-gray-200 bg-white py-2 text-lg text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+            >
+                Leave Game
+            </button>
+        </div>
     </div>
-    <button
-      hx-get="/leave"
-      hx-replace-url="true"
-      class="w-full rounded border-0 border border-gray-200 bg-white py-2 text-lg text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-    >
-      Leave Game
-    </button>
-  </div>
-</div>
 {% endblock %}
