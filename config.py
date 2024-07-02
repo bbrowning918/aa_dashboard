@@ -16,7 +16,7 @@ def get_http_hostname():
 
 
 def get_http_port():
-    return int(os.environ.get("PORT_WEB", "3000"))
+    return int(os.environ.get("PORT_WEB", "8000"))
 
 
 def get_tinydb_path():

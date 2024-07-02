@@ -9,32 +9,39 @@
         >
             <div class="mx-auto max-w-screen-sm">
                 <div class="flex items-center justify-between mb-6">
-                    <button
-                        class="rounded border-0 bg-gray-50 p-2 text-lg text-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white"
-                        type="submit"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                             stroke="currentColor"
-                             class="size-6 text-grey-700 dark:text-white">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
-                        </svg>
-                    </button>
+                    {% if prev_power %}
+                        <button
+                            class="rounded border-0 bg-gray-50 p-2 text-lg text-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white"
+                            hx-get="{{ prev_power }}"
+                            hx-replace-url="true"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor"
+                                 class="size-6 text-grey-700 dark:text-white">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5"/>
+                            </svg>
+                        </button>
+                    {% endif %}
                     <div class="text-lg text-pretty px-2">
-                        {{ powers|first }} - SEASON YEAR
+                        {{ power }} - SEASON YEAR
                     </div>
-                    <button
-                        class="rounded border-0 bg-gray-50 p-2 text-lg text-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                             stroke="currentColor"
-                             class="size-6 text-grey-700 dark:text-white">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
-                        </svg>
-                    </button>
+                    {% if next_power %}
+                        <button
+                            class="rounded border-0 bg-gray-50 p-2 text-lg text-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white"
+                            hx-get="{{ next_power }}"
+                            hx-replace-url="true"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor"
+                                 class="size-6 text-grey-700 dark:text-white">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
+                            </svg>
+                        </button>
+                    {% endif %}
                 </div>
 
                 <div class="mb-6 w-full">
-                    {% with power=powers|first %}{% include 'fragments/turn.html' %}{% endwith %}
+                    {% with power=power %}{% include 'fragments/turn.html' %}{% endwith %}
                 </div>
             </div>
         </form>
