@@ -3,7 +3,7 @@ import abc
 from tinydb import TinyDB, Query
 
 import config
-from domain.model import Game, Turn
+from domain.model import Game, Turn, Season
 
 
 class AbstractGameRepository(abc.ABC):
@@ -47,8 +47,8 @@ class TinyDBGameRepository(AbstractGameRepository):
             "turns": [
                 {
                     "year": turn.year,
-                    "season": turn.season.value,
-                    "power": turn.power.value,
+                    "season": turn.season,
+                    "power": turn.power,
                     "start": turn.start,
                     "spent": turn.spent,
                     "income": turn.income,
@@ -72,7 +72,7 @@ class TinyDBGameRepository(AbstractGameRepository):
             turns={
                 Turn(
                     year=turn["year"],
-                    season=turn["season"],
+                    season=Season(turn["season"]),
                     power=turn["power"],
                     start=turn["start"],
                     spent=turn["spent"],

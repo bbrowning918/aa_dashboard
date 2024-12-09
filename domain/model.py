@@ -1,5 +1,6 @@
 from __future__ import annotations
-from enum import Enum
+
+from enum import Enum, IntEnum
 from typing import Dict, List, Set
 
 
@@ -17,20 +18,26 @@ class Power(str, Enum):
     NATIONALIST_CHINA = "Nationalist China"
 
 
-class Season(Enum):
-    SUMMER = "Summer"
-    WINTER = "Winter"
+class Season(IntEnum):
+    SUMMER = 1
+    WINTER = 2
+
+    def __str__(self):
+        if self.value == 1:
+            return "Summer"
+        else:
+            return "Winter"
 
 
 class Turn:
     def __init__(
-            self,
-            year: int,
-            season: Season,
-            power: Power,
-            start: int,
-            spent: int = 0,
-            income: int = 0,
+        self,
+        year: int,
+        season: Season,
+        power: Power,
+        start: int,
+        spent: int = 0,
+        income: int = 0,
     ):
         self.year = year
         self.season = season
@@ -40,7 +47,7 @@ class Turn:
         self.income = income
 
     def __repr__(self):
-        return f"<Turn {self.year} {self.season} {self.power}>"
+        return f'<Turn {self.year} {"Summer" if self.season == 1 else "Winter"} {self.power}>'
 
     def __hash__(self):
         return hash((self.year, self.season, self.power))
@@ -53,6 +60,14 @@ class Turn:
                 self.year == other.year,
                 self.season == other.season,
                 self.power == other.power,
+            ]
+        )
+
+    def __lt__(self, other):
+        return all(
+            [
+                self.year < other.year,
+                self.season < other.season,
             ]
         )
 
