@@ -18,10 +18,11 @@ websockets = "*"
 
 [dev-packages]
 pytailwindcss = "*"
+ruff = "*"
 
 [scripts]
 server = "uvicorn main:app --reload"
 tailwind = "tailwindcss -i styles.css -o static/css/styles.css --watch"
 
 [requires]
-python_version = "3.10"
+python_version = "3.12"
