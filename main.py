@@ -1,6 +1,7 @@
 from collections import defaultdict
 from operator import attrgetter
 from secrets import token_urlsafe
+from typing import Annotated
 
 from asgi_htmx import HtmxMiddleware
 from asgi_htmx import HtmxRequest as Request
@@ -39,8 +40,10 @@ async def missing_game_ref_exception_handler(
     return RedirectResponse("/")
 
 
-async def has_game_ref(request: Request):
-    if not request.session.get("game_ref"):
+def get_game_ref(request: Request):
+    try:
+        return request.session["game_ref"]
+    except KeyError:
         raise MissingGameRefException
 
 
@@ -51,9 +54,8 @@ async def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
 
-@app.get("/tracker", dependencies=[Depends(has_game_ref)])
-async def tracker(request: Request):
-    game_ref = request.session.get("game_ref")
+@app.get("/tracker")
+async def tracker(request: Request, game_ref: Annotated[str, Depends(get_game_ref)]):
     with TinyDBGameRepository() as repo:
         game = repo.get(game_ref)
     # TODO this will need to be hooked up to uvicorn
@@ -80,9 +82,8 @@ async def tracker(request: Request):
     )
 
 
-@app.get("/draft", dependencies=[Depends(has_game_ref)])
-async def draft_list(request: Request):
-    game_ref = request.session.get("game_ref")
+@app.get("/draft")
+async def draft_list(request: Request, game_ref: Annotated[str, Depends(get_game_ref)]):
     with TinyDBGameRepository() as repo:
         game = repo.get(game_ref)
 
@@ -101,12 +102,13 @@ async def draft_list(request: Request):
     )
 
 
-@app.post("/draft", dependencies=[Depends(has_game_ref)])
-async def draft_powers(request: Request):
+@app.post("/draft")
+async def draft_powers(
+    request: Request, game_ref: Annotated[str, Depends(get_game_ref)]
+):
     form_data = await request.form()
     logger.debug(form_data)
 
-    game_ref = request.session.get("game_ref")
     with TinyDBGameRepository() as repo:
         game = repo.get(game_ref)
 
@@ -128,9 +130,12 @@ async def draft_powers(request: Request):
     )
 
 
-@app.get("/turns", dependencies=[Depends(has_game_ref)])
-async def turns(request: Request, power: Power = None):
-    game_ref = request.session.get("game_ref")
+@app.get("/turns")
+async def turns(
+    request: Request,
+    game_ref: Annotated[str, Depends(get_game_ref)],
+    power: Power = None,
+):
     with TinyDBGameRepository() as repo:
         game = repo.get(game_ref)
 
@@ -177,9 +182,12 @@ async def turns(request: Request, power: Power = None):
     )
 
 
-@app.post("/turns", dependencies=[Depends(has_game_ref)])
-async def submit_turn(request: Request, response: Response):
-    game_ref = request.session.get("game_ref")
+@app.post("/turns")
+async def submit_turn(
+    request: Request,
+    game_ref: Annotated[str, Depends(get_game_ref)],
+    response: Response,
+):
     with TinyDBGameRepository() as repo:
         game = repo.get(game_ref)
 
@@ -215,9 +223,12 @@ async def submit_turn(request: Request, response: Response):
     )
 
 
-@app.get("/settings", dependencies=[Depends(has_game_ref)])
-async def settings(request: Request):
-    game_ref = request.session.get("game_ref")
+@app.get("/settings")
+async def settings(
+    request: Request,
+    game_ref: Annotated[str, Depends(get_game_ref)],
+):
+    logger.info(game_ref)
     block_name = "content" if request.scope["htmx"] else None
     token = request.session["token"]
     return templates.TemplateResponse(
