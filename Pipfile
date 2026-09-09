@@ -20,7 +20,7 @@ pytailwindcss = "*"
 ruff = "*"
 
 [scripts]
-server = "uvicorn main:app --reload"
+server = "python main.py"
 tailwind = "tailwindcss -i styles.css -o static/css/styles.css --watch"
 
 [requires]

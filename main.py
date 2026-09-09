@@ -269,4 +269,9 @@ middleware = [
 app = Starlette(routes=routes, middleware=middleware)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=config.get_http_port(), reload=True)
+    uvicorn.run(
+        "main:app",
+        host=config.get_http_hostname(),
+        port=config.get_http_port(),
+        reload=True,
+    )
