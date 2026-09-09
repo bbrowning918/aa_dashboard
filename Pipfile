@@ -17,10 +17,13 @@ uvicorn = "*"
 
 [dev-packages]
 ruff = "*"
+minify-html = "*"
 
 [scripts]
-server = "python main.py"
-tailwind = "tailwindcss -i styles.css -o static/css/styles.css --watch"
+run = "python main.py"
+build = "python build.py"
+lint = "ruff check --preview"
+format = "ruff format --preview"
 
 [requires]
 python_version = "3.12"

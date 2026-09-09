@@ -47,7 +47,7 @@ class Turn:
         self.income = income
 
     def __repr__(self):
-        return f'<Turn {self.year} {"Summer" if self.season == 1 else "Winter"} {self.power}>'
+        return f"<Turn {self.year} {'Summer' if self.season == 1 else 'Winter'} {self.power}>"
 
     def __hash__(self):
         return hash((self.year, self.season, self.power))
@@ -55,21 +55,17 @@ class Turn:
     def __eq__(self, other):
         if not isinstance(other, Turn):
             return False
-        return all(
-            [
-                self.year == other.year,
-                self.season == other.season,
-                self.power == other.power,
-            ]
-        )
+        return all([
+            self.year == other.year,
+            self.season == other.season,
+            self.power == other.power,
+        ])
 
     def __lt__(self, other):
-        return all(
-            [
-                self.year < other.year,
-                self.season < other.season,
-            ]
-        )
+        return all([
+            self.year < other.year,
+            self.season < other.season,
+        ])
 
 
 class Game:

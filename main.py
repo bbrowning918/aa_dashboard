@@ -58,7 +58,7 @@ async def tracker(request: Request):
 
     turns = defaultdict(dict)
     for turn in sorted(game.turns, key=attrgetter("year", "season")):
-        turns[f'{turn.year} {"Summer" if turn.season == 1 else "Winter"}'][
+        turns[f"{turn.year} {'Summer' if turn.season == 1 else 'Winter'}"][
             turn.power
         ] = turn
 
