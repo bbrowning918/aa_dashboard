@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "cabc0282c613473776247140d33801207641269dbbda23233e5fc10b7eb33504"
+            "sha256": "462fd96d9897d3a553c97a73fe6b4cdfe86e85786e56bc597232ac4be213530b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -328,15 +328,6 @@
         }
     },
     "develop": {
-        "pytailwindcss": {
-            "hashes": [
-                "sha256:31583c5bb7fac66c6e6535992e51630e36788cf6e569f4d294e98962fa034535",
-                "sha256:e83c65985f078ff91500f74bca595f615e54059d5afc90b233382e118b509b4d"
-            ],
-            "index": "pypi",
-            "markers": "python_version >= '3.11'",
-            "version": "==0.3.1"
-        },
         "ruff": {
             "hashes": [
                 "sha256:0700580ed5303723cb3c11c2f1d2a8913ce77b7ea86646dddb887f5417a9ba70",

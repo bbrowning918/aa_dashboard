@@ -16,7 +16,6 @@ tinydb = "*"
 uvicorn = "*"
 
 [dev-packages]
-pytailwindcss = "*"
 ruff = "*"
 
 [scripts]

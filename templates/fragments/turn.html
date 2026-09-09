@@ -1,63 +1,46 @@
-<div class="w-full text-gray-700 dark:text-white">
-    <form
-        autocomplete="off"
-        hx-post="/turns"
-        hx-target="this"
-        hx-swap="outerHTML"
-    >
-        <input type="hidden" name="power" value="{{ power }}"/>
-        <input type="hidden" name="season" value="{{ turn.season }}"/>
-        <input type="hidden" name="year" value="{{ turn.year }}"/>
-        <div class="mb-6">
-            <label
-                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                htmlFor="start"
-            >
-                IPP
-            </label>
-            <input
-                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                type="number"
-                name="start"
-                value="{{ turn.start }}"
-                readonly
-            />
-        </div>
-        <div class="mb-6">
-            <label
-                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                htmlFor="spent"
-            >
-                Spent
-            </label>
-            <input
-                type="number"
-                name="spent"
-                value="{{ turn.spent }}"
-                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-            />
-            {# <ErrorMessage name={"spent"}> #}
-        </div>
-        <div class="mb-6">
-            <label
-                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                htmlFor="income"
-            >
-                Income
-            </label>
-            <input
-                type="number"
-                name="income"
-                value="{{ turn.income }}"
-                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-            />
-            {# <ErrorMessage name={"income"}> #}
-        </div>
-        <button
-            class="w-full rounded border-0 bg-blue-700 py-2 text-lg text-white hover:bg-blue-800 focus:outline-none"
-            type="submit"
-        >
-            Save
-        </button>
-    </form>
-</div>
+<form
+    autocomplete="off"
+    hx-post="/turns"
+    hx-target="this"
+    hx-swap="outerHTML"
+>
+    <input type="hidden" name="power" value="{{ power }}"/>
+    <input type="hidden" name="season" value="{{ turn.season }}"/>
+    <input type="hidden" name="year" value="{{ turn.year }}"/>
+    <div>
+        <label htmlFor="start">
+            IPP
+        </label>
+        <input
+            type="number"
+            name="start"
+            value="{{ turn.start }}"
+            readonly
+        />
+    </div>
+    <div>
+        <label htmlFor="spent">
+            Spent
+        </label>
+        <input
+            type="number"
+            name="spent"
+            value="{{ turn.spent }}"
+        />
+        {# <ErrorMessage name={"spent"}> #}
+    </div>
+    <div class="mb-6">
+        <label htmlFor="income">
+            Income
+        </label>
+        <input
+            type="number"
+            name="income"
+            value="{{ turn.income }}"
+        />
+        {# <ErrorMessage name={"income"}> #}
+    </div>
+    <button type="submit">
+        Save
+    </button>
+</form>
