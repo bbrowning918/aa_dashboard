@@ -1,15 +1,19 @@
 from collections import defaultdict
+from functools import wraps
 from operator import attrgetter
 from secrets import token_urlsafe
-from typing import Annotated
 
 from asgi_htmx import HtmxMiddleware
 from asgi_htmx import HtmxRequest as Request
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.responses import RedirectResponse, Response
-from fastapi.staticfiles import StaticFiles
 from jinja2_fragments.fastapi import Jinja2Blocks
+from starlette.applications import Starlette
+from starlette.routing import Route, Mount
+from starlette.exceptions import HTTPException
+from starlette.staticfiles import StaticFiles
+from starlette.responses import Response, RedirectResponse
+from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
+import uvicorn
 
 import config
 from adapters.repository import TinyDBGameRepository
@@ -19,45 +23,31 @@ from services.new_game import new_game
 from services.qr import make_qr_code
 from services.submit_turn import submit_turn as submit_turn_service
 
-app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
-app.add_middleware(SessionMiddleware, secret_key="super_secret")
-app.add_middleware(HtmxMiddleware)
-
 templates = Jinja2Blocks(directory="templates")
 
 logger = config.get_logger()
 
 
-class MissingGameRefException(Exception):
-    pass
+def game_ref_required(func):
+    @wraps(func)
+    async def wrapper(request, *args, **kwargs):
+        if "game_ref" not in request.session:
+            return RedirectResponse("/")
+        return await func(request, *args, **kwargs)
+
+    return wrapper
 
 
-@app.exception_handler(MissingGameRefException)
-async def missing_game_ref_exception_handler(
-    request: Request, exc: MissingGameRefException
-):
-    return RedirectResponse("/")
-
-
-def get_game_ref(request: Request):
-    try:
-        return request.session["game_ref"]
-    except KeyError:
-        raise MissingGameRefException
-
-
-@app.get("/")
 async def home(request: Request):
     if request.session.get("game_ref"):
         return RedirectResponse(request.url_for("tracker"))
     return templates.TemplateResponse("home.html", {"request": request})
 
 
-@app.get("/tracker")
-async def tracker(request: Request, game_ref: Annotated[str, Depends(get_game_ref)]):
+@game_ref_required
+async def tracker(request: Request):
     with TinyDBGameRepository() as repo:
-        game = repo.get(game_ref)
+        game = repo.get(request.session["game_ref"])
     # TODO this will need to be hooked up to uvicorn
     qr_code = make_qr_code(
         f"http://{config.get_http_hostname()}:{config.get_http_port()}/join/?game_ref={game.ref}"
@@ -82,10 +72,10 @@ async def tracker(request: Request, game_ref: Annotated[str, Depends(get_game_re
     )
 
 
-@app.get("/draft")
-async def draft_list(request: Request, game_ref: Annotated[str, Depends(get_game_ref)]):
+@game_ref_required
+async def draft_list(request: Request):
     with TinyDBGameRepository() as repo:
-        game = repo.get(game_ref)
+        game = repo.get(request.session["game_ref"])
 
     def get_power_status(t):
         if t == request.session["token"]:
@@ -102,15 +92,13 @@ async def draft_list(request: Request, game_ref: Annotated[str, Depends(get_game
     )
 
 
-@app.post("/draft")
-async def draft_powers(
-    request: Request, game_ref: Annotated[str, Depends(get_game_ref)]
-):
+@game_ref_required
+async def draft_powers(request: Request):
     form_data = await request.form()
     logger.debug(form_data)
 
     with TinyDBGameRepository() as repo:
-        game = repo.get(game_ref)
+        game = repo.get(request.session["game_ref"])
 
     drafted_powers = [p for p, _ in form_data.items()]
     draft(game, request.session["token"], drafted_powers, TinyDBGameRepository())
@@ -130,14 +118,15 @@ async def draft_powers(
     )
 
 
-@app.get("/turns")
-async def turns(
-    request: Request,
-    game_ref: Annotated[str, Depends(get_game_ref)],
-    power: Power = None,
-):
+async def turns(request: Request):
     with TinyDBGameRepository() as repo:
-        game = repo.get(game_ref)
+        game = repo.get(request.session["game_ref"])
+
+    power_param = request.query_params.get("power")
+    power = Power(power_param) if power_param else None
+
+    logger.debug(power)
+    logger.debug(power_param)
 
     def is_drafted_power(t):
         return t == request.session["token"]
@@ -182,14 +171,10 @@ async def turns(
     )
 
 
-@app.post("/turns")
-async def submit_turn(
-    request: Request,
-    game_ref: Annotated[str, Depends(get_game_ref)],
-    response: Response,
-):
+@game_ref_required
+async def submit_turn(request: Request):
     with TinyDBGameRepository() as repo:
-        game = repo.get(game_ref)
+        game = repo.get(request.session["game_ref"])
 
     token = request.session["token"]
 
@@ -197,7 +182,6 @@ async def submit_turn(
     logger.debug([token, form_data])
 
     if token == game.powers.get(form_data["power"]):
-        # TODO this seem ripe for FastAPI to help with automagically
         turn = Turn(
             year=int(form_data["year"]),
             season=1 if form_data["season"] == "Summer" else 2,
@@ -214,20 +198,17 @@ async def submit_turn(
         )
 
         # TODO figure out how best to set up the next turn
-
+        response = Response()
         response.headers["hx-redirect"] = str(request.url_for("tracker"))
-        return ""
+        return response
 
     raise HTTPException(
         status_code=403, detail="Can't submit for a power you didn't draft"
     )
 
 
-@app.get("/settings")
-async def settings(
-    request: Request,
-    game_ref: Annotated[str, Depends(get_game_ref)],
-):
+async def settings(request: Request):
+    game_ref = request.session["game_ref"]
     logger.info(game_ref)
     block_name = "content" if request.scope["htmx"] else None
     token = request.session["token"]
@@ -238,7 +219,6 @@ async def settings(
     )
 
 
-@app.get("/new")
 async def new(request: Request):
     game = new_game(TinyDBGameRepository())
     logger.debug(f"game_ref: {game.ref}, token: {game.host}")
@@ -249,8 +229,8 @@ async def new(request: Request):
     return RedirectResponse(request.url_for("tracker"))
 
 
-@app.get("/join")
 async def join(request: Request, game_ref: str):
+    game_ref = request.query_params.get("game_ref")
     token = token_urlsafe(4)
     logger.debug(f"game_ref: {game_ref}, token: {token}")
 
@@ -260,9 +240,33 @@ async def join(request: Request, game_ref: str):
     return RedirectResponse(request.url_for("tracker"))
 
 
-@app.get("/leave")
 async def leave(request: Request):
     request.session["token"] = None
     request.session["game_ref"] = None
 
     return RedirectResponse(request.url_for("home"))
+
+
+routes = [
+    Mount("/static", StaticFiles(directory="static"), name="static"),
+    Route("/", endpoint=home, methods=["GET"]),
+    Route("/join", endpoint=join, methods=["GET"]),
+    Route("/leave", endpoint=leave, methods=["GET"]),
+    Route("/new", endpoint=new, methods=["GET"]),
+    Route("/settings", endpoint=settings, methods=["GET"]),
+    Route("/tracker", endpoint=tracker, methods=["GET"]),
+    Route("/draft", endpoint=draft_list, methods=["GET"]),
+    Route("/draft", endpoint=draft_powers, methods=["POST"]),
+    Route("/turns", endpoint=turns, methods=["GET"]),
+    Route("/turns", endpoint=submit_turn, methods=["POST"]),
+]
+
+middleware = [
+    Middleware(SessionMiddleware, secret_key="super_secret"),
+    Middleware(HtmxMiddleware),
+]
+
+app = Starlette(routes=routes, middleware=middleware)
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=config.get_http_port(), reload=True)
