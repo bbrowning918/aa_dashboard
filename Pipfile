@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 asgi-htmx = "*"
-fastapi = "*"
+starlette = "*"
 itsdangerous = "*"
 jinja2 = "*"
 jinja2-fragments = "*"
@@ -14,7 +14,6 @@ python-multipart = "*"
 qrcode = "*"
 tinydb = "*"
 uvicorn = "*"
-websockets = "*"
 
 [dev-packages]
 pytailwindcss = "*"

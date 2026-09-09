@@ -3,10 +3,7 @@ from adapters.repository import AbstractGameRepository
 
 
 def submit_turn(
-        game: Game,
-        token: str,
-        turn: Turn,
-        repo: AbstractGameRepository
+    game: Game, token: str, turn: Turn, repo: AbstractGameRepository
 ) -> None:
     with repo:
         game.submit_turn(token, turn)

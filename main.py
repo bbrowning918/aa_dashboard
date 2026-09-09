@@ -229,7 +229,7 @@ async def new(request: Request):
     return RedirectResponse(request.url_for("tracker"))
 
 
-async def join(request: Request, game_ref: str):
+async def join(request: Request):
     game_ref = request.query_params.get("game_ref")
     token = token_urlsafe(4)
     logger.debug(f"game_ref: {game_ref}, token: {token}")

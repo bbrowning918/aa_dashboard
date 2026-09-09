@@ -20,18 +20,20 @@ def get_http_port():
 
 
 def get_tinydb_path():
-    return str(os.environ.get('TINY_DB_PATH', 'db.json'))
+    return str(os.environ.get("TINY_DB_PATH", "db.json"))
 
 
 def get_logger():
-    level = str(os.environ.get('LOG_LEVEL', 'DEBUG'))
+    level = str(os.environ.get("LOG_LEVEL", "DEBUG"))
 
     logging.basicConfig(level=level)
-    logger = logging.getLogger('app')
+    logger = logging.getLogger("app")
     logger.setLevel(level)
 
     handler = logging.StreamHandler()
-    formatter = logging.Formatter("%(levelname)s:%(name)s.%(funcName)s:%(lineno)d %(message)s")
+    formatter = logging.Formatter(
+        "%(levelname)s:%(name)s.%(funcName)s:%(lineno)d %(message)s"
+    )
     handler.setFormatter(formatter)
 
     logger.addHandler(handler)

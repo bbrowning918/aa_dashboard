@@ -55,8 +55,7 @@ class TinyDBGameRepository(AbstractGameRepository):
                 }
                 for turn in game.turns
             ],
-            "powers": {name: token for name, token in game.powers.items()}
-
+            "powers": {name: token for name, token in game.powers.items()},
         }
         self.db.insert(document)
 
@@ -80,22 +79,25 @@ class TinyDBGameRepository(AbstractGameRepository):
                 )
                 for turn in document["turns"]
             },
-            powers={name: token for name, token in document["powers"].items()}
+            powers={name: token for name, token in document["powers"].items()},
         )
 
     def update(self, game: Game):
         query = Query()
-        self.db.update({
-            "turns": [
-                {
-                    "year": turn.year,
-                    "season": turn.season,
-                    "power": turn.power,
-                    "start": turn.start,
-                    "spent": turn.spent,
-                    "income": turn.income,
-                }
-                for turn in game.turns
-            ],
-            "powers": {name: token for name, token in game.powers.items()}
-        }, query.ref == game.ref)
+        self.db.update(
+            {
+                "turns": [
+                    {
+                        "year": turn.year,
+                        "season": turn.season,
+                        "power": turn.power,
+                        "start": turn.start,
+                        "spent": turn.spent,
+                        "income": turn.income,
+                    }
+                    for turn in game.turns
+                ],
+                "powers": {name: token for name, token in game.powers.items()},
+            },
+            query.ref == game.ref,
+        )
