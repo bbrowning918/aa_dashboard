@@ -34,6 +34,8 @@ class TinyDBGameRepository(AbstractGameRepository):
         self.path = path
 
     def __enter__(self):
+        # TODO look at CachingMiddleware with JSONStorage for reads from RAM on the rpi
+        #  the trick is we have to self.db.storage.flush() correctly under ASGI for writes
         self.db = TinyDB(self.path, sort_keys=True, indent=2)
         return super().__enter__()
 
