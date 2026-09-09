@@ -3,17 +3,17 @@ from functools import wraps
 from operator import attrgetter
 from secrets import token_urlsafe
 
+import uvicorn
 from asgi_htmx import HtmxMiddleware
 from asgi_htmx import HtmxRequest as Request
 from jinja2_fragments.fastapi import Jinja2Blocks
 from starlette.applications import Starlette
-from starlette.routing import Route, Mount
 from starlette.exceptions import HTTPException
-from starlette.staticfiles import StaticFiles
-from starlette.responses import Response, RedirectResponse
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
-import uvicorn
+from starlette.responses import RedirectResponse, Response
+from starlette.routing import Mount, Route
+from starlette.staticfiles import StaticFiles
 
 import config
 from adapters.repository import TinyDBGameRepository
